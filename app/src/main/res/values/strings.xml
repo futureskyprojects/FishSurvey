@@ -5,4 +5,5 @@
     <string name="finish">Hoàn tất</string>
     <string name="request_phone">Số điện thoại của bạn</string>
     <string name="request_boat_code">Mã tàu của bạn</string>
+    <string name="otherCategorize">Các loài khác</string>
 </resources>
