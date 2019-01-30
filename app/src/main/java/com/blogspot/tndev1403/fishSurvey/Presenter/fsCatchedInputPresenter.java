@@ -3,6 +3,8 @@ package com.blogspot.tndev1403.fishSurvey.Presenter;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -24,9 +26,11 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.blogspot.tndev1403.fishSurvey.MainActivity;
@@ -46,6 +50,7 @@ import com.google.android.gms.location.LocationServices;
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -96,6 +101,46 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
         btnCameraClick();
         btnGalleryClick();
         btnFinishClick();
+        tvClockClick();
+        tvCalendarClick();
+    }
+
+    private void tvCalendarClick() {
+        mContext.tvCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(mContext,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            mContext.tvCalendar.setText(dayOfMonth + "/" + month + "/" + year);
+                            }
+                        },Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    datePickerDialog.create();
+                }
+                datePickerDialog.show();
+            }
+        });
+    }
+
+    private void tvClockClick() {
+        mContext.tvClock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(mContext,
+                        new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                mContext.tvClock.setText(hourOfDay + ":" + minute);
+                            }
+                        }, Calendar.HOUR_OF_DAY, Calendar.MINUTE, true);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    timePickerDialog.create();
+                }
+                timePickerDialog.show();
+            }
+        });
     }
 
     void UnLocatedAlert() {

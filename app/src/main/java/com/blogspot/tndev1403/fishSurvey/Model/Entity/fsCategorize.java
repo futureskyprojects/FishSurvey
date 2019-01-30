@@ -1,5 +1,6 @@
 package com.blogspot.tndev1403.fishSurvey.Model.Entity;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -8,6 +9,9 @@ import android.util.Log;
 import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
 import com.blogspot.tndev1403.fishSurvey.R;
 import com.blogspot.tndev1403.fishSurvey.TNLib;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +33,23 @@ public class fsCategorize {
     }
 
     //region For JSON read
+    public static ArrayList<fsCategorize> getFromAPI(Context mContext) {
+        ArrayList<fsCategorize> categorizes = new ArrayList<>();
+        /* Download json String */
+        String jsonText = TNLib.Using.getContent(ApplicationConfig.CategorizeAPI.URL);
+        try {
+            JSONObject Jobj = new JSONObject(jsonText);
+            JSONArray Jarr = Jobj.getJSONArray(ApplicationConfig.CategorizeAPI.RootKey);
+            for (int i = 0; i < Jarr.length(); i++) {
+                fsCategorize categorize = new fsCategorize(mContext, Jarr.getJSONObject(i));
+//                if (categorize.FeatureImage != null)
+                categorizes.add(categorize);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "getFromAPI: " + e.getMessage());
+        }
+        return categorizes;
+    }
     public static ArrayList<fsCategorize> getFromAPI() {
         ArrayList<fsCategorize> categorizes = new ArrayList<>();
         /* Download json String */
@@ -46,13 +67,32 @@ public class fsCategorize {
         }
         return categorizes;
     }
+    public fsCategorize(Context mContext, JSONObject jsonCategorize) {
+        try {
+            this.ID = jsonCategorize.getInt(ApplicationConfig.CategorizeAPI.ID);
+            this.Name = jsonCategorize.getString(ApplicationConfig.CategorizeAPI.Name);
+            this.FeatureImageLink = jsonCategorize.getString(ApplicationConfig.CategorizeAPI.FeatureImage).replace("https://", "http://");
+            Glide.with(mContext)
+                    .asBitmap()
+                    .load((ApplicationConfig.CategorizeAPI.FeatureImage).replace("https://", "http://"))
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                            FeatureImage = resource;
+                        }
+                    });
+
+        } catch (Exception e) {
+
+        }
+    }
 
     public fsCategorize(JSONObject jsonCategorize) {
         try {
             this.ID = jsonCategorize.getInt(ApplicationConfig.CategorizeAPI.ID);
             this.Name = jsonCategorize.getString(ApplicationConfig.CategorizeAPI.Name);
             this.FeatureImageLink = jsonCategorize.getString(ApplicationConfig.CategorizeAPI.FeatureImage).replace("https://", "http://");
-            this.FeatureImage = TNLib.Using.getBitmap(this.FeatureImageLink);
+//            this.FeatureImage = TNLib.Using.getBitmap(this.FeatureImageLink);
         } catch (Exception e) {
 
         }

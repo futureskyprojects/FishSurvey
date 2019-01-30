@@ -45,7 +45,7 @@
         android:orientation="vertical">
 
         <EditText
-            android:inputType="number"
+            android:inputType="numberDecimal"
             android:layout_marginLeft="@dimen/standard_margin"
             android:layout_marginRight="@dimen/standard_margin"
             android:drawableLeft="@drawable/ic_tool"
@@ -60,7 +60,7 @@
             android:hint="@string/hint_length" />
 
         <EditText
-            android:inputType="number"
+            android:inputType="numberDecimal"
             android:layout_marginLeft="@dimen/standard_margin"
             android:layout_marginRight="@dimen/standard_margin"
             android:drawableLeft="@drawable/ic_weight"

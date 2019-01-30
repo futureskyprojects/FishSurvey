@@ -1,6 +1,7 @@
 package com.blogspot.tndev1403.fishSurvey.Presenter.fsAdapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,9 @@ import android.widget.ImageView;
 
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsCategorize;
 import com.blogspot.tndev1403.fishSurvey.R;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import java.util.ArrayList;
 
@@ -39,13 +43,22 @@ public class fsCategorizeAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        fsCategorize categorize = categorizes.get(position);
+        final fsCategorize categorize = categorizes.get(position);
         convertView = layoutInflater.inflate(R.layout.item_categorize, parent, false);
-        ImageView FeatureImageShow = (ImageView) convertView.findViewById(R.id.item_categorize);
-        if (categorize.getFeatureImage() != null)
-            FeatureImageShow.setImageBitmap(categorize.getFeatureImage());
-        else
-            FeatureImageShow.setImageDrawable(convertView.getResources().getDrawable(R.drawable.ic_error_404));
+        final ImageView FeatureImageShow = (ImageView) convertView.findViewById(R.id.item_categorize);
+        final View finalConvertView = convertView;
+        Glide.with(convertView)
+                .asBitmap()
+                .load(categorize.getFeatureImageLink())
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                        if (resource != null)
+                            FeatureImageShow.setImageBitmap(resource);
+                        else
+                            FeatureImageShow.setImageDrawable(finalConvertView.getResources().getDrawable(R.drawable.ic_error_404));
+                    }
+                });
         return convertView;
     }
 }

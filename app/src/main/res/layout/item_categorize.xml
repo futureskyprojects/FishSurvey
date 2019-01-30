@@ -7,6 +7,5 @@
         android:id="@+id/item_categorize"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_error_404" />
+        android:scaleType="centerCrop" />
 </LinearLayout>
