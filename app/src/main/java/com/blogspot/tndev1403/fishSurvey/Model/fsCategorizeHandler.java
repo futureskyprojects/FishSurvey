@@ -15,9 +15,9 @@ public class fsCategorizeHandler extends SQLiteOpenHelper {
     public final static String TABLE_NAME = "categorize";
 
     public final static String ID = "ID";
-    public final static String NAME = "Name";
-    public final static String FeatureImageBitmap = "FeatureImageBitmap";
-    public final static String FeatureImageURL = "FeatureImageURL";
+    public final static String NAME = "NAME";
+    public final static String FEATURE_IMAGE_BITMAP = "FEATURE_IMAGE_BITMAP";
+    public final static String FEATURE_IMAGE_URL = "FEATURE_IMAGE_URL";
 
     public fsCategorizeHandler(Context mContext) {
         super(mContext, ApplicationConfig.DATABASE_NAME, null, ApplicationConfig.DATABASE_VERSION);
@@ -29,7 +29,7 @@ public class fsCategorizeHandler extends SQLiteOpenHelper {
                 "%s INTEGER PRIMARY KEY," +
                 "%s TEXT," +
                 "%s BLOB," +
-                "%s TEXT)", TABLE_NAME, ID, NAME, FeatureImageBitmap, FeatureImageURL);
+                "%s TEXT)", TABLE_NAME, ID, NAME, FEATURE_IMAGE_BITMAP, FEATURE_IMAGE_URL);
         db.execSQL(CreateTable);
     }
 
@@ -45,8 +45,8 @@ public class fsCategorizeHandler extends SQLiteOpenHelper {
         ContentValues c = new ContentValues();
         c.put(ID, categorize.getID());
         c.put(NAME, categorize.getName());
-        c.put(FeatureImageBitmap, categorize.getFeatureImageBytes());
-        c.put(FeatureImageURL, categorize.getFeatureImageLink());
+        c.put(FEATURE_IMAGE_BITMAP, categorize.getFeatureImageBytes());
+        c.put(FEATURE_IMAGE_URL, categorize.getFeatureImageLink());
         database.insert(TABLE_NAME, null, c);
         database.close();
     }
@@ -94,8 +94,8 @@ public class fsCategorizeHandler extends SQLiteOpenHelper {
         ContentValues c = new ContentValues();
         c.put(ID, categorize.getID());
         c.put(NAME, categorize.getName());
-        c.put(FeatureImageBitmap, categorize.getFeatureImageBytes());
-        c.put(FeatureImageURL, categorize.getFeatureImageLink());
+        c.put(FEATURE_IMAGE_BITMAP, categorize.getFeatureImageBytes());
+        c.put(FEATURE_IMAGE_URL, categorize.getFeatureImageLink());
         db.update(TABLE_NAME, c, this.ID  + " = ?", new String[]{String.valueOf(categorize.getID())});
         db.close();
     }

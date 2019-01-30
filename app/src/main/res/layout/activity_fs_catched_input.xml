@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".View.fsCatchedInputActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/fsct_input_field">
+        <ImageView
+            android:id="@+id/fsct_thumb_nail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_error_404"
+            android:scaleType="centerCrop"/>
+        <ImageButton
+            android:id="@+id/fsct_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_photo_camera"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/btn_circle_background"/>
+        <ImageButton
+            android:id="@+id/fsct_gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_gallery"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/btn_circle_background"/>
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/fsct_input_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <EditText
+            android:inputType="number"
+            android:layout_marginLeft="@dimen/standard_margin"
+            android:layout_marginRight="@dimen/standard_margin"
+            android:drawableLeft="@drawable/ic_tool"
+            android:drawableStart="@drawable/ic_tool"
+            android:drawablePadding="@dimen/drawable_padding"
+            android:textSize="@dimen/text_size"
+            android:id="@+id/fsct_length"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/inp_margin_top"
+            android:background="@drawable/border_radius"
+            android:hint="@string/hint_length" />
+
+        <EditText
+            android:inputType="number"
+            android:layout_marginLeft="@dimen/standard_margin"
+            android:layout_marginRight="@dimen/standard_margin"
+            android:drawableLeft="@drawable/ic_weight"
+            android:drawableStart="@drawable/ic_weight"
+            android:drawablePadding="@dimen/drawable_padding"
+            android:textSize="@dimen/text_size"
+            android:id="@+id/fsct_weight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/inp_margin_top"
+            android:background="@drawable/border_radius"
+            android:hint="@string/hint_weight" />
+
+        <TextView
+            android:layout_marginLeft="@dimen/standard_margin"
+            android:layout_marginRight="@dimen/standard_margin"
+            android:drawableLeft="@drawable/ic_clock"
+            android:drawableStart="@drawable/ic_clock"
+            android:drawablePadding="@dimen/drawable_padding"
+            android:textSize="@dimen/text_size"
+            android:id="@+id/fsct_time"
+            android:hint="@string/hint_catched_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/inp_margin_top"
+            android:background="@drawable/border_radius" />
+
+        <TextView
+            android:layout_marginLeft="@dimen/standard_margin"
+            android:layout_marginRight="@dimen/standard_margin"
+            android:drawableLeft="@drawable/ic_calendar"
+            android:drawableStart="@drawable/ic_calendar"
+            android:drawablePadding="@dimen/drawable_padding"
+            android:textSize="@dimen/text_size"
+            android:id="@+id/fsct_date"
+            android:hint="@string/hint_catched_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/inp_margin_top"
+            android:background="@drawable/border_radius" />
+
+        <Button
+            android:id="@+id/fsct_finish"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/inp_margin_top"
+            android:background="@color/success"
+            android:text="@string/finish"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+</RelativeLayout>

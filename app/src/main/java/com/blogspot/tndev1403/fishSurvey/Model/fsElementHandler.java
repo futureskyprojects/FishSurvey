@@ -15,10 +15,10 @@ public class fsElementHandler extends SQLiteOpenHelper {
     public final static String TABLE_NAME = "element";
 
     public final static String ID = "ID";
-    public final static String NAME = "Name";
-    public final static String FeatureImageBitmap = "FeatureImageBitmap";
-    public final static String FeatureImageURL = "FeatureImageURL";
-    public final static String CATEGORIZE_ID = "elementID";
+    public final static String NAME = "NAME";
+    public final static String FEATURE_IMAGE_BITMAP = "FEATURE_IMAGE_BITMAP";
+    public final static String FEATURE_IMAGE_URL = "FEATURE_IMAGE_URL";
+    public final static String CATEGORIZE_ID = "CATEGORIZE_ID";
 
     public fsElementHandler(Context mContext) {
         super(mContext, ApplicationConfig.DATABASE_NAME, null, ApplicationConfig.DATABASE_VERSION);
@@ -31,7 +31,7 @@ public class fsElementHandler extends SQLiteOpenHelper {
                 "%s INTEGER," +
                 "%s TEXT," +
                 "%s BLOB," +
-                "%s TEXT)", TABLE_NAME, ID, CATEGORIZE_ID, NAME, FeatureImageBitmap, FeatureImageURL);
+                "%s TEXT)", TABLE_NAME, ID, CATEGORIZE_ID, NAME, FEATURE_IMAGE_BITMAP, FEATURE_IMAGE_URL);
         db.execSQL(CreateTable);
     }
 
@@ -48,8 +48,8 @@ public class fsElementHandler extends SQLiteOpenHelper {
         c.put(ID, element.getID());
         c.put(CATEGORIZE_ID, element.getSfCategorizeID());
         c.put(NAME, element.getName());
-        c.put(FeatureImageBitmap, element.getFeatureImageBytes());
-        c.put(FeatureImageURL, element.getFeatureImageLink());
+        c.put(FEATURE_IMAGE_BITMAP, element.getFeatureImageBytes());
+        c.put(FEATURE_IMAGE_URL, element.getFeatureImageLink());
         database.insert(TABLE_NAME, null, c);
         database.close();
     }
@@ -100,8 +100,8 @@ public class fsElementHandler extends SQLiteOpenHelper {
         c.put(ID, element.getID());
         c.put(CATEGORIZE_ID, element.getSfCategorizeID());
         c.put(NAME, element.getName());
-        c.put(FeatureImageBitmap, element.getFeatureImageBytes());
-        c.put(FeatureImageURL, element.getFeatureImageLink());
+        c.put(FEATURE_IMAGE_BITMAP, element.getFeatureImageBytes());
+        c.put(FEATURE_IMAGE_URL, element.getFeatureImageLink());
         db.update(TABLE_NAME, c, this.ID  + " = ?", new String[]{String.valueOf(element.getID())});
         db.close();
     }

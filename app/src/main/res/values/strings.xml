@@ -6,4 +6,13 @@
     <string name="request_phone">Số điện thoại của bạn</string>
     <string name="request_boat_code">Mã tàu của bạn</string>
     <string name="otherCategorize">Các loài khác</string>
+    <string name="hint_length">Chiều dài (cm)</string>
+    <string name="hint_weight">Cân nặng (kg)</string>
+    <string name="hint_catched_time">Bắt lúc mấy giờ?</string>
+    <string name="hint_catched_date">Ngày bắt</string>
+    <string name="dialog_camera">Chụp ảnh</string>
+    <string name="dialog_gallery">Thư viện ảnh</string>
+    <string name="dialog_default">Ảnh mặc định</string>
+    <string name="dialog_close">Đóng</string>
+    <string name="des_full_obj_feature">Ảnh đầy đủ</string>
 </resources>

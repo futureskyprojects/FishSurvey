@@ -2,9 +2,11 @@ package com.blogspot.tndev1403.fishSurvey.Model.Entity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 
 import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
+import com.blogspot.tndev1403.fishSurvey.R;
 import com.blogspot.tndev1403.fishSurvey.TNLib;
 
 import org.json.JSONArray;
@@ -12,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class fsCategorize {
@@ -20,6 +23,10 @@ public class fsCategorize {
     String Name;
     Bitmap FeatureImage;
     String FeatureImageLink;
+
+    public fsCategorize() {
+
+    }
 
     //region For JSON read
     public static ArrayList<fsCategorize> getFromAPI() {
@@ -31,8 +38,8 @@ public class fsCategorize {
             JSONArray Jarr = Jobj.getJSONArray(ApplicationConfig.CategorizeAPI.RootKey);
             for (int i = 0; i < Jarr.length(); i++) {
                 fsCategorize categorize = new fsCategorize(Jarr.getJSONObject(i));
-                if (categorize.FeatureImage != null)
-                    categorizes.add(categorize);
+//                if (categorize.FeatureImage != null)
+                categorizes.add(categorize);
             }
         } catch (Exception e) {
             Log.e(TAG, "getFromAPI: " + e.getMessage());

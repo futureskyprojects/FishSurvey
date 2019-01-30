@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_background_radius">
+    <RelativeLayout
+        android:id="@+id/dialog_camera"
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        tools:ignore="NewApi">
+        <ImageView
+            android:id="@+id/item1_ic"
+            android:padding="5dp"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_photo_camera"/>
+        <TextView
+            android:lines="1"
+            android:text="@string/dialog_camera"
+            android:textSize="@dimen/dialog_title_size"
+            android:textStyle="bold"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@id/item1_ic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:lines="1"
+            android:text="Lấy ảnh đổi tượng qua camera"
+            android:textSize="@dimen/dialog_context_size"
+            android:layout_marginLeft="15dp"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/item1_ic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_width="match_parent"
+        android:background="@color/line_color"
+        android:layout_height="1dp" />
+    <RelativeLayout
+        android:id="@+id/dialog_gallery"
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        tools:ignore="NewApi">
+        <ImageView
+            android:padding="5dp"
+            android:id="@+id/item2_ic"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_gallery"/>
+        <TextView
+            android:lines="1"
+            android:text="@string/dialog_gallery"
+            android:textSize="@dimen/dialog_title_size"
+            android:textStyle="bold"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@id/item2_ic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:lines="1"
+            android:text="Chọn từ ảnh trong thư viện trong máy"
+            android:textSize="@dimen/dialog_context_size"
+            android:layout_marginLeft="15dp"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/item2_ic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_width="match_parent"
+        android:background="@color/line_color"
+        android:layout_height="1dp" />
+    <RelativeLayout
+        android:id="@+id/dialog_default"
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        tools:ignore="NewApi">
+        <ImageView
+            android:id="@+id/item3_ic"
+            android:layout_width="60dp"
+            android:scaleType="centerCrop"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_error_404"/>
+        <TextView
+            android:lines="1"
+            android:text="@string/dialog_default"
+            android:textSize="@dimen/dialog_title_size"
+            android:textStyle="bold"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@id/item3_ic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:lines="1"
+            android:text="Bỏ ảnh hiện tại và trở về ảnh mặc định"
+            android:textSize="@dimen/dialog_context_size"
+            android:layout_marginLeft="15dp"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/item3_ic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/lineOK"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_width="match_parent"
+        android:background="@color/line_color"
+        android:layout_height="1dp" />
+    <RelativeLayout
+        android:id="@+id/dialog_close"
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        tools:ignore="NewApi">
+        <ImageView
+            android:id="@+id/item4_ic"
+            android:layout_width="60dp"
+            android:padding="5dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_error"/>
+        <TextView
+            android:lines="1"
+            android:text="@string/dialog_close"
+            android:textSize="@dimen/dialog_title_size"
+            android:textStyle="bold"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@id/item4_ic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:lines="1"
+            android:text="Đóng bảng tùy chọn"
+            android:textSize="@dimen/dialog_context_size"
+            android:layout_marginLeft="15dp"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/item4_ic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+</LinearLayout>

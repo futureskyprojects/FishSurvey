@@ -1,21 +1,52 @@
 package com.blogspot.tndev1403.fishSurvey;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 public class TNLib {
     public final static String TAG = "TNLib";
+    public static class Location {
+        public static Address getAddress(Context mContext, double lat, double lng) {
+            Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
+            try {
+                List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+                Address obj = addresses.get(0);
+                return obj;
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e(TAG, "getAddress: " +e.getMessage() );
+            }
+            return null;
+        }
+    }
     public static class Using {
+        public static Bitmap BytesToBitmap(byte[] bytes) {
+            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        }
+        public static byte[] BitmapToBytes(Bitmap bm) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            return stream.toByteArray();
+        }
         public static String getContent(String _URL){
             String result = "";
             try {
@@ -31,6 +62,34 @@ public class TNLib {
                 return new getBitmapFromURL().execute(_URL).get();
             } catch (Exception e) {
                 Log.e(TAG, "getBitmap: " + e.getMessage());
+                return null;
+            }
+        }
+        public static String DateToString(Date inp){
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy", Locale.getDefault());
+            try {
+                String result = simpleDateFormat.format(inp);
+                return result;
+            } catch (Exception e) {
+                Log.e(TAG, "DateToString: " + e.getMessage() );
+                return "";
+            }
+        }
+        public static Date StringToDateTime(String inp) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy", Locale.getDefault());
+            try {
+                Date myDate = simpleDateFormat.parse(inp);
+                return myDate;
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        public static Date StringToDate(String inp) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            try {
+                Date myDate = simpleDateFormat.parse(inp);
+                return myDate;
+            } catch (Exception e) {
                 return null;
             }
         }

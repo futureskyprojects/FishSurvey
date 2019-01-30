@@ -5,4 +5,7 @@
     <dimen name="standard_margin">15dp</dimen>
     <dimen name="drawable_padding">10dp</dimen>
     <dimen name="inp_margin_top">15dp</dimen>
+    <dimen name="text_size">16sp</dimen>
+    <dimen name="dialog_title_size">20sp</dimen>
+    <dimen name="dialog_context_size">14sp</dimen>
 </resources>

@@ -5,4 +5,5 @@
     <color name="colorAccent">#218c74</color>
     <color name="hintColor">#84817a</color>
     <color name="success">#33d9b2</color>
+    <color name="line_color">#d1ccc0</color>
 </resources>

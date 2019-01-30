@@ -1,49 +1,49 @@
 package com.blogspot.tndev1403.fishSurvey.Presenter.fsAdapter;
 
 import android.content.Context;
-import android.media.Image;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsCategorize;
+import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsElement;
 import com.blogspot.tndev1403.fishSurvey.R;
 
 import java.util.ArrayList;
 
-public class fsCategorizeAdapter extends BaseAdapter {
+public class fsElementAdapter extends BaseAdapter {
     LayoutInflater layoutInflater;
-    ArrayList<fsCategorize> categorizes;
+    ArrayList<fsElement> elements;
 
-    public fsCategorizeAdapter(Context mContext, ArrayList<fsCategorize> categorizes) {
-        this.categorizes = categorizes;
+    public fsElementAdapter(Context mContext, ArrayList<fsElement> elements) {
+        this.elements = elements;
         layoutInflater = LayoutInflater.from(mContext);
     }
 
     @Override
     public int getCount() {
-        return categorizes.size();
+        return elements.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return categorizes.get(position);
+        return elements.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return categorizes.get(position).getID();
+        return elements.get(position).getID();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        fsCategorize categorize = categorizes.get(position);
-        convertView = layoutInflater.inflate(R.layout.item_categorize, parent, false);
-        ImageView FeatureImageShow = (ImageView) convertView.findViewById(R.id.item_categorize);
-        if (categorize.getFeatureImage() != null)
-            FeatureImageShow.setImageBitmap(categorize.getFeatureImage());
+        fsElement element = elements.get(position);
+        convertView = layoutInflater.inflate(R.layout.item_element, parent, false);
+        ImageView FeatureImageShow = (ImageView) convertView.findViewById(R.id.item_element);
+        if (element.getFeatureImage() != null)
+            FeatureImageShow.setImageBitmap(element.getFeatureImage());
         else
             FeatureImageShow.setImageDrawable(convertView.getResources().getDrawable(R.drawable.ic_error_404));
         return convertView;
