@@ -96,8 +96,10 @@ public class fsCatchedInputActivity extends AppCompatActivity {
         super.onStart();
         if (presenter.mGoogleApiClient != null)
         {
+            Log.d(TAG, "onStart: Không null");
             presenter.mGoogleApiClient.connect();
         }
+
     }
 
     @Override

@@ -63,7 +63,6 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
     public static final String TAG = MainActivity.class.getSimpleName();
     private static final long UPDATE_INTERVAL = 5000;
     private static final long FASTEST_INTERVAL = 5000;
-    private static final int REQUEST_LOCATION_PERMISSION = 100;
 
     public GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -75,7 +74,6 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
     public fsCatchedInputPresenter(fsCatchedInputActivity mContext) {
         this.mContext = mContext;
         initGPSLocation();
-
         /* Init event */
         initEvent();
     }
@@ -92,7 +90,6 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
         if (!isGpsOn()) {
             Toasty.error(mContext, "Vui lòng bật định vị GPS lên trước!", Toast.LENGTH_SHORT, true).show();
             mContext.finish();
-//            turnGPSOn();
         }
     }
 
@@ -113,9 +110,9 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                            mContext.tvCalendar.setText(dayOfMonth + "/" + month + "/" + year);
+                                mContext.tvCalendar.setText(dayOfMonth + "/" + month + "/" + year);
                             }
-                        },Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH);
+                        }, Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     datePickerDialog.create();
                 }
@@ -147,7 +144,13 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
         SweetAlertDialog warning = new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
                 .setTitleText("CHƯA ĐỊNH VỊ ĐƯỢC")
                 .setContentText("Hiện tại vẫn chưa định vị được vị trí, hãy thử lại!")
-                .setConfirmButton("Đóng", null);
+                .setConfirmButton("Đóng", new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                        sweetAlertDialog.cancel();
+                    }
+                });
         initGPSLocation();
         warning.show();
     }
@@ -156,6 +159,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
         mContext.btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startLocationUpdates();
                 if (mLastLocation == null) {
                     UnLocatedAlert();
                     return;
@@ -226,7 +230,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                 Ok.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 Ok.show();
 
-                    imageView.setImageDrawable(mContext.imgIhumbnail.getDrawable());
+                imageView.setImageDrawable(mContext.imgIhumbnail.getDrawable());
                 imageView1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -395,14 +399,16 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
     }
 
-    protected void startLocationUpdates() {
+    public void startLocationUpdates() {
         if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(mContext,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestLocationPermissions();
             return;
         }
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, this);
+        if (mGoogleApiClient.isConnected())
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
     }
 
     public void stopLocationUpdates() {
@@ -414,6 +420,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
         if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(mContext,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestLocationPermissions();
             return;
         }
         Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -429,7 +436,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Log.e(TAG, "onConnectionFailed:  ĐM nó fail cmnr!");
     }
 
     @Override

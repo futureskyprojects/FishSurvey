@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsElement;
 import com.blogspot.tndev1403.fishSurvey.R;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
@@ -47,16 +48,25 @@ public class fsElementAdapter extends BaseAdapter {
         convertView = layoutInflater.inflate(R.layout.item_element, parent, false);
         final ImageView FeatureImageShow = (ImageView) convertView.findViewById(R.id.item_element);
         final View finalConvertView = convertView;
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.dontAnimate();
+        requestOptions.dontTransform();
         Glide.with(convertView)
+                .setDefaultRequestOptions(requestOptions)
                 .asBitmap()
                 .load(element.getFeatureImageLink())
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                        fsElement element1 = element;
                         if (resource != null)
+                        {
+                            element1.setFeatureImage(resource);
                             FeatureImageShow.setImageBitmap(resource);
+                        }
                         else
                             FeatureImageShow.setImageDrawable(finalConvertView.getResources().getDrawable(R.drawable.ic_error_404));
+                        // Upload to database here
                     }
                 });
         return convertView;

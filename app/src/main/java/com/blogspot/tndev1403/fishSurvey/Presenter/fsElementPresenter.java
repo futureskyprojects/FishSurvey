@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 
@@ -43,6 +44,23 @@ public class fsElementPresenter {
         elements = fsElement.getFromAPI(""); // Empty for test
         adapter = new fsElementAdapter(mContext, elements);
         mContext.gridView.setAdapter(adapter);
+        mContext.gridView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                View view = (View) mContext.gridView.getChildAt(mContext.gridView.getChildCount() - 1);
+
+                int diff = (view.getBottom() - (mContext.gridView.getHeight() + mContext.gridView
+                        .getScrollY()));
+
+                if (diff == 0) {
+                    mContext.bottomEffect.stopRippleAnimation();
+                    mContext.bottomEffect.setVisibility(View.INVISIBLE);
+                } else {
+                    mContext.bottomEffect.startRippleAnimation();
+                    mContext.bottomEffect.setVisibility(View.VISIBLE);
+                }
+            }
+        });
         gridViewItemClickedEvent();
     }
 

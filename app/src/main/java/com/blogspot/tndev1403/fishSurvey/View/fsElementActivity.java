@@ -4,13 +4,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 import com.blogspot.tndev1403.fishSurvey.Presenter.fsElementPresenter;
 import com.blogspot.tndev1403.fishSurvey.R;
+import com.skyfishjy.library.RippleBackground;
 
 public class fsElementActivity extends AppCompatActivity {
     /* Declare global view */
     public GridView gridView;
+    public RippleBackground bottomEffect;
+    public ImageView bottomArrow;
     /* Declare presenter */
     fsElementPresenter presenter;
 
@@ -47,5 +51,8 @@ public class fsElementActivity extends AppCompatActivity {
 
     private void initView() {
         gridView = (GridView) findViewById(R.id.fse_elements_view);
+        bottomEffect = (RippleBackground) findViewById(R.id.fsc_btn_bottom);
+        bottomEffect.startRippleAnimation();
+        bottomArrow = (ImageView) findViewById(R.id.fsc_btn_bottom_arrow);
     }
 }

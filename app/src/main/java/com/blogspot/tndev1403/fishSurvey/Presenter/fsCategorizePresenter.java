@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -16,6 +18,7 @@ import com.blogspot.tndev1403.fishSurvey.Presenter.fsAdapter.fsCategorizeAdapter
 import com.blogspot.tndev1403.fishSurvey.R;
 import com.blogspot.tndev1403.fishSurvey.View.fsCategorizeActivity;
 import com.blogspot.tndev1403.fishSurvey.View.fsElementActivity;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -40,6 +43,23 @@ public class fsCategorizePresenter {
         categorizes = fsCategorize.getFromAPI();
         fsCategorizeAdapter adapter = new fsCategorizeAdapter(mContext, categorizes);
         mContext.gvCategorizes.setAdapter(adapter);
+        mContext.gvCategorizes.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                View view = (View) mContext.gvCategorizes.getChildAt(mContext.gvCategorizes.getChildCount() - 1);
+
+                int diff = (view.getBottom() - (mContext.gvCategorizes.getHeight() + mContext.gvCategorizes
+                        .getScrollY()));
+
+                if (diff == 0) {
+                    mContext.bottomEffect.stopRippleAnimation();
+                    mContext.bottomEffect.setVisibility(View.INVISIBLE);
+                } else {
+                    mContext.bottomEffect.startRippleAnimation();
+                    mContext.bottomEffect.setVisibility(View.VISIBLE);
+                }
+            }
+        });
         initGridViewItemClickEvent();
     }
 
@@ -70,7 +90,7 @@ public class fsCategorizePresenter {
                 Ok.show();
 
                 fsCategorize categorize = categorizes.get(position);
-                if (categorize.getFeatureImage()!=null)
+                if (categorize.getFeatureImage() != null)
                     imageView.setImageBitmap(categorize.getFeatureImage());
                 else
                     imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_error_404));
