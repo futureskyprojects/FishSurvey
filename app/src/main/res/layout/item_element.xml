@@ -4,8 +4,10 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:layout_margin="5dp"
+        android:background="@drawable/background_image"
         android:id="@+id/item_element"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:scaleType="centerCrop"/>
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:scaleType="fitXY"/>
 </LinearLayout>

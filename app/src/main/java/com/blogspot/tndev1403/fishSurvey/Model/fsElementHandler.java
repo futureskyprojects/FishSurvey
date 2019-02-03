@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsElement;
@@ -93,6 +95,29 @@ public class fsElementHandler extends SQLiteOpenHelper {
         }
         return elements;
     }
+    public ArrayList<fsElement> getEntriesByCategorizeID(int fsCategorizeID) {
+        ArrayList<fsElement> elements = new ArrayList<>();
+        String Query = "SELECT * FROM " + TABLE_NAME + " WHERE " + CATEGORIZE_ID + " = " + fsCategorizeID;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(Query, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+        else
+            return null;
+        while (!cursor.isAfterLast()) {
+            fsElement element = new fsElement(
+                    cursor.getInt(0),
+                    cursor.getInt(1),
+                    cursor.getString(2),
+                    cursor.getBlob(3),
+                    cursor.getString(4)
+            );
+            elements.add(element);
+            Log.d("FUCK", "getEntriesByCategorizeID: " + element.getName());
+            cursor.moveToNext();
+        }
+        return elements;
+    }
 
     public void updateEntry(fsElement element) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -106,6 +131,11 @@ public class fsElementHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void deleteAll() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME,"",new String[]{});
+        db.close();
+    }
     public void deleteEntry(int ID) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NAME, this.ID + " = ?", new String[] {String.valueOf(ID)});

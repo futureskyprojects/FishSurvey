@@ -1,22 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:layout_alignParentTop="true"
-        android:id="@+id/dialog_full_preview"
+    <com.otaliastudios.zoom.ZoomLayout
+        app:alignment="center"
+        app:animationDuration="280"
+        app:flingEnabled="true"
+        app:hasClickableChildren="false"
+        app:horizontalPanEnabled="true"
+        app:maxZoom="2.5"
+        app:maxZoomType="zoom"
+        app:minZoom="0.7"
+        app:minZoomType="zoom"
+        app:overPinchable="true"
+        app:overScrollHorizontal="true"
+        app:overScrollVertical="true"
+        app:transformation="centerInside"
+        app:transformationGravity="auto"
+        app:verticalPanEnabled="true"
+        app:zoomEnabled="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:minHeight="300dp"
-        android:src="@drawable/ic_error_404"
-        android:contentDescription="@string/des_full_obj_feature" />
+        android:scrollbars="vertical|horizontal">
+
+        <ImageView
+            android:id="@+id/dialog_full_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/des_full_obj_feature"
+            android:minHeight="300dp"
+            android:minWidth="300dp"
+            android:src="@drawable/ic_error_404" />
+    </com.otaliastudios.zoom.ZoomLayout>
+
     <ImageView
         android:id="@+id/dialog_close_preview"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:src="@drawable/ic_error"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_error" />
 </RelativeLayout>

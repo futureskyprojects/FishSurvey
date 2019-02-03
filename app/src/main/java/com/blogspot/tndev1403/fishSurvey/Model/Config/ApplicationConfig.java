@@ -1,6 +1,14 @@
 package com.blogspot.tndev1403.fishSurvey.Model.Config;
 
+import android.content.Context;
+import android.os.Environment;
+
+import com.blogspot.tndev1403.fishSurvey.R;
+
+import java.io.File;
+
 public class ApplicationConfig {
+    public final static String APP_NAME = "COPPA";
     public final static String TAG = "ApplicationConfig";
     public final static String Host = "";
     public final static String Key = "";
@@ -30,6 +38,20 @@ public class ApplicationConfig {
     public static class PERMISSION {
         public final static int CAMERA = 10001;
         public final static int LOCATION_GPS = 10002;
+        public final static int WRITE_EXTERNAL_STORAGE = 10003;
     }
-
+    /* App folder */
+    public static class FOLDER {
+        public final static String APP_EXTENSION = "cop";
+        public final static String APP_DIR = Environment.getExternalStorageDirectory() +
+                File.separator + "." + APP_NAME;
+        public static boolean CheckAndCreate() {
+            File folder = new File(APP_DIR);
+            boolean success = true;
+            if (!folder.exists()) {
+                success = folder.mkdirs();
+            }
+            return success;
+        }
+    }
 }

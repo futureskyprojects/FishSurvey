@@ -12,6 +12,7 @@ import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsCatched;
 import com.blogspot.tndev1403.fishSurvey.TNLib;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class fsCatchedHandler extends SQLiteOpenHelper {
@@ -25,13 +26,14 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
     public static String LATITUDE = "LATITUDE";
     public static String LONGITUDE = "LONGITUDE";
     public static String IMAGE_PATH = "IMAGE_PATH";
+
     public fsCatchedHandler(Context mContext) {
-        super(mContext, ApplicationConfig.DATABASE_NAME, null, ApplicationConfig.DATABASE_VERSION);
+        super(mContext, ApplicationConfig.DATABASE_NAME + "_Catched", null, ApplicationConfig.DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CreateTable = String.format("CREATE TABLE %s(" +
+        String CreateTable = String.format("CREATE TABLE IF NOT EXISTS %s(" +
                 "%s INTEGER PRIMARY KEY," +
                 "%s INTEGER," +
                 "%s TEXT," +
@@ -51,15 +53,31 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public int getMAXID() {
+        SQLiteDatabase database = this.getReadableDatabase();
+        Cursor cursor = database.rawQuery("SELECT MAX(" + ID + ") FROM " + TABLE_NAME, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        } else
+            return -1;
+        return cursor.getInt(0);
+    }
+
     public void addEntry(fsCatched catched) throws Exception {
+        //---------------
+        Calendar calendar = Calendar.getInstance();
+        String Now = "" + calendar.get(Calendar.HOUR_OF_DAY) + ":" +
+                calendar.get(Calendar.MINUTE) + " " + calendar.get(Calendar.DAY_OF_MONTH) + "/" +
+                (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
+        //-----------------
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues c = new ContentValues();
         c.put(ID, catched.getID());
         c.put(ELEMENT_ID, catched.getElementID());
-        c.put(CREATEED_DATE, TNLib.Using.DateToString(new Date()));
+        c.put(CREATEED_DATE, Now);
         c.put(LENGTH, catched.getLength());
         c.put(WEIGHT, catched.getWeight());
-        c.put(CATCHED_TIME, TNLib.Using.DateToString(catched.getCatchedTime()));
+        c.put(CATCHED_TIME, catched.getCatchedTime());
         c.put(LATITUDE, catched.getLatitude());
         c.put(LONGITUDE, catched.getLongitude());
         c.put(IMAGE_PATH, catched.getImagePath());
@@ -78,8 +96,8 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
                 cursor.getInt(0),
                 cursor.getInt(1),
                 cursor.getString(2),
-                cursor.getFloat(3),
-                cursor.getFloat(4),
+                cursor.getFloat(3) + "",
+                cursor.getFloat(4) + "",
                 cursor.getString(5),
                 cursor.getString(6),
                 cursor.getString(7),
@@ -102,8 +120,8 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
                     cursor.getInt(0),
                     cursor.getInt(1),
                     cursor.getString(2),
-                    cursor.getFloat(3),
-                    cursor.getFloat(4),
+                    cursor.getFloat(3) + "",
+                    cursor.getFloat(4) + "",
                     cursor.getString(5),
                     cursor.getString(6),
                     cursor.getString(7),
@@ -120,20 +138,20 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
         ContentValues c = new ContentValues();
         c.put(ID, catched.getID());
         c.put(ELEMENT_ID, catched.getElementID());
-        c.put(CREATEED_DATE, TNLib.Using.DateToString(new Date()));
+        c.put(CREATEED_DATE, catched.getCreatedDate());
         c.put(LENGTH, catched.getLength());
         c.put(WEIGHT, catched.getWeight());
-        c.put(CATCHED_TIME, TNLib.Using.DateToString(catched.getCatchedTime()));
+        c.put(CATCHED_TIME, catched.getCatchedTime());
         c.put(LATITUDE, catched.getLatitude());
         c.put(LONGITUDE, catched.getLongitude());
         c.put(IMAGE_PATH, catched.getImagePath());
-        db.update(TABLE_NAME, c, this.ID  + " = ?", new String[]{String.valueOf(catched.getID())});
+        db.update(TABLE_NAME, c, this.ID + " = ?", new String[]{String.valueOf(catched.getID())});
         db.close();
     }
 
     public void deleteEntry(int ID) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NAME, this.ID + " = ?", new String[] {String.valueOf(ID)});
+        db.delete(TABLE_NAME, this.ID + " = ?", new String[]{String.valueOf(ID)});
         db.close();
     }
 }

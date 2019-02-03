@@ -14,11 +14,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -35,11 +33,12 @@ import android.widget.Toast;
 
 import com.blogspot.tndev1403.fishSurvey.MainActivity;
 import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
-import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsElement;
+import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsCatched;
+import com.blogspot.tndev1403.fishSurvey.Model.fsCatchedHandler;
 import com.blogspot.tndev1403.fishSurvey.R;
 import com.blogspot.tndev1403.fishSurvey.TNLib;
 import com.blogspot.tndev1403.fishSurvey.View.fsCatchedInputActivity;
-import com.bumptech.glide.util.Util;
+import com.blogspot.tndev1403.fishSurvey.View.fsSaveSuccessfulActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -47,10 +46,9 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import java.io.BufferedInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -60,6 +58,7 @@ import static android.content.Context.LOCATION_SERVICE;
 
 public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
+    public static fsCatched catched;
     public static final String TAG = MainActivity.class.getSimpleName();
     private static final long UPDATE_INTERVAL = 5000;
     private static final long FASTEST_INTERVAL = 5000;
@@ -69,13 +68,28 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
     private Location mLastLocation;
     fsCatchedInputActivity mContext;
     /* Declare varriable */
-    public Bitmap CURRENT_BITMAP = null;
+    public static Bitmap CURRENT_BITMAP = null;
+    fsCatchedHandler handler;
+    Calendar calendar;
 
     public fsCatchedInputPresenter(fsCatchedInputActivity mContext) {
         this.mContext = mContext;
+        handler = new fsCatchedHandler(mContext);
+        calendar = Calendar.getInstance();
         initGPSLocation();
+        initDefaultValues();
         /* Init event */
         initEvent();
+    }
+
+    private void initDefaultValues() {
+        Calendar calendarZ = Calendar.getInstance();
+        mContext.tvClock.setText(calendarZ.get(Calendar.HOUR_OF_DAY) + ":" + calendarZ.get(Calendar.MINUTE));
+        mContext.tvCalendar.setText(
+                calendarZ.get(Calendar.DAY_OF_MONTH) + "/" +
+                        (calendarZ.get(Calendar.MONTH) + 1) + "/" +
+                        calendarZ.get(Calendar.YEAR)
+        );
     }
 
     private void initGPSLocation() {
@@ -110,7 +124,8 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                                mContext.tvCalendar.setText(dayOfMonth + "/" + month + "/" + year);
+                                calendar.set(year, month, dayOfMonth);
+                                mContext.tvCalendar.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
                             }
                         }, Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -129,6 +144,8 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+                                        hourOfDay, minute);
                                 mContext.tvClock.setText(hourOfDay + ":" + minute);
                             }
                         }, Calendar.HOUR_OF_DAY, Calendar.MINUTE, true);
@@ -166,16 +183,92 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                 }
                 Address m = TNLib.Location.getAddress(mContext, mLastLocation.getLatitude(), mLastLocation.getLongitude());
                 String result = "";
-                result = String.format(Locale.getDefault(), "Kinh độ:%f\nVĩ độ: %f",
-                        mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                if (m != null) {
-                    result += "\n--------------\n" +
-                            "Quốc gia: " + m.getCountryName() +
-                            "\nĐịa điểm: " + m.getLocality() +
-                            "\n(" + m.getSubLocality() + ")";
+                // -------------------------
+                String Length = mContext.etLength.getText().toString();
+                String Weight = mContext.etWeight.getText().toString();
+                String CatchedDate = mContext.tvCalendar.getText().toString();
+                String CatchedTimeX = mContext.tvClock.getText().toString();
+                // Check
+                if (Length.isEmpty() || Weight.isEmpty() || CatchedDate.isEmpty() || CatchedTimeX.isEmpty()) {
+                    SweetAlertDialog alertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("THIẾU!")
+                            .setContentText("Vui lòng nhập đầy đủ thông tin.")
+                            .setConfirmButton("Đóng", null);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        alertDialog.create();
+                    }
+                    alertDialog.show();
+                    return;
                 }
-                Toasty.info(mContext, result, Toast.LENGTH_SHORT, true).show();
-                Log.d(TAG, result);
+                // Check permission
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (mContext.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        mContext.btnFinish.setEnabled(false);
+                        mContext.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, ApplicationConfig.PERMISSION.WRITE_EXTERNAL_STORAGE);
+                        return;
+                    }
+                }
+                // Save iamge to app dir
+                int MAX_ID = -1;
+                if (handler.getAllEntry().size() <= 0) {
+                    MAX_ID = -1;
+                } else {
+                    MAX_ID = handler.getMAXID();
+                }
+                String FileName = "Capture_" + (MAX_ID + 1) + "." + ApplicationConfig.FOLDER.APP_EXTENSION;
+                if (ApplicationConfig.FOLDER.CheckAndCreate()) {
+                    if (TNLib.Using.SaveImage((CURRENT_BITMAP == null ? fsElementPresenter.CURRENT_SELECTED_ELEMENT.getFeatureImage() : CURRENT_BITMAP), FileName, ApplicationConfig.FOLDER.APP_DIR)) {
+                        Toast.makeText(mContext, "Lưu thành công", Toast.LENGTH_SHORT).show();
+                        String CatchedTime = "" + calendar.get(Calendar.HOUR_OF_DAY) + ":" +
+                                calendar.get(Calendar.MINUTE) + " " + calendar.get(Calendar.DAY_OF_MONTH) + "/" +
+                                (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
+
+
+                        // -------------------------
+                        Calendar calendarX = Calendar.getInstance();
+                        String Now = "" + calendarX.get(Calendar.HOUR_OF_DAY) + ":" +
+                                calendarX.get(Calendar.MINUTE) + " " + calendarX.get(Calendar.DAY_OF_MONTH) + "/" +
+                                (calendarX.get(Calendar.MONTH) + 1) + "/" + calendarX.get(Calendar.YEAR);
+                        // ----------
+                        catched = new fsCatched(MAX_ID + 1, fsElementPresenter.CURRENT_SELECTED_ELEMENT.getID(), Now,
+                                Length, Weight, CatchedTime, mLastLocation.getLatitude() + "", mLastLocation.getLongitude() + "", ApplicationConfig.FOLDER.APP_DIR + "/" + FileName);
+                        result = String.format(Locale.getDefault(), "Kinh độ:%f\nVĩ độ: %f",
+                                mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                        if (m != null) {
+                            result += "\n--------------\n" +
+                                    "Quốc gia: " + m.getCountryName() +
+                                    "\nĐịa điểm: " + m.getLocality() +
+                                    "\n(" + m.getSubLocality() + ")";
+                        }
+                        Log.d(TAG, result);
+                        try {
+                            handler.addEntry(catched);
+                            mContext.startActivity(new Intent(mContext, fsSaveSuccessfulActivity.class));
+                            mContext.finish();
+                        } catch (Exception e) {
+                            SweetAlertDialog alertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.ERROR_TYPE)
+                                    .setTitleText("KHÔNG LƯU ĐƯỢC!")
+                                    .setContentText("Gặp vấn đề khi lưu dữ liệu, hãy thử lại!.")
+                                    .setConfirmButton("Đóng", null);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                alertDialog.create();
+                            }
+                            Log.e(TAG, "onClick: " + e.getMessage());
+                            return;
+                        }
+                    } else {
+                        SweetAlertDialog alertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.ERROR_TYPE)
+                                .setTitleText("KHÔNG LƯU ẢNH ĐƯỢC!")
+                                .setContentText("Hãy kiểm tra dung lượng máy và thử lại.")
+                                .setConfirmButton("Đóng", null);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            alertDialog.create();
+                        }
+                        alertDialog.show();
+                        return;
+                    }
+                } else {
+                }
             }
         });
     }
@@ -364,6 +457,13 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
         } else if (requestCode == ApplicationConfig.PERMISSION.LOCATION_GPS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toasty.success(mContext, "Cấp quyền truy cập vị trí thành công!", Toast.LENGTH_SHORT, true).show();
+            } else {
+                requestLocationPermissions();
+            }
+        } else if (requestCode == ApplicationConfig.PERMISSION.WRITE_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toasty.success(mContext, "Cấp quyền truy cập bộ nhớ thành công!", Toast.LENGTH_SHORT, true).show();
+                mContext.btnFinish.setEnabled(true);
             } else {
                 requestLocationPermissions();
             }

@@ -2,6 +2,7 @@ package com.blogspot.tndev1403.fishSurvey.Presenter.fsAdapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,28 +48,37 @@ public class fsElementAdapter extends BaseAdapter {
         final fsElement element = elements.get(position);
         convertView = layoutInflater.inflate(R.layout.item_element, parent, false);
         final ImageView FeatureImageShow = (ImageView) convertView.findViewById(R.id.item_element);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            FeatureImageShow.setClipToOutline(true);
+        }
         final View finalConvertView = convertView;
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.dontAnimate();
-        requestOptions.dontTransform();
-        Glide.with(convertView)
-                .setDefaultRequestOptions(requestOptions)
-                .asBitmap()
-                .load(element.getFeatureImageLink())
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                        fsElement element1 = element;
-                        if (resource != null)
-                        {
-                            element1.setFeatureImage(resource);
-                            FeatureImageShow.setImageBitmap(resource);
+        if (element.getFeatureImage()==null)
+        {
+            RequestOptions requestOptions = new RequestOptions();
+            requestOptions.dontAnimate();
+            requestOptions.dontTransform();
+            Glide.with(convertView)
+                    .setDefaultRequestOptions(requestOptions)
+                    .asBitmap()
+                    .load(element.getFeatureImageLink())
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                            fsElement element1 = element;
+                            if (resource != null)
+                            {
+                                element1.setFeatureImage(resource);
+                                FeatureImageShow.setImageBitmap(resource);
+                            }
+                            else
+                                FeatureImageShow.setImageDrawable(finalConvertView.getResources().getDrawable(R.drawable.ic_error_404));
+                            // Upload to database here
                         }
-                        else
-                            FeatureImageShow.setImageDrawable(finalConvertView.getResources().getDrawable(R.drawable.ic_error_404));
-                        // Upload to database here
-                    }
-                });
+                    });
+        }
+        else {
+            FeatureImageShow.setImageBitmap(element.getFeatureImage());
+        }
         return convertView;
     }
 }

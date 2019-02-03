@@ -9,32 +9,21 @@ import java.util.Date;
 public class fsCatched {
     int ID;
     int ElementID;
-    Date CreatedDate;
+    String CreatedDate;
     float Length;
     float Weight;
-    Date CatchedTime;
+    String CatchedTime;
     String Latitude;
     String Longitude;
     String ImagePath;
 
-    public fsCatched(int ID, int elementID, Date createdDate, float length, float weight, Date catchedTime, String latitude, String longitude, String imagePath) {
+    public fsCatched(int ID, int elementID, String createdDate, String length, String weight, String catchedTime, String latitude, String longitude, String imagePath) {
         this.ID = ID;
         ElementID = elementID;
         CreatedDate = createdDate;
-        Length = length;
-        Weight = weight;
+        Length = Float.parseFloat(length);
+        Weight = Float.parseFloat(weight);
         CatchedTime = catchedTime;
-        Latitude = latitude;
-        Longitude = longitude;
-        ImagePath = imagePath;
-    }
-    public fsCatched(int ID, int elementID, String createdDate, float length, float weight, String catchedTime, String latitude, String longitude, String imagePath) {
-        this.ID = ID;
-        ElementID = elementID;
-        CreatedDate = TNLib.Using.StringToDateTime(createdDate);
-        Length = length;
-        Weight = weight;
-        CatchedTime = TNLib.Using.StringToDateTime(catchedTime);
         Latitude = latitude;
         Longitude = longitude;
         ImagePath = imagePath;
@@ -61,12 +50,20 @@ public class fsCatched {
         ElementID = elementID;
     }
 
-    public Date getCreatedDate() {
-        return CreatedDate;
+    public void setCatchedTime(String catchedTime) {
+        CatchedTime = catchedTime;
     }
 
-    public void setCreatedDate(Date createdDate) {
+    public void setCreatedDate(String createdDate) {
         CreatedDate = createdDate;
+    }
+
+    public String getCatchedTime() {
+        return CatchedTime;
+    }
+
+    public String getCreatedDate() {
+        return CreatedDate;
     }
 
     public float getLength() {
@@ -85,13 +82,6 @@ public class fsCatched {
         Weight = weight;
     }
 
-    public Date getCatchedTime() {
-        return CatchedTime;
-    }
-
-    public void setCatchedTime(Date catchedTime) {
-        CatchedTime = catchedTime;
-    }
 
     public String getLatitude() {
         return Latitude;

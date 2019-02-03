@@ -3,14 +3,18 @@ package com.blogspot.tndev1403.fishSurvey;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -39,6 +43,50 @@ public class TNLib {
         }
     }
     public static class Using {
+        public static boolean SaveImage(Bitmap bm, String fn, String destDir) {
+            // Check and create dir if nessasary
+            File dest = new File(destDir);
+            if (!dest.exists()) {
+                return false;
+            }
+            File desF = new File(dest + File.separator + fn);
+            if (desF.exists()) {
+                desF.delete();
+            }
+            try {
+                FileOutputStream out = new FileOutputStream(desF);
+                out.write(TNLib.Using.BitmapToBytes(bm));
+                out.flush();
+                out.close();
+                return true;
+            } catch (Exception e) {
+                Log.e(TAG, "SaveImage: " + e.getMessage());
+                return false;
+            }
+
+        }
+        private void createDirectoryAndSaveFile(Bitmap imageToSave, String fileName) {
+
+            File direct = new File(Environment.getExternalStorageDirectory() + "/DirName");
+
+            if (!direct.exists()) {
+                File wallpaperDirectory = new File("/sdcard/DirName/");
+                wallpaperDirectory.mkdirs();
+            }
+
+            File file = new File(new File("/sdcard/DirName/"), fileName);
+            if (file.exists()) {
+                file.delete();
+            }
+            try {
+                FileOutputStream out = new FileOutputStream(file);
+                imageToSave.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                out.flush();
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         public static Bitmap BytesToBitmap(byte[] bytes) {
             return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         }
@@ -66,7 +114,7 @@ public class TNLib {
             }
         }
         public static String DateToString(Date inp){
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy", Locale.getDefault());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss'Z'dd/MM/yyyy'T'");
             try {
                 String result = simpleDateFormat.format(inp);
                 return result;
@@ -76,11 +124,12 @@ public class TNLib {
             }
         }
         public static Date StringToDateTime(String inp) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy", Locale.getDefault());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss'Z'dd/MM/yyyy'T'");
             try {
                 Date myDate = simpleDateFormat.parse(inp);
                 return myDate;
             } catch (Exception e) {
+                Log.e(TAG, "StringToDateTime: " + e.getMessage());
                 return null;
             }
         }
@@ -92,6 +141,10 @@ public class TNLib {
             } catch (Exception e) {
                 return null;
             }
+        }
+
+        public static Bitmap DrawableToBitmap(Context mContext, int id) {
+            return ((BitmapDrawable) mContext.getResources().getDrawable(id)).getBitmap();
         }
     }
     public static class getContentFromURL extends AsyncTask<String, Integer, String> {

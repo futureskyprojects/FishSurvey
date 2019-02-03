@@ -42,6 +42,18 @@ public class fsNewUserPresenter {
                     dialog.show();
                 }
                 else {
+                    if (newUserActivity.user_name.getText().toString().matches(".*\\d+.*"))
+                    {
+                        SweetAlertDialog dialog = new SweetAlertDialog(newUserActivity, SweetAlertDialog.ERROR_TYPE)
+                                .setTitleText("XEM LẠI!")
+                                .setContentText("Tên không thể có số!")
+                                .setConfirmButton("Đóng",null);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            dialog.create();
+                        }
+                        dialog.show();
+                        return;
+                    }
                     /* else ask for sure of user */
                     SweetAlertDialog confirm = new SweetAlertDialog(newUserActivity, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("HOÀN TẤT?")

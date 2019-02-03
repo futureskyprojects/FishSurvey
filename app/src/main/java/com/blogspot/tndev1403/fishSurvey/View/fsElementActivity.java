@@ -1,7 +1,9 @@
 package com.blogspot.tndev1403.fishSurvey.View;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -30,7 +32,8 @@ public class fsElementActivity extends AppCompatActivity {
     }
 
     private void applyToolbar() {
-        getSupportActionBar().setTitle(presenter.CATEGORIZE_NAME);
+//        getSupportActionBar().setTitle(presenter.CATEGORIZE_NAME);
+        getSupportActionBar().setTitle("Chọn loài (Choose fish)");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -42,6 +45,9 @@ public class fsElementActivity extends AppCompatActivity {
             finish();
             return true;
         }
+//        else if (item.getItemId() == R.id.saved_data) {
+//            startActivity(new Intent(fsElementActivity.this, fsSavedDataActivity.class));
+//        }
         return false;
     }
 
@@ -54,5 +60,11 @@ public class fsElementActivity extends AppCompatActivity {
         bottomEffect = (RippleBackground) findViewById(R.id.fsc_btn_bottom);
         bottomEffect.startRippleAnimation();
         bottomArrow = (ImageView) findViewById(R.id.fsc_btn_bottom_arrow);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
     }
 }
