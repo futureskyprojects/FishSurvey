@@ -1,6 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/review_item"
+    android:clickable="true"
+    android:layout_marginBottom="10dp"
+    android:padding="10dp"
+    android:focusable="true"
+    android:background="@drawable/background_image"
+    android:layout_height="120dp">
 
-</android.support.constraint.ConstraintLayout>
+    <ImageView
+        android:background="@drawable/background_image"
+        android:id="@+id/review_thumb"
+        android:scaleType="centerCrop"
+        android:layout_marginRight="10dp"
+        android:layout_centerVertical="true"
+        android:layout_width="120dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_error_404"
+        android:layout_marginEnd="10dp" />
+    <TextView
+        android:id="@+id/review_fish_name"
+        android:layout_marginRight="15dp"
+        android:layout_toRightOf="@id/review_thumb"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@color/color_white_text_accent"
+        android:textStyle="bold"
+        android:lineHeight="22sp"
+        android:shadowColor="@color/success"
+        android:shadowDy="3"
+        android:shadowDx="3"
+        android:shadowRadius="1"
+        android:gravity="left|center"
+        android:text="Cá ngừ đại dương! Cá to khổng lồdafdfdfdafdafdf"
+        android:layout_toEndOf="@id/review_thumb"
+        android:layout_marginEnd="15dp" />
+    <TextView
+        android:id="@+id/review_catch_time"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="15dp"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:drawableTint="@color/color_white_text_primary_dark"
+        android:textColor="@color/color_white_text_primary_dark"
+        android:textStyle="bold"
+        android:lineHeight="20sp"
+        android:shadowColor="@color/success"
+        android:shadowDy="3"
+        android:shadowDx="3"
+        android:shadowRadius="1"
+        android:gravity="left|center"
+        android:drawablePadding="5dp"
+        android:drawableLeft="@drawable/ic_clock"
+        android:text="Bắt lúc 3:42"
+        android:drawableStart="@drawable/ic_clock" />
+</RelativeLayout>

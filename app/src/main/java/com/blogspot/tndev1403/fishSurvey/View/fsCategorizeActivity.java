@@ -55,7 +55,7 @@ public class fsCategorizeActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.saved_data) {
             startActivity(new Intent(fsCategorizeActivity.this, fsSavedDataActivity.class));
         }
@@ -64,7 +64,7 @@ public class fsCategorizeActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return true;
     }
 }

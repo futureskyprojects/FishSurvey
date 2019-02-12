@@ -83,12 +83,11 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
     }
 
     private void initDefaultValues() {
-        Calendar calendarZ = Calendar.getInstance();
-        mContext.tvClock.setText(calendarZ.get(Calendar.HOUR_OF_DAY) + ":" + calendarZ.get(Calendar.MINUTE));
+        mContext.tvClock.setText(calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE));
         mContext.tvCalendar.setText(
-                calendarZ.get(Calendar.DAY_OF_MONTH) + "/" +
-                        (calendarZ.get(Calendar.MONTH) + 1) + "/" +
-                        calendarZ.get(Calendar.YEAR)
+                calendar.get(Calendar.DAY_OF_MONTH) + "/" +
+                        (calendar.get(Calendar.MONTH) + 1) + "/" +
+                        calendar.get(Calendar.YEAR)
         );
     }
 
@@ -127,7 +126,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                                 calendar.set(year, month, dayOfMonth);
                                 mContext.tvCalendar.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
                             }
-                        }, Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH);
+                        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     datePickerDialog.create();
                 }
@@ -148,7 +147,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                                         hourOfDay, minute);
                                 mContext.tvClock.setText(hourOfDay + ":" + minute);
                             }
-                        }, Calendar.HOUR_OF_DAY, Calendar.MINUTE, true);
+                        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     timePickerDialog.create();
                 }

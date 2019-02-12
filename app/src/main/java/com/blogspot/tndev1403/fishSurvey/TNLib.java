@@ -43,6 +43,12 @@ public class TNLib {
         }
     }
     public static class Using {
+        public static Bitmap BitmapFromFilePath(String _Path) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            Bitmap bitmap = BitmapFactory.decodeFile(_Path, options);
+            return bitmap;
+        }
         public static boolean SaveImage(Bitmap bm, String fn, String destDir) {
             // Check and create dir if nessasary
             File dest = new File(destDir);
