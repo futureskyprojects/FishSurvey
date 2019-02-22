@@ -1,23 +1,17 @@
 package com.blogspot.tndev1403.fishSurvey.Presenter;
 
 import android.content.Intent;
-import android.widget.Toast;
 
 import com.blogspot.tndev1403.fishSurvey.MainActivity;
 import com.blogspot.tndev1403.fishSurvey.Model.Config.FishSurveyData;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsElement;
-import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsUser;
 import com.blogspot.tndev1403.fishSurvey.Model.MainModel;
 import com.blogspot.tndev1403.fishSurvey.Model.fsElementHandler;
-import com.blogspot.tndev1403.fishSurvey.View.fsCategorizeActivity;
-import com.blogspot.tndev1403.fishSurvey.View.fsNewUserActivity;
+import com.blogspot.tndev1403.fishSurvey.View.fsHome;
 
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ExecutionException;
-
-import es.dmoral.toasty.Toasty;
 
 public class MainPresenter {
     MainActivity mContext;
@@ -99,10 +93,12 @@ public class MainPresenter {
                         public void run() {
                             if (!mainModel.user.get()) {
                                 // If info of user not exists or not enough then start acivity for ask new
-                                mContext.startActivity(new Intent(mContext, fsNewUserActivity.class));
+//                                mContext.startActivity(new Intent(mContext, fsNewUserActivity.class));
+                                mContext.startActivity(new Intent(mContext, fsHome.class));
                                 mContext.finish();
                             } else {
-                                mContext.startActivity(new Intent(mContext, fsCategorizeActivity.class));
+//                                mContext.startActivity(new Intent(mContext, fsCategorizeActivity.class));
+                                mContext.startActivity(new Intent(mContext, fsHome.class));
                                 mContext.finish();
                             }
                         }

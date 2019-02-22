@@ -2,38 +2,27 @@ package com.blogspot.tndev1403.fishSurvey.Presenter;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
-import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsCategorize;
-import com.blogspot.tndev1403.fishSurvey.Presenter.fsAdapter.fsCategorizeAdapter;
 import com.blogspot.tndev1403.fishSurvey.R;
-import com.blogspot.tndev1403.fishSurvey.TNLib;
-import com.blogspot.tndev1403.fishSurvey.View.fsCategorizeActivity;
 import com.blogspot.tndev1403.fishSurvey.View.fsElementActivity;
-import com.bumptech.glide.Glide;
-
-import java.util.ArrayList;
+import com.blogspot.tndev1403.fishSurvey.View.fsHome;
 
 import es.dmoral.toasty.Toasty;
 
-public class fsCategorizePresenter {
-    fsCategorizeActivity mContext;
+public class fsHomePresenter {
+    fsHome mContext;
     /* Data store declare */
 
-    public fsCategorizePresenter(fsCategorizeActivity categorizeActivity) {
-        this.mContext = categorizeActivity;
+    public fsHomePresenter(fsHome fshome) {
+        this.mContext = fshome;
         initGirdView();
         initEvent();
     }
@@ -76,7 +65,7 @@ public class fsCategorizePresenter {
                     final AlertDialog Ok = builder.create();
                     Ok.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     Ok.show();
-                    imageView.setImageDrawable(mContext.getResources().getDrawable(fsCategorizeActivity.FishList[finalI]));
+                    imageView.setImageDrawable(mContext.getResources().getDrawable(fsHome.FishList[finalI]));
                     imageView1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

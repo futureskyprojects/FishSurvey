@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsUser;
-import com.blogspot.tndev1403.fishSurvey.View.fsCategorizeActivity;
+import com.blogspot.tndev1403.fishSurvey.View.fsHome;
 import com.blogspot.tndev1403.fishSurvey.View.fsNewUserActivity;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -69,7 +69,7 @@ public class fsNewUserPresenter {
                                     if (user.commit())
                                     {
                                         Toasty.success(newUserActivity, "Khai báo thông tin thành công!", Toast.LENGTH_SHORT, true).show();
-                                        newUserActivity.startActivity(new Intent(newUserActivity, fsCategorizeActivity.class));
+                                        newUserActivity.startActivity(new Intent(newUserActivity, fsHome.class));
                                         newUserActivity.finish();
                                     } else {
                                         Toasty.error(newUserActivity, "Không thể cập nhật thông tin. Vui lòng thử lại", Toast.LENGTH_SHORT, true).show();
