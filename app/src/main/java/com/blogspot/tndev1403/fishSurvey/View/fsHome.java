@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.blogspot.tndev1403.fishSurvey.Presenter.fsHomePresenter;
 import com.blogspot.tndev1403.fishSurvey.R;
@@ -26,6 +28,16 @@ public class fsHome extends AppCompatActivity
     public Toolbar toolbar;
     public ImageView categozies[];
     public DrawerLayout drawer;
+
+    public ImageView ivEditProfile;
+    public LinearLayout lnReview;
+    public LinearLayout lnEndTrip;
+    public ImageView ivVietnamese;
+    public ImageView ivEnglish;
+    public TextView tvUsername;
+    public TextView tvPhone;
+    public TextView tvBoatCode;
+
     /* Declare presenter */
     fsHomePresenter presenter;
     public static int FishList[] = {R.drawable.g1, R.drawable.g2, R.drawable.g3, R.drawable.g4, R.drawable.g5, R.drawable.g6};
@@ -64,6 +76,15 @@ public class fsHome extends AppCompatActivity
         categozies[3] = (ImageView) findViewById(R.id.fsc_g4);
         categozies[4] = (ImageView) findViewById(R.id.fsc_g5);
         categozies[5] = (ImageView) findViewById(R.id.fsc_g6);
+        //--------------------------
+        ivEditProfile = (ImageView) findViewById(R.id.edit_profile);
+        lnReview = (LinearLayout) findViewById(R.id.review);
+        lnEndTrip = (LinearLayout) findViewById(R.id.end_trip);
+        ivVietnamese = (ImageView) findViewById(R.id.vn);
+        ivEnglish = (ImageView) findViewById(R.id.en);
+        tvUsername = (TextView) findViewById(R.id.fsh_fisherman_name);
+        tvPhone = (TextView) findViewById(R.id.fsh_phone_number);
+        tvBoatCode = (TextView) findViewById(R.id.fsh_boat_code);
     }
 
     @Override

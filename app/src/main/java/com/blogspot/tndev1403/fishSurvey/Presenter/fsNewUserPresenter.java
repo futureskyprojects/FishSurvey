@@ -14,11 +14,24 @@ import es.dmoral.toasty.Toasty;
 
 public class fsNewUserPresenter {
     fsNewUserActivity newUserActivity;
+    fsUser previousUser;
 
     public fsNewUserPresenter(fsNewUserActivity newUserActivity) {
         this.newUserActivity = newUserActivity;
+        initUserAndFill();
         initEvent();
     }
+
+    private void initUserAndFill() {
+        previousUser = new fsUser(newUserActivity);
+        if (previousUser.get())
+        {
+            newUserActivity.user_name.setText(previousUser.getUserName());
+            newUserActivity.user_phone.setText(previousUser.getPhoneNumber());
+            newUserActivity.user_boat_code.setText(previousUser.getBoatCode());
+        }
+    }
+
     void initEvent() {
         initFinishButton();
     }
