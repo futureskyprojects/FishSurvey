@@ -86,6 +86,7 @@ public class fsElementPresenter {
                 CURRENT_SELECTED_ELEMENT = element;
                 Intent catchedIntent = new Intent(mContext, fsCatchedInputActivity.class);
                 mContext.startActivity(catchedIntent);
+                mContext.finish();
             }
         });
         mContext.gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {

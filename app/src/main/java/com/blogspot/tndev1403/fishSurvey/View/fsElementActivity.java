@@ -42,6 +42,7 @@ public class fsElementActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home)
         {
+            startActivity(new Intent(this, fsHome.class));
             finish();
             return true;
         }

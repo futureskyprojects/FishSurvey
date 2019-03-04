@@ -76,6 +76,8 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
     public static Bitmap CURRENT_BITMAP = null;
     fsCatchedHandler handler;
     Calendar calendar;
+    SweetAlertDialog saving;
+    ArrayList<String> FileNames = new ArrayList<>();
 
     public fsCatchedInputPresenter(fsCatchedInputActivity mContext) {
         this.mContext = mContext;
@@ -191,13 +193,12 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
         mContext.btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //region SAVE
                 startLocationUpdates();
                 if (mLastLocation == null) {
                     UnLocatedAlert();
                     return;
                 }
-                Address m = TNLib.Location.getAddress(mContext, mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                String result = "";
                 // -------------------------
                 String Length = mContext.etLength.getText().toString();
                 String Weight = mContext.etWeight.getText().toString();
@@ -205,14 +206,21 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                 String CatchedTimeX = mContext.tvClock.getText().toString();
                 // Check
                 if (Length.isEmpty() || Weight.isEmpty() || CatchedDate.isEmpty() || CatchedTimeX.isEmpty()) {
-                    SweetAlertDialog alertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("THIẾU!")
-                            .setContentText("Vui lòng nhập đầy đủ thông tin.")
-                            .setConfirmButton("Đóng", null);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        alertDialog.create();
-                    }
-                    alertDialog.show();
+                    mContext.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (saving.isShowing())
+                                saving.cancel();
+                            SweetAlertDialog alertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("THIẾU!")
+                                    .setContentText("Vui lòng nhập đầy đủ thông tin.")
+                                    .setConfirmButton("Đóng", null);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                alertDialog.create();
+                            }
+                            alertDialog.show();
+                        }
+                    });
                     return;
                 }
                 // Check permission
@@ -230,60 +238,76 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                 } else {
                     MAX_ID = handler.getMAXID();
                 }
-                String FileName = "Capture_" + (MAX_ID + 1) + "." + ApplicationConfig.FOLDER.APP_EXTENSION;
                 if (ApplicationConfig.FOLDER.CheckAndCreate()) {
-                    if (TNLib.Using.SaveImage((CURRENT_BITMAP == null ? fsElementPresenter.CURRENT_SELECTED_ELEMENT.getFeatureImage() : CURRENT_BITMAP), FileName, ApplicationConfig.FOLDER.APP_DIR)) {
-                        Toast.makeText(mContext, "Lưu thành công", Toast.LENGTH_SHORT).show();
-                        String CatchedTime = "" + calendar.get(Calendar.HOUR_OF_DAY) + ":" +
-                                calendar.get(Calendar.MINUTE) + " " + calendar.get(Calendar.DAY_OF_MONTH) + "/" +
-                                (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
+                    String CatchedTime = "" + calendar.get(Calendar.HOUR_OF_DAY) + ":" +
+                            calendar.get(Calendar.MINUTE) + " " + calendar.get(Calendar.DAY_OF_MONTH) + "/" +
+                            (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
 
 
-                        // -------------------------
-                        Calendar calendarX = Calendar.getInstance();
-                        String Now = "" + calendarX.get(Calendar.HOUR_OF_DAY) + ":" +
-                                calendarX.get(Calendar.MINUTE) + " " + calendarX.get(Calendar.DAY_OF_MONTH) + "/" +
-                                (calendarX.get(Calendar.MONTH) + 1) + "/" + calendarX.get(Calendar.YEAR);
-                        // ----------
-                        catched = new fsCatched(MAX_ID + 1, fsElementPresenter.CURRENT_SELECTED_ELEMENT.getID(), Now,
-                                Length, Weight, CatchedTime, mLastLocation.getLatitude() + "", mLastLocation.getLongitude() + "", ApplicationConfig.FOLDER.APP_DIR + "/" + FileName);
-                        result = String.format(Locale.getDefault(), "Kinh độ:%f\nVĩ độ: %f",
-                                mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                        if (m != null) {
-                            result += "\n--------------\n" +
-                                    "Quốc gia: " + m.getCountryName() +
-                                    "\nĐịa điểm: " + m.getLocality() +
-                                    "\n(" + m.getSubLocality() + ")";
-                        }
-                        Log.d(TAG, result);
-                        try {
-                            handler.addEntry(catched);
-                            mContext.startActivity(new Intent(mContext, fsSaveSuccessfulActivity.class));
-                            mContext.finish();
-                        } catch (Exception e) {
-                            SweetAlertDialog alertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.ERROR_TYPE)
-                                    .setTitleText("KHÔNG LƯU ĐƯỢC!")
-                                    .setContentText("Gặp vấn đề khi lưu dữ liệu, hãy thử lại!.")
-                                    .setConfirmButton("Đóng", null);
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                alertDialog.create();
-                            }
-                            Log.e(TAG, "onClick: " + e.getMessage());
-                            return;
-                        }
-                    } else {
-                        SweetAlertDialog alertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.ERROR_TYPE)
-                                .setTitleText("KHÔNG LƯU ẢNH ĐƯỢC!")
-                                .setContentText("Hãy kiểm tra dung lượng máy và thử lại.")
-                                .setConfirmButton("Đóng", null);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            alertDialog.create();
-                        }
-                        alertDialog.show();
-                        return;
+                    // -------------------------
+                    Calendar calendarX = Calendar.getInstance();
+                    String Now = "" + calendarX.get(Calendar.HOUR_OF_DAY) + ":" +
+                            calendarX.get(Calendar.MINUTE) + " " + calendarX.get(Calendar.DAY_OF_MONTH) + "/" +
+                            (calendarX.get(Calendar.MONTH) + 1) + "/" + calendarX.get(Calendar.YEAR);
+                    // ----------
+                    catched = new fsCatched(MAX_ID + 1, fsElementPresenter.CURRENT_SELECTED_ELEMENT.getID(), Now,
+                            Length, Weight, CatchedTime, mLastLocation.getLatitude() + "", mLastLocation.getLongitude() + "", TNLib.Using.StringListToSingalString(FileNames));
+                    // --------------
+                    saving = new SweetAlertDialog(v.getContext(), SweetAlertDialog.PROGRESS_TYPE);
+                    saving.setCancelable(false);
+                    saving.setTitle("Đang lưu");
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        saving.create();
                     }
+                    saving.show();
+                    // --------------
+
+                    final int finalMAX_ID = MAX_ID;
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (int k = 0; k < ListCatchedImages.size(); k++) {
+                                FileNames.add("Capture_" + (finalMAX_ID + 1) + "_" + k + "." + ApplicationConfig.FOLDER.APP_EXTENSION);
+                                if (TNLib.Using.SaveImage(ListCatchedImages.get(k), FileNames.get(k), ApplicationConfig.FOLDER.APP_DIR)) {
+                                }
+                            }
+                            try {
+                                handler.addEntry(catched);
+                                mContext.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (saving.isShowing())
+                                            saving.cancel();
+                                        Toasty.success(mContext, "Lưu thành công!", Toast.LENGTH_SHORT, true);
+                                        mContext.startActivity(new Intent(mContext, fsSaveSuccessfulActivity.class));
+                                        mContext.finish();
+                                    }
+                                });
+                            } catch (Exception e) {
+                                mContext.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (saving.isShowing())
+                                            saving.cancel();
+                                        SweetAlertDialog alertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.ERROR_TYPE)
+                                                .setTitleText("KHÔNG LƯU ĐƯỢC!")
+                                                .setContentText("Gặp vấn đề khi lưu dữ liệu, hãy thử lại!.")
+                                                .setConfirmButton("Đóng", null);
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                            alertDialog.create();
+                                        }
+                                        alertDialog.show();
+                                    }
+                                });
+                                Log.e(TAG, "onClick: " + e.getMessage());
+                                return;
+                            }
+                        }
+                    }).start();
+                    // --------------
                 } else {
                 }
+                //endregion
             }
         });
     }
@@ -569,6 +593,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
         CURRENT_BITMAP = bm;
         setImageToShow();
     }
+
     public void setImageToShow() {
         if (CURRENT_BITMAP != null)
             mContext.imgIhumbnail.setImageBitmap(CURRENT_BITMAP);

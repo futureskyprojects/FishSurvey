@@ -23,6 +23,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import es.dmoral.toasty.Toasty;
 
 public class fsHomePresenter {
+    public static int GID = -1;
     public static int PREVIEW_COUNT = 0;
     fsHome mContext;
     fsUser currentUser;
@@ -92,6 +93,7 @@ public class fsHomePresenter {
         initCategozieClick();
     }
 
+
     private void initCategozieClick() {
         for (int i = 0; i < mContext.categozies.length; i++) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -101,10 +103,12 @@ public class fsHomePresenter {
             mContext.categozies[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    GID = temp;
                     Intent elementIntent = new Intent(mContext, fsElementActivity.class);
                     elementIntent.putExtra(ApplicationConfig.CategorizeAPI.ID, temp + 1);
                     elementIntent.putExtra(ApplicationConfig.CategorizeAPI.Name, "G" + temp);
                     mContext.startActivity(elementIntent);
+                    mContext.finish();
                 }
             });
             final int finalI = i;

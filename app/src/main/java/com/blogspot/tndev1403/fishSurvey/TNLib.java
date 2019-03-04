@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -43,6 +44,13 @@ public class TNLib {
         }
     }
     public static class Using {
+        public static String StringListToSingalString(ArrayList<String> arr) {
+            String res = "";
+            for (int i = 0; i < arr.size();i++) {
+                res += arr.get(i) + " ";
+            }
+            return res;
+        }
         public static Bitmap BitmapFromFilePath(String _Path) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;

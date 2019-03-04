@@ -13,10 +13,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsElement;
 import com.blogspot.tndev1403.fishSurvey.Presenter.fsCatchedInputPresenter;
 import com.blogspot.tndev1403.fishSurvey.Presenter.fsElementPresenter;
+import com.blogspot.tndev1403.fishSurvey.Presenter.fsHomePresenter;
 import com.blogspot.tndev1403.fishSurvey.R;
 
 public class fsCatchedInputActivity extends AppCompatActivity {
@@ -79,6 +82,10 @@ public class fsCatchedInputActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home)
         {
+            Intent elementIntent = new Intent(this, fsElementActivity.class);
+            elementIntent.putExtra(ApplicationConfig.CategorizeAPI.ID, fsHomePresenter.GID  + 1);
+            elementIntent.putExtra(ApplicationConfig.CategorizeAPI.Name, "G" + fsHomePresenter.GID);
+            startActivity(elementIntent);
             finish();
         }
         return true;

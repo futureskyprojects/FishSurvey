@@ -1,10 +1,12 @@
 package com.blogspot.tndev1403.fishSurvey.Presenter;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.view.View;
 import android.widget.Toast;
 
 import com.blogspot.tndev1403.fishSurvey.TNLib;
+import com.blogspot.tndev1403.fishSurvey.View.fsHome;
 import com.blogspot.tndev1403.fishSurvey.View.fsSaveSuccessfulActivity;
 
 public class fsSaveSuccessfulPresenter {
@@ -24,6 +26,7 @@ public class fsSaveSuccessfulPresenter {
         mContext.btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mContext.startActivity(new Intent(mContext, fsHome.class));
                 mContext.finish();
             }
         });
