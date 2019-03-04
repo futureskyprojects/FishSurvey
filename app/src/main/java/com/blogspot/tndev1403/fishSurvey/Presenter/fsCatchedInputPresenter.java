@@ -21,6 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,7 @@ import com.blogspot.tndev1403.fishSurvey.MainActivity;
 import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsCatched;
 import com.blogspot.tndev1403.fishSurvey.Model.fsCatchedHandler;
+import com.blogspot.tndev1403.fishSurvey.Presenter.fsAdapter.fsCatchedPreviewAdapter;
 import com.blogspot.tndev1403.fishSurvey.R;
 import com.blogspot.tndev1403.fishSurvey.TNLib;
 import com.blogspot.tndev1403.fishSurvey.View.fsCatchedInputActivity;
@@ -47,6 +49,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -68,6 +71,8 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
     private Location mLastLocation;
     fsCatchedInputActivity mContext;
     /* Declare varriable */
+    public ArrayList<Bitmap> ListCatchedImages;
+    public fsCatchedPreviewAdapter adapter;
     public static Bitmap CURRENT_BITMAP = null;
     fsCatchedHandler handler;
     Calendar calendar;
@@ -80,6 +85,17 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
         initDefaultValues();
         /* Init event */
         initEvent();
+        /* Config recycle view */
+        initRecycleView();
+    }
+
+    private void initRecycleView() {
+        ListCatchedImages = new ArrayList<>();
+        adapter = new fsCatchedPreviewAdapter(ListCatchedImages);
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
+        mContext.rvCatchedListImages.setLayoutManager(layoutManager);
+        mContext.rvCatchedListImages.setAdapter(adapter);
     }
 
     private void initDefaultValues() {
@@ -428,19 +444,15 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                 // User don't choose anything
             } else {
                 try {
-                    CURRENT_BITMAP = null;
                     InputStream inputStream = mContext.getContentResolver().openInputStream(data.getData());
-                    CURRENT_BITMAP = BitmapFactory.decodeStream(inputStream);
-                    setImageToShow();
+                    setImageToListAndShowIt(BitmapFactory.decodeStream(inputStream));
                 } catch (Exception e) {
                     Log.e(TAG, "resultProcessing: " + e.getMessage());
                     fail();
                 }
             }
         } else if (reqCode == ApplicationConfig.CODE.IMAGE_CAPTURE_REQUEST_CODE && resCode == Activity.RESULT_OK) {
-            CURRENT_BITMAP = null;
-            CURRENT_BITMAP = (Bitmap) data.getExtras().get("data");
-            setImageToShow();
+            setImageToListAndShowIt((Bitmap) data.getExtras().get("data"));
         }
     }
 
@@ -551,7 +563,13 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
         Toasty.error(mContext, "Xin lỗi! Thao tác không thành công.", Toast.LENGTH_SHORT, true);
     }
 
-    void setImageToShow() {
+    public void setImageToListAndShowIt(Bitmap bm) {
+        ListCatchedImages.add(bm);
+        adapter.notifyDataSetChanged();
+        CURRENT_BITMAP = bm;
+        setImageToShow();
+    }
+    public void setImageToShow() {
         if (CURRENT_BITMAP != null)
             mContext.imgIhumbnail.setImageBitmap(CURRENT_BITMAP);
         else

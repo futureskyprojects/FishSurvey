@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -29,9 +30,11 @@ public class fsCatchedInputActivity extends AppCompatActivity {
     public TextView tvClock;
     public TextView tvCalendar;
     public Button btnFinish;
+    public RecyclerView rvCatchedListImages;
+    public TextView tvAnnoucement;
 
     /* Declare presenter */
-    fsCatchedInputPresenter presenter;
+    public fsCatchedInputPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +71,8 @@ public class fsCatchedInputActivity extends AppCompatActivity {
         this.tvClock = (TextView) findViewById(R.id.fsct_time);
         this.tvCalendar = (TextView) findViewById(R.id.fsct_date);
         this.btnFinish = (Button) findViewById(R.id.fsct_finish);
+        this.rvCatchedListImages = (RecyclerView) findViewById(R.id.list_inp_fish_image);
+        this.tvAnnoucement = (TextView) findViewById(R.id.empty_annoucement);
     }
 
     @Override

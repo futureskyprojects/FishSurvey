@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.blogspot.tndev1403.fishSurvey.Presenter.fsHomePresenter;
 import com.blogspot.tndev1403.fishSurvey.R;
@@ -37,6 +38,7 @@ public class fsHome extends AppCompatActivity
     public TextView tvUsername;
     public TextView tvPhone;
     public TextView tvBoatCode;
+    public TextView tvPreviewCount;
 
     /* Declare presenter */
     fsHomePresenter presenter;
@@ -85,6 +87,7 @@ public class fsHome extends AppCompatActivity
         tvUsername = (TextView) findViewById(R.id.fsh_fisherman_name);
         tvPhone = (TextView) findViewById(R.id.fsh_phone_number);
         tvBoatCode = (TextView) findViewById(R.id.fsh_boat_code);
+        tvPreviewCount = (TextView) findViewById(R.id.preview_count);
     }
 
     @Override
@@ -124,7 +127,6 @@ public class fsHome extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
 //        if (id == R.id.nav_camera) {
 //            // Handle the camera action
 //        } else if (id == R.id.nav_gallery) {

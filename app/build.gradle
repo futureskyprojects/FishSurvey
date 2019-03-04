@@ -6,8 +6,8 @@ android {
         applicationId "com.blogspot.tndev1403.fishSurvey"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 2222019
-        versionName "22.2.2019"
+        versionCode 4032019
+        versionName "04.3.2019"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsUser;
+import com.blogspot.tndev1403.fishSurvey.Model.fsCatchedHandler;
 import com.blogspot.tndev1403.fishSurvey.R;
 import com.blogspot.tndev1403.fishSurvey.View.fsElementActivity;
 import com.blogspot.tndev1403.fishSurvey.View.fsHome;
@@ -22,6 +23,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import es.dmoral.toasty.Toasty;
 
 public class fsHomePresenter {
+    public static int PREVIEW_COUNT = 0;
     fsHome mContext;
     fsUser currentUser;
     /* Data store declare */
@@ -81,6 +83,9 @@ public class fsHomePresenter {
                 mContext.startActivity(new Intent(mContext, fsSavedDataActivity.class));
             }
         });
+        fsCatchedHandler catchedHandler = new fsCatchedHandler(mContext);
+        PREVIEW_COUNT = catchedHandler.getAllEntry().size();
+        mContext.tvPreviewCount.setText("(" + PREVIEW_COUNT + ")");
     }
 
     private void initGirdView() {
