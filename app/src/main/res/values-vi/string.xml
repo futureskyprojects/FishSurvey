@@ -88,4 +88,9 @@
     <string name="can_not_update_info_plz_try">Không thể cập nhật thông tin. Vui lòng thử lại</string>
     <string name="longitude">Kinh độ</string>
     <string name="latitude">Vĩ độ</string>
+    <string name="saving">Đang lưu</string>
+    <string name="choose_family">Chọn loại</string>
+    <string name="choose_fish">Chọn loài</string>
+    <string name="change_language">Đổi ngôn ngữ?</string>
+    <string name="change">Đổi</string>
 </resources>

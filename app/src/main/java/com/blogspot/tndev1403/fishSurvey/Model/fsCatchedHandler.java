@@ -122,7 +122,7 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
         if (cursor != null)
             cursor.moveToFirst();
         else
-            return null;
+            return catcheds;
         while (cursor.isAfterLast() == false) {
             fsCatched catched = new fsCatched(
                     cursor.getInt(0),

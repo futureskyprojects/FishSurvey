@@ -234,7 +234,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                     // --------------
                     saving = new SweetAlertDialog(v.getContext(), SweetAlertDialog.PROGRESS_TYPE);
                     saving.setCancelable(false);
-                    saving.setTitle(mContext.getResources().getString(R.id.saving));
+                    saving.setTitle(mContext.getResources().getString(R.string.saving));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         saving.create();
                     }

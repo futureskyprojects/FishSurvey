@@ -2,12 +2,15 @@ package com.blogspot.tndev1403.fishSurvey;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
@@ -50,6 +53,15 @@ public class TNLib {
     }
 
     public static class Using {
+        public static void ChangeLanguage(Context mContext, String code) {
+            Locale locale = new Locale(code);
+            Resources resources = mContext.getResources();
+            Configuration configuration = resources.getConfiguration();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                configuration.setLocale(locale);
+            }
+            resources.updateConfiguration(configuration, resources.getDisplayMetrics());
+        }
         public static String DateTimeStringReverseFromTimeStamp(String timestamp) {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             String dateString = formatter.format(new Date(Long.parseLong(timestamp)));

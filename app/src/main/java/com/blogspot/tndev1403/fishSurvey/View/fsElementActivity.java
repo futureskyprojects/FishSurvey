@@ -33,7 +33,7 @@ public class fsElementActivity extends AppCompatActivity {
 
     private void applyToolbar() {
 //        getSupportActionBar().setTitle(presenter.CATEGORIZE_NAME);
-        getSupportActionBar().setTitle("Chọn loài (Choose fish)");
+        getSupportActionBar().setTitle(R.string.choose_fish);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

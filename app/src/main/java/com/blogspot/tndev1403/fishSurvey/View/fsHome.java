@@ -77,7 +77,7 @@ public class fsHome extends AppCompatActivity
         presenter = new fsHomePresenter(fsHome.this);
     }
     private void initToolbar() {
-        getSupportActionBar().setTitle("Chọn loại (Choose family)");
+        getSupportActionBar().setTitle(R.string.choose_family);
     }
     private void initView() {
         btnOtherCategorizes = (Button) findViewById(R.id.fsc_other_btn);

@@ -32,7 +32,7 @@
     <string name="action_settings">Settings</string>
     <string name="review">Review</string>
     <string name="end_trip">End trip</string>
-    <string name="new_trip">Chuyến mới</string>
+    <string name="new_trip">New trip</string>
     <string name="no_photo_about_this_family">No photos have been taken of this species</string>
     <string name="author_name">Nguyễn Trọng Nghĩa</string>
     <string name="author_phone">0886483147</string>
@@ -87,4 +87,9 @@
     <string name="can_not_update_info_plz_try">Could not update information. Please try again!</string>
     <string name="longitude">Longitude</string>
     <string name="latitude">Latitude</string>
+    <string name="saving">Saving</string>
+    <string name="choose_family">Choose family</string>
+    <string name="choose_fish">Choose fish</string>
+    <string name="change_language">Change language?</string>
+    <string name="change">Change</string>
 </resources>

@@ -1,5 +1,9 @@
 package com.blogspot.tndev1403.fishSurvey;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -7,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
 import com.blogspot.tndev1403.fishSurvey.Presenter.MainPresenter;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     public void initData(final int MaxProgressbar) {
         runOnUiThread(new Runnable() {
             @Override
@@ -43,10 +49,23 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ApplicationConfig.LANGUAGE.InitLanguage(this);
+        initPermission();
         initViews();
         initPresenter();
+    }
+
+    private void initPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE}, ApplicationConfig.PERMISSION.ALL_PERMISSION);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     void initViews() {
@@ -55,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         tvStatusText = (TextView) findViewById(R.id.home_init_text);
         lnlayoutInitGroup = (LinearLayout) findViewById(R.id.home_init_group);
     }
+
     private void initPresenter() {
         mainPresenter = new MainPresenter(MainActivity.this);
     }

@@ -5,9 +5,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,6 +28,7 @@ import com.blogspot.tndev1403.fishSurvey.View.fsHome;
 import com.blogspot.tndev1403.fishSurvey.View.fsNewUserActivity;
 import com.blogspot.tndev1403.fishSurvey.View.fsSavedDataActivity;
 
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -62,7 +66,7 @@ public class fsHomePresenter {
                 mContext.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mContext.tvNotSyncShow.setText(mContext.getResources().getString(R.string.still_have) + notSyncNumber + mContext.getResources().getString(R.string.records_not_sync));
+                        mContext.tvNotSyncShow.setText(mContext.getResources().getString(R.string.still_have) + " "+ notSyncNumber + " " + mContext.getResources().getString(R.string.records_not_sync));
                     }
                 });
             }
@@ -103,6 +107,45 @@ public class fsHomePresenter {
         initButtonReview();
         initButtonEditProfile();
         initEndTripsButton();
+        initLanguaeFlagsButton();
+    }
+
+    private void initLanguaeFlagsButton() {
+        mContext.ivVietnamese.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText(mContext.getResources().getString(R.string.change_language).toUpperCase())
+                        .setConfirmButton(mContext.getResources().getString(R.string.change), new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                sweetAlertDialog.cancel();
+                                ApplicationConfig.LANGUAGE.UpdateLanguage(mContext, "vi");
+                                mContext.startActivity(new Intent(mContext, fsHome.class));
+                                mContext.finish();
+                            }
+                        })
+                        .setCancelButton(mContext.getResources().getString(R.string.close), null);
+                sweetAlertDialog.show();
+            }
+        });
+        mContext.ivEnglish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText(mContext.getResources().getString(R.string.change_language).toUpperCase())
+                        .setConfirmButton(mContext.getResources().getString(R.string.change), new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                sweetAlertDialog.cancel();
+                                ApplicationConfig.LANGUAGE.UpdateLanguage(mContext, "en");
+                                mContext.startActivity(new Intent(mContext, fsHome.class));
+                                mContext.finish();                            }
+                        })
+                        .setCancelButton(mContext.getResources().getString(R.string.close), null);
+                sweetAlertDialog.show();
+            }
+        });
     }
 
     private void initEndTripsButton() {

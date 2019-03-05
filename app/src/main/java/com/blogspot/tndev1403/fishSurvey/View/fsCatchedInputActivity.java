@@ -51,7 +51,13 @@ public class fsCatchedInputActivity extends AppCompatActivity {
 
     private void initToolbarAndDefaultData() {
         /* For toolbar */
-        getSupportActionBar().setTitle(fsElementPresenter.CURRENT_SELECTED_ELEMENT.getName());
+        String[] Names = fsElementPresenter.CURRENT_SELECTED_ELEMENT.getName().split(" - ");
+        if (ApplicationConfig.LANGUAGE.GetLanguageCode(this).equals("vi")) {
+            getSupportActionBar().setTitle(Names[(Names.length>=2?1:0)].trim());
+        } else {
+            getSupportActionBar().setTitle(Names[0].trim());
+        }
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         /* For other data */

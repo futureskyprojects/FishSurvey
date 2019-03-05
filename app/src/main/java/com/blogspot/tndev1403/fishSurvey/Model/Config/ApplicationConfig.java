@@ -1,9 +1,11 @@
 package com.blogspot.tndev1403.fishSurvey.Model.Config;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Environment;
 
 import com.blogspot.tndev1403.fishSurvey.R;
+import com.blogspot.tndev1403.fishSurvey.TNLib;
 
 import java.io.File;
 
@@ -46,6 +48,7 @@ public class ApplicationConfig {
     }
     /* For permission code */
     public static class PERMISSION {
+        public final static int ALL_PERMISSION = 14398;
         public final static int CAMERA = 10001;
         public final static int LOCATION_GPS = 10002;
         public final static int WRITE_EXTERNAL_STORAGE = 10003;
@@ -63,6 +66,26 @@ public class ApplicationConfig {
                 success = folder.mkdirs();
             }
             return success;
+        }
+    }
+    /* App save language */
+    public static class LANGUAGE {
+        public final static String CODE = "LANGUAGE";
+        public static String GetLanguageCode(Context mContext) {
+            SharedPreferences preferences = mContext.getSharedPreferences(CODE, Context.MODE_PRIVATE);
+            return preferences.getString(CODE, "en");
+        }
+        public static void InitLanguage(Context mContext) {
+            SharedPreferences preferences = mContext.getSharedPreferences(CODE, Context.MODE_PRIVATE);
+            String code = preferences.getString(CODE, "en");
+            TNLib.Using.ChangeLanguage(mContext, code);
+        }
+        public static void UpdateLanguage(Context mContext, String code) {
+            SharedPreferences preferences = mContext.getSharedPreferences(CODE, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(CODE, code);
+            editor.commit();
+            TNLib.Using.ChangeLanguage(mContext, code);
         }
     }
 }
