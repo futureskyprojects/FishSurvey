@@ -86,7 +86,7 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
         c.put(LONGITUDE, catched.getLongitude());
         c.put(IMAGE_PATH, catched.getImagePath());
         c.put(TRIP_ID, catched.getTrip_id());
-        c.put(FINISHED_TIME, catched.getFinished_time());
+        c.put(FINISHED_TIME, "");
         database.insert(TABLE_NAME, null, c);
         database.close();
     }

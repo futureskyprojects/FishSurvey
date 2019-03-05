@@ -230,12 +230,6 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                     }
                 }
                 // Save iamge to app dir
-                int MAX_ID = -1;
-                if (handler.getAllEntry(fsHomePresenter.CURRENT_TRIP_ID).size() <= 0) {
-                    MAX_ID = -1;
-                } else {
-                    MAX_ID = handler.getMAXID();
-                }
                 if (ApplicationConfig.FOLDER.CheckAndCreate()) {
                     // --------------
                     saving = new SweetAlertDialog(v.getContext(), SweetAlertDialog.PROGRESS_TYPE);
@@ -247,7 +241,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                     saving.show();
                     // --------------
 
-                    final int finalMAX_ID = MAX_ID;
+                    final int finalMAX_ID = (int) (System.currentTimeMillis() / 1000);
                     final String FLength = Length, FWeight = Weight;
                     new Thread(new Runnable() {
                         @Override

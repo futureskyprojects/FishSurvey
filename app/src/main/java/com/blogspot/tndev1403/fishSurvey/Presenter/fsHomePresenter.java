@@ -25,6 +25,9 @@ import com.blogspot.tndev1403.fishSurvey.View.fsHome;
 import com.blogspot.tndev1403.fishSurvey.View.fsNewUserActivity;
 import com.blogspot.tndev1403.fishSurvey.View.fsSavedDataActivity;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import es.dmoral.toasty.Toasty;
 
@@ -49,6 +52,21 @@ public class fsHomePresenter {
         initGirdView();
         initTrips();
         initEvent();
+        initNotSync();
+    }
+    private void initNotSync() {
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                final int notSyncNumber = catchedHandler.getAllEntryDifferentWithCurrentTripID(fsHomePresenter.CURRENT_TRIP_ID).size();
+                mContext.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mContext.tvNotSyncShow.setText("Còn " + notSyncNumber +" bản ghi chưa đồng bộ");
+                    }
+                });
+            }
+        }, 200, 300);
     }
 
     private void initDataHandler() {
@@ -126,7 +144,6 @@ public class fsHomePresenter {
                             @Override
                             public void run() {
                                 if (catchedHandler.UpdateAllFinishedTimeOfATrip(CURRENT_TRIP_ID) >= 0){
-                                    al.cancel();
                                     mContext.runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
@@ -141,6 +158,7 @@ public class fsHomePresenter {
                                     mContext.runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
+                                            al.cancel();
                                             initTrips();
                                             initButtonReview();
                                         }

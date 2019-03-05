@@ -10,10 +10,17 @@ import java.io.File;
 public class ApplicationConfig {
     public final static String APP_NAME = "COPPA";
     public final static String TAG = "ApplicationConfig";
-    public final static String Host = "http://jcenter.sytes.net/~quoctuan/public/";
+    public static String Host = "http://jcenter.sytes.net/~quoctuan/public";
     public final static String Key = "api";
-    public final static String Captiain = Host + Key + "/captain";
-    public final static String Record = Host + Key + "/record";
+    public final static String Captiain = "captain";
+    public final static String Record = "record";
+    public final static String Image = "image";
+    public final static String HostCheckAddress = "https://raw.githubusercontent.com/futureskyprojects/CodeExperience/master/Host.coppa";
+    public static String GetTrueURL(String kind) {
+        return "http://" + (Host + "/" + Key + "/" + kind).replace("http://","")
+                .replace("https://", "")
+                .replace("//","/");
+    }
     /* For categorize API */
     public static class CategorizeAPI {
         public final static String URL = "https://raw.githubusercontent.com/futureskyprojects/CodeExperience/master/fsCategorize.json";

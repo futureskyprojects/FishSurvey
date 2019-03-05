@@ -19,8 +19,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blogspot.tndev1403.fishSurvey.Model.fsCatchedHandler;
 import com.blogspot.tndev1403.fishSurvey.Presenter.fsHomePresenter;
 import com.blogspot.tndev1403.fishSurvey.R;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class fsHome extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -42,6 +46,7 @@ public class fsHome extends AppCompatActivity
     public LinearLayout lnAllFamilies;
     public TextView tvNoTrips;
     public TextView tvEndTripText;
+    public TextView tvNotSyncShow;
 
     /* Declare presenter */
     fsHomePresenter presenter;
@@ -66,6 +71,8 @@ public class fsHome extends AppCompatActivity
         initView();
         initPresenter();
     }
+
+
     private void initPresenter() {
         presenter = new fsHomePresenter(fsHome.this);
     }
@@ -94,6 +101,7 @@ public class fsHome extends AppCompatActivity
         lnAllFamilies = (LinearLayout) findViewById(R.id.all_families);
         tvNoTrips = (TextView) findViewById(R.id.no_trip_show);
         tvEndTripText = (TextView) findViewById(R.id.end_trip_txt);
+        tvNotSyncShow = (TextView) findViewById(R.id.not_sync);
     }
 
     @Override

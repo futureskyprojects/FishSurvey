@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -40,6 +41,8 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import es.dmoral.toasty.Toasty;
+
 public class SyncDataService extends Service {
     public final static String TAG = "SYNC_DATA_SERVICES";
     NotificationManager notificationManager;
@@ -49,6 +52,7 @@ public class SyncDataService extends Service {
     fsCatchedHandler catchedHandler;
     ArrayList<fsCatched> cathceds;
     Intent mIntent;
+
     boolean IS_FINISHED_CAPTAIN_SYNC = false;
     int FINISHED_SYNC_RECORDS = 0;
     boolean isUpAndSyncCaptain = false;
@@ -63,12 +67,22 @@ public class SyncDataService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         this.mIntent = intent;
+        Init();
         catchedHandler = new fsCatchedHandler(this);
         cathceds = new ArrayList<>();
         showNotification();
-//        Test();
         TimerCheckInternet();
         return START_STICKY;
+    }
+
+    private void Init() {
+        try {
+            if (new API.UpdateHost().execute(ApplicationConfig.Host).get()) {
+                Log.w(TAG, "Init: Success upadate host " + ApplicationConfig.Host);
+            }
+        } catch (Exception e) {
+            Toasty.error(this, "Không thể cập nhật địa chỉ máy chủ", Toast.LENGTH_SHORT, true);
+        }
     }
 
     @Override
@@ -84,7 +98,6 @@ public class SyncDataService extends Service {
     }
 
     void SyncRecord(final fsCatched catched) {
-        SyncNotificaion();
         final JSONObject JSONSend = new JSONObject();
         try {
             JSONSend.put(API.Record.CAPTAIN_ID, CAPTAIN_ID);
@@ -100,11 +113,9 @@ public class SyncDataService extends Service {
             JSONSend.put(API.Record.WEIGHT, catched.getWeight() + "");
             JSONSend.put(API.Record.LAT, catched.getLatitude());
             JSONSend.put(API.Record.LNG, catched.getLatitude());
-            JSONSend.put(API.Record.images.class.getSimpleName().toLowerCase(), GetJsonOfImages(catched));
             JSONSend.put(API.Record.CATCHED_AT, catched.getCatchedTime());
             Log.w(TAG, "SyncRecord: " + JSONSend.toString());
         } catch (JSONException e) {
-            Log.e(TAG, "SyncRecords: " + e.getMessage());
             e.printStackTrace();
         }
         //////
@@ -112,7 +123,8 @@ public class SyncDataService extends Service {
             @Override
             public void run() {
                 try {
-                    URL url = new URL(ApplicationConfig.Record);
+                    //region Send Infor
+                    URL url = new URL(ApplicationConfig.GetTrueURL(ApplicationConfig.Record));
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");
                     conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
@@ -126,15 +138,58 @@ public class SyncDataService extends Service {
                     os.flush();
                     os.close();
                     InputStream is = conn.getInputStream();
-                    Log.w(TAG, "run: " + TNLib.InputStreamToString(is));
-                    Log.w("STATUS", String.valueOf(conn.getResponseCode()));
+                    int RecordID = -1;
+                    String Respone = TNLib.InputStreamToString(is);
                     if (conn.getResponseCode() == 200) {
-                        Log.d(TAG, "SyncRecords: Have JSON is " + JSONSend.toString());
-                        catchedHandler.deleteEntry(catched.getID());
-                        FINISHED_SYNC_RECORDS++;
-                        Log.w(TAG, "run: " + TNLib.InputStreamToString(is));
+                        JSONObject object = new JSONObject(Respone);
+                        object = object.getJSONObject("data");
+                        RecordID = object.getInt(API.Image.RECORD_ID);
                     }
                     conn.disconnect();
+                    //endregion
+
+                    //region Upload Images
+                    if (!catched.getImagePath().trim().isEmpty()) {
+                        int ImageSent = 0;
+                        String[] FileNames = catched.getImagePath().trim().split(" ");
+                        for (String x : FileNames) {
+                            // --- Declare JSON
+                            JSONObject ImageJSONObject = new JSONObject();
+                            ImageJSONObject.put(API.Image.RECORD_ID, RecordID);
+                            ImageJSONObject.put(API.Image.BASE64_CONTENT, TNLib.Using.Base64FromImageFile(ApplicationConfig.FOLDER.APP_DIR + File.separator + x));
+                            // --- Send it
+                            URL _url = new URL(ApplicationConfig.GetTrueURL(ApplicationConfig.Image));
+                            HttpURLConnection _conn = (HttpURLConnection) _url.openConnection();
+                            _conn.setRequestMethod("POST");
+                            _conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                            _conn.setRequestProperty("Accept", "application/json");
+                            _conn.setDoOutput(true);
+                            _conn.setDoInput(true);
+                            DataOutputStream _os = new DataOutputStream(_conn.getOutputStream());
+                            //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
+                            _os.writeBytes(ImageJSONObject.toString());
+
+                            _os.flush();
+                            _os.close();
+                            InputStream _is = _conn.getInputStream();
+                            Log.w(TAG, "[" + String.valueOf(conn.getResponseCode()) + "]Upload Image Respone: " + TNLib.InputStreamToString(_is));
+                            if (_conn.getResponseCode() == 200) {
+                                ImageSent++;
+                            }
+                            _conn.disconnect();
+                        }
+                        if (ImageSent >= FileNames.length - 1) {
+                            catchedHandler.deleteEntry(catched.getID());
+                            FINISHED_SYNC_RECORDS++;
+                            UpdateProgress(FINISHED_SYNC_RECORDS);
+                        }
+                    } else {
+                        catchedHandler.deleteEntry(catched.getID());
+                        FINISHED_SYNC_RECORDS++;
+                        UpdateProgress(FINISHED_SYNC_RECORDS);
+                    }
+                    //endregion
+
                 } catch (Exception e) {
                     Log.e("API", "Send: " + e.getMessage());
                 }
@@ -142,39 +197,20 @@ public class SyncDataService extends Service {
             }
         }).start();
     }
+
     //region Sync Records
     void SyncRecords() {
         GetAndCheckData();
-        if (cathceds.size() <= 0)
-        {
-            Log.w(TAG, "SyncRecords: Empty!" );
+        if (cathceds.size() <= 0) {
+            Log.w(TAG, "SyncRecords: Empty!");
             stopSelf();
         }
         FINISHED_SYNC_RECORDS = 0;
         SyncNotificaion();
-//        UpdateProgress(0);
         for (int i = 0; i < cathceds.size(); i++) {
             final fsCatched catched = cathceds.get(i);
             SyncRecord(catched);
         }
-    }
-
-    private Object GetJsonOfImages(fsCatched catched) {
-        if (catched.getImagePath().trim().isEmpty())
-            return new JSONObject();
-        JSONArray imageArray = new JSONArray();
-        String[] FileNames = catched.getImagePath().trim().split(" ");
-        for (String x : FileNames) {
-            try {
-                JSONObject image = new JSONObject();
-                image.put(API.Record.images.BASE_64_ENCODED, TNLib.Using.Base64FromImageFile(ApplicationConfig.FOLDER.APP_DIR + File.separator + x));
-                imageArray.put(image);
-            } catch (JSONException e) {
-                Log.e(TAG, "GetJsonOfImages: " + e.getMessage());
-                e.printStackTrace();
-            }
-        }
-        return (Object)imageArray;
     }
     //endregion
 
@@ -204,7 +240,7 @@ public class SyncDataService extends Service {
             @Override
             public void run() {
                 try {
-                    URL url = new URL(ApplicationConfig.Captiain);
+                    URL url = new URL(ApplicationConfig.GetTrueURL(ApplicationConfig.Captiain));
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");
                     conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
@@ -240,6 +276,10 @@ public class SyncDataService extends Service {
 
     private void GetAndCheckData() {
         cathceds = catchedHandler.getAllEntryDifferentWithCurrentTripID(fsHomePresenter.CURRENT_TRIP_ID);
+        if (cathceds.size() <= 0) {
+            stopSelf();
+            return;
+        }
         for (int i = 0; i < cathceds.size(); i++) {
             if (cathceds.get(i).getFinished_time().trim().isEmpty())
                 cathceds.remove(i);
@@ -349,13 +389,16 @@ public class SyncDataService extends Service {
             }
         }, 200, 300);
     }
+
     //endregion
     void RunSync() {
+        UpdateProgress(FINISHED_SYNC_RECORDS);
         if (!isSyncRecording) {
             isSyncRecording = true;
             SyncRecords();
         }
     }
+
     @Override
     public IBinder onBind(Intent intent) {
         // Don't use it

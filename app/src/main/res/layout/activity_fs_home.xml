@@ -182,6 +182,24 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/not_sync"
+                android:padding="10dp"
+                android:textSize="@dimen/text_size"
+                android:textStyle="bold"
+                android:textColor="@color/success"
+                android:shadowColor="@color/colorPrimaryDark"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="1"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/end_trip"
+                android:layout_below="@id/review"/>
+
             <LinearLayout
                 android:id="@+id/end_trip"
                 android:layout_above="@id/nation_flag"
