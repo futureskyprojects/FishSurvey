@@ -16,8 +16,10 @@ public class fsCatched {
     String Latitude;
     String Longitude;
     String ImagePath;
+    String Trip_id;
+    String Finished_time;
 
-    public fsCatched(int ID, int elementID, String createdDate, String length, String weight, String catchedTime, String latitude, String longitude, String imagePath) {
+    public fsCatched(int ID, int elementID, String createdDate, String length, String weight, String catchedTime, String latitude, String longitude, String imagePath, String Trip_id, String Finished_time) {
         this.ID = ID;
         ElementID = elementID;
         CreatedDate = createdDate;
@@ -27,12 +29,30 @@ public class fsCatched {
         Latitude = latitude;
         Longitude = longitude;
         ImagePath = imagePath;
+        this.Trip_id = Trip_id;
+        this.Finished_time = Finished_time;
     }
 //    public String getJSON() {
 //        JSONObject catched = new JSONObject();
 //        catched.put()
 //    }
 
+
+    public String getFinished_time() {
+        return Finished_time;
+    }
+
+    public String getTrip_id() {
+        return Trip_id;
+    }
+
+    public void setFinished_time(String finished_time) {
+        Finished_time = finished_time;
+    }
+
+    public void setTrip_id(String trip_id) {
+        Trip_id = trip_id;
+    }
 
     public int getID() {
         return ID;

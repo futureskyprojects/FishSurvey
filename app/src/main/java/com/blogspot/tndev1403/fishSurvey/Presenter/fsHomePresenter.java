@@ -1,7 +1,10 @@
 package com.blogspot.tndev1403.fishSurvey.Presenter;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -14,6 +17,7 @@ import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsUser;
 import com.blogspot.tndev1403.fishSurvey.Model.fsCatchedHandler;
 import com.blogspot.tndev1403.fishSurvey.R;
+import com.blogspot.tndev1403.fishSurvey.TNLib;
 import com.blogspot.tndev1403.fishSurvey.View.fsElementActivity;
 import com.blogspot.tndev1403.fishSurvey.View.fsHome;
 import com.blogspot.tndev1403.fishSurvey.View.fsNewUserActivity;
@@ -23,19 +27,49 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import es.dmoral.toasty.Toasty;
 
 public class fsHomePresenter {
+    public final static String ID_KEY = "ID";
+    public static String CURRENT_TRIP_ID = "";
     public static int GID = -1;
     public static int PREVIEW_COUNT = 0;
     fsHome mContext;
     fsUser currentUser;
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+    fsCatchedHandler catchedHandler;
     /* Data store declare */
 
     public fsHomePresenter(fsHome fshome) {
         this.mContext = fshome;
         currentUser = new fsUser(mContext);
+        initSharedPreferences();
+        initDataHandler();
         initUserInfo();
         initGirdView();
+        initTrips();
         initEvent();
     }
+
+    private void initDataHandler() {
+        catchedHandler = new fsCatchedHandler(mContext);
+    }
+
+    @SuppressLint("CommitPrefEdits")
+    private void initSharedPreferences() {
+        // Setting for preferences
+        preferences = mContext.getSharedPreferences("TRIP", Context.MODE_PRIVATE);
+        editor = preferences.edit();
+    }
+
+    private void initTrips() {
+        CURRENT_TRIP_ID = preferences.getString(ID_KEY, "");
+        // Setting for view of trip
+        if (!CURRENT_TRIP_ID.isEmpty()) {
+            mContext.CreateEndTripButton();
+        } else {
+            mContext.CreateNewTripButton();
+        }
+    }
+
 
     private void initUserInfo() {
         currentUser.get();
@@ -48,7 +82,94 @@ public class fsHomePresenter {
         initButtonOther();
         initButtonReview();
         initButtonEditProfile();
+        initEndTripsButton();
     }
+
+    private void initEndTripsButton() {
+        mContext.lnEndTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!CURRENT_TRIP_ID.isEmpty()) {
+                    EndtripButton();
+                } else {
+                    NewTripEvent();
+                }
+            }
+        });
+    }
+
+    void EndtripButton() {
+        SweetAlertDialog swt = new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("KẾT THÚC CHUYẾN?")
+                .setContentText("ID: " + CURRENT_TRIP_ID)
+                .setConfirmButton("Kết thúc", new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.cancel();
+                        editor.putString(ID_KEY, "");
+                        editor.commit();
+                        initTrips();
+                        initButtonReview();
+                        final SweetAlertDialog al = new SweetAlertDialog(mContext, SweetAlertDialog.PROGRESS_TYPE)
+                                .setTitleText("ĐANG XỬ LÝ");
+                        al.setCancelable(false);
+                        al.show();
+                        // Thực hiện quét CSDL ở đây
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (catchedHandler.UpdateAllFinishedTimeOfATrip(CURRENT_TRIP_ID) >= 0){
+                                    al.cancel();
+                                    mContext.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            SweetAlertDialog sw = new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
+                                                    .setTitleText("HOÀN TẤT!")
+                                                    .setConfirmButton("Đóng", null);
+                                            sw.show();
+                                        }
+                                    });
+                                }
+                            }
+                        }).start();
+                    }
+                })
+                .setCancelButton("Hủy", null);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            swt.create();
+        }
+        swt.show();
+    }
+
+    void NewTripEvent() {
+        final String CurrentTimeStamp = TNLib.Using.GetCurrentTimeStamp();
+        SweetAlertDialog swt = new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("TẠO CHUYẾN MỚI?")
+                .setContentText("ID: " + CurrentTimeStamp)
+                .setConfirmButton("Tạo", new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.cancel();
+                        editor.putString(ID_KEY, CurrentTimeStamp);
+                        editor.commit();
+                        initTrips();
+                        SweetAlertDialog ok = new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
+                                .setTitleText("THÀNH CÔNG!")
+                                .setContentText("ID: " + CurrentTimeStamp)
+                                .setConfirmButton("Đóng", null);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            ok.create();
+                        }
+                        ok.show();
+                    }
+                })
+                .setCancelButton("Hủy", null);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            swt.create();
+        }
+        swt.show();
+    }
+
 
     private void initButtonEditProfile() {
         mContext.ivEditProfile.setOnClickListener(new View.OnClickListener() {
@@ -84,8 +205,7 @@ public class fsHomePresenter {
                 mContext.startActivity(new Intent(mContext, fsSavedDataActivity.class));
             }
         });
-        fsCatchedHandler catchedHandler = new fsCatchedHandler(mContext);
-        PREVIEW_COUNT = catchedHandler.getAllEntry().size();
+        PREVIEW_COUNT = catchedHandler.CountAllEntry(fsHomePresenter.CURRENT_TRIP_ID);
         mContext.tvPreviewCount.setText("(" + PREVIEW_COUNT + ")");
     }
 

@@ -7,15 +7,21 @@
     android:background="@drawable/background_home"
     tools:context=".View.fsSaveSuccessfulActivity">
 
-    <ImageView
-        android:scaleType="centerCrop"
-        android:id="@+id/fssr_image_view"
+    <!--<ImageView-->
+        <!--android:scaleType="centerCrop"-->
+        <!--android:id="@+id/fssr_image_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_above="@id/fss_bottom_group"-->
+        <!--android:layout_marginBottom="@dimen/standard_margin"-->
+        <!--android:src="@drawable/ic_error_404" />-->
+    <com.smarteist.autoimageslider.SliderLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/fss_bottom_group"
         android:layout_marginBottom="@dimen/standard_margin"
-        android:src="@drawable/ic_error_404" />
-
+        android:layout_alignParentTop="true"
+        android:id="@+id/imageSlider2"/>
     <LinearLayout
         android:background="#26FFFFFF"
         android:padding="5dp"

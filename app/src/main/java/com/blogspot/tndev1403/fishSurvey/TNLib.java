@@ -22,6 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -44,11 +45,27 @@ public class TNLib {
         }
     }
     public static class Using {
+        public static String MyCalendarToString(Calendar calendarX) {
+            String String = calendarX.get(Calendar.HOUR_OF_DAY) + ":" +
+                    calendarX.get(Calendar.MINUTE) + " " + calendarX.get(Calendar.DAY_OF_MONTH) + "/" +
+                    (calendarX.get(Calendar.MONTH) + 1) + "/" + calendarX.get(Calendar.YEAR);
+            return String;
+        }
+        public static String GetNowTimeString() {
+            Calendar calendarX = Calendar.getInstance();
+            return MyCalendarToString(calendarX);
+        }
+        public static String GetCurrentTimeStamp() {
+            Long tsLong = System.currentTimeMillis()/1000;
+            String ts = tsLong.toString();
+            return ts;
+        }
         public static String StringListToSingalString(ArrayList<String> arr) {
             String res = "";
             for (int i = 0; i < arr.size();i++) {
                 res += arr.get(i) + " ";
             }
+            Log.d(TAG, "StringListToSingalString: >" + res);
             return res;
         }
         public static Bitmap BitmapFromFilePath(String _Path) {

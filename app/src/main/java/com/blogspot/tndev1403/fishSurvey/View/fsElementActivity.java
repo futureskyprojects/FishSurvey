@@ -39,16 +39,19 @@ public class fsElementActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this, fsHome.class));
+        finish();
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home)
         {
-            startActivity(new Intent(this, fsHome.class));
-            finish();
+            onBackPressed();
             return true;
         }
-//        else if (item.getItemId() == R.id.saved_data) {
-//            startActivity(new Intent(fsElementActivity.this, fsSavedDataActivity.class));
-//        }
         return false;
     }
 

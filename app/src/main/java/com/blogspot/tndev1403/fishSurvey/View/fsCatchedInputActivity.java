@@ -79,14 +79,20 @@ public class fsCatchedInputActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        Intent elementIntent = new Intent(this, fsElementActivity.class);
+        elementIntent.putExtra(ApplicationConfig.CategorizeAPI.ID, fsHomePresenter.GID  + 1);
+        elementIntent.putExtra(ApplicationConfig.CategorizeAPI.Name, "G" + fsHomePresenter.GID);
+        startActivity(elementIntent);
+        finish();
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home)
         {
-            Intent elementIntent = new Intent(this, fsElementActivity.class);
-            elementIntent.putExtra(ApplicationConfig.CategorizeAPI.ID, fsHomePresenter.GID  + 1);
-            elementIntent.putExtra(ApplicationConfig.CategorizeAPI.Name, "G" + fsHomePresenter.GID);
-            startActivity(elementIntent);
-            finish();
+            onBackPressed();
         }
         return true;
     }

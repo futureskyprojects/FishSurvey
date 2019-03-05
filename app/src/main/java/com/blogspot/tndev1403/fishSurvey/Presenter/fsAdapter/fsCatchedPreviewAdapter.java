@@ -37,7 +37,7 @@ public class fsCatchedPreviewAdapter extends RecyclerView.Adapter<fsCatchedPrevi
     }
 
     void CheckEmpty(View v) {
-        if (((fsCatchedInputActivity) v.getContext()).presenter.ListCatchedImages.size() <= 0) {
+        if (((fsCatchedInputActivity) v.getContext()).presenter.LIST_CATCHED_IMAGES.size() <= 0) {
             ((fsCatchedInputActivity) v.getContext()).tvAnnoucement.setVisibility(View.VISIBLE);
         } else {
             ((fsCatchedInputActivity) v.getContext()).tvAnnoucement.setVisibility(View.INVISIBLE);
@@ -63,7 +63,7 @@ public class fsCatchedPreviewAdapter extends RecyclerView.Adapter<fsCatchedPrevi
                         .setConfirmButton("Xóa", new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                ((fsCatchedInputActivity) v.getContext()).presenter.ListCatchedImages.remove(i);
+                                ((fsCatchedInputActivity) v.getContext()).presenter.LIST_CATCHED_IMAGES.remove(i);
                                 fsCatchedInputPresenter.CURRENT_BITMAP = fsElementPresenter.CURRENT_SELECTED_ELEMENT.getFeatureImage();
                                 ((fsCatchedInputActivity) v.getContext()).presenter.setImageToShow();
                                 ((fsCatchedInputActivity) v.getContext()).presenter.adapter.notifyDataSetChanged();

@@ -39,6 +39,7 @@ public class ApplicationConfig {
         public final static int CAMERA = 10001;
         public final static int LOCATION_GPS = 10002;
         public final static int WRITE_EXTERNAL_STORAGE = 10003;
+        public final static int READ_EXTERNAL_STORAGE = 10004;
     }
     /* App folder */
     public static class FOLDER {

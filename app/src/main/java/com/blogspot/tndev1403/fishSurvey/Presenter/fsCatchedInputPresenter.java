@@ -71,7 +71,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
     private Location mLastLocation;
     fsCatchedInputActivity mContext;
     /* Declare varriable */
-    public ArrayList<Bitmap> ListCatchedImages;
+    public static ArrayList<Bitmap> LIST_CATCHED_IMAGES;
     public fsCatchedPreviewAdapter adapter;
     public static Bitmap CURRENT_BITMAP = null;
     fsCatchedHandler handler;
@@ -92,8 +92,8 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
     }
 
     private void initRecycleView() {
-        ListCatchedImages = new ArrayList<>();
-        adapter = new fsCatchedPreviewAdapter(ListCatchedImages);
+        LIST_CATCHED_IMAGES = new ArrayList<>();
+        adapter = new fsCatchedPreviewAdapter(LIST_CATCHED_IMAGES);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mContext.rvCatchedListImages.setLayoutManager(layoutManager);
@@ -233,25 +233,12 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                 }
                 // Save iamge to app dir
                 int MAX_ID = -1;
-                if (handler.getAllEntry().size() <= 0) {
+                if (handler.getAllEntry(fsHomePresenter.CURRENT_TRIP_ID).size() <= 0) {
                     MAX_ID = -1;
                 } else {
                     MAX_ID = handler.getMAXID();
                 }
                 if (ApplicationConfig.FOLDER.CheckAndCreate()) {
-                    String CatchedTime = "" + calendar.get(Calendar.HOUR_OF_DAY) + ":" +
-                            calendar.get(Calendar.MINUTE) + " " + calendar.get(Calendar.DAY_OF_MONTH) + "/" +
-                            (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
-
-
-                    // -------------------------
-                    Calendar calendarX = Calendar.getInstance();
-                    String Now = "" + calendarX.get(Calendar.HOUR_OF_DAY) + ":" +
-                            calendarX.get(Calendar.MINUTE) + " " + calendarX.get(Calendar.DAY_OF_MONTH) + "/" +
-                            (calendarX.get(Calendar.MONTH) + 1) + "/" + calendarX.get(Calendar.YEAR);
-                    // ----------
-                    catched = new fsCatched(MAX_ID + 1, fsElementPresenter.CURRENT_SELECTED_ELEMENT.getID(), Now,
-                            Length, Weight, CatchedTime, mLastLocation.getLatitude() + "", mLastLocation.getLongitude() + "", TNLib.Using.StringListToSingalString(FileNames));
                     // --------------
                     saving = new SweetAlertDialog(v.getContext(), SweetAlertDialog.PROGRESS_TYPE);
                     saving.setCancelable(false);
@@ -263,14 +250,17 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                     // --------------
 
                     final int finalMAX_ID = MAX_ID;
+                    final String FLength = Length, FWeight = Weight;
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            for (int k = 0; k < ListCatchedImages.size(); k++) {
+                            for (int k = 0; k < LIST_CATCHED_IMAGES.size(); k++) {
                                 FileNames.add("Capture_" + (finalMAX_ID + 1) + "_" + k + "." + ApplicationConfig.FOLDER.APP_EXTENSION);
-                                if (TNLib.Using.SaveImage(ListCatchedImages.get(k), FileNames.get(k), ApplicationConfig.FOLDER.APP_DIR)) {
+                                if (TNLib.Using.SaveImage(LIST_CATCHED_IMAGES.get(k), FileNames.get(k), ApplicationConfig.FOLDER.APP_DIR)) {
                                 }
                             }
+                            catched = new fsCatched(finalMAX_ID + 1, fsElementPresenter.CURRENT_SELECTED_ELEMENT.getID(), TNLib.Using.GetNowTimeString(),
+                                    FLength, FWeight, TNLib.Using.MyCalendarToString(calendar), mLastLocation.getLatitude() + "", mLastLocation.getLongitude() + "", TNLib.Using.StringListToSingalString(FileNames), fsHomePresenter.CURRENT_TRIP_ID, "");
                             try {
                                 handler.addEntry(catched);
                                 mContext.runOnUiThread(new Runnable() {
@@ -588,7 +578,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
     }
 
     public void setImageToListAndShowIt(Bitmap bm) {
-        ListCatchedImages.add(bm);
+        LIST_CATCHED_IMAGES.add(bm);
         adapter.notifyDataSetChanged();
         CURRENT_BITMAP = bm;
         setImageToShow();

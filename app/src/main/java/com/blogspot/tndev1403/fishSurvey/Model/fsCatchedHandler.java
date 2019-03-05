@@ -26,6 +26,8 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
     public static String LATITUDE = "LATITUDE";
     public static String LONGITUDE = "LONGITUDE";
     public static String IMAGE_PATH = "IMAGE_PATH";
+    public static String TRIP_ID = "TRIP_ID";
+    public static String FINISHED_TIME = "FINISHED_TIME";
 
     public fsCatchedHandler(Context mContext) {
         super(mContext, ApplicationConfig.DATABASE_NAME + "_Catched", null, ApplicationConfig.DATABASE_VERSION);
@@ -42,7 +44,9 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
                 "%s TEXT," +
                 "%s TEXT," +
                 "%s TEXT," +
-                "%s TEXT)", TABLE_NAME, ID, ELEMENT_ID, CREATEED_DATE, LENGTH, WEIGHT, CATCHED_TIME, LATITUDE, LONGITUDE, IMAGE_PATH);
+                "%s TEXT," +
+                "%s TEXT," +
+                "%s TEXT)", TABLE_NAME, ID, ELEMENT_ID, CREATEED_DATE, LENGTH, WEIGHT, CATCHED_TIME, LATITUDE, LONGITUDE, IMAGE_PATH, TRIP_ID, FINISHED_TIME);
         db.execSQL(CreateTable);
     }
 
@@ -81,6 +85,8 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
         c.put(LATITUDE, catched.getLatitude());
         c.put(LONGITUDE, catched.getLongitude());
         c.put(IMAGE_PATH, catched.getImagePath());
+        c.put(TRIP_ID, catched.getTrip_id());
+        c.put(FINISHED_TIME, catched.getFinished_time());
         database.insert(TABLE_NAME, null, c);
         database.close();
     }
@@ -101,12 +107,14 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
                 cursor.getString(5),
                 cursor.getString(6),
                 cursor.getString(7),
-                cursor.getString(8)
+                cursor.getString(8),
+                cursor.getString(9),
+                cursor.getString(10)
         );
         return catched;
     }
 
-    public ArrayList<fsCatched> getAllEntry() {
+    public ArrayList<fsCatched> getAllEntryDifferentWithCurrentTripID(String Trip_ID) {
         ArrayList<fsCatched> catcheds = new ArrayList<>();
         String Query = "SELECT * FROM " + TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -125,12 +133,65 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
                     cursor.getString(5),
                     cursor.getString(6),
                     cursor.getString(7),
-                    cursor.getString(8)
+                    cursor.getString(8),
+                    cursor.getString(9),
+                    cursor.getString(10)
             );
-            catcheds.add(catched);
+            if (!catched.getTrip_id().equals(Trip_ID))
+                catcheds.add(catched);
             cursor.moveToNext();
         }
         return catcheds;
+    }
+
+    public int CountAllEntry(String Trip_ID) {
+        String Query = "SELECT * FROM " + TABLE_NAME + " WHERE " + TRIP_ID + " =?";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(Query, new String[] {Trip_ID});
+        if (cursor == null)
+            return 0;
+        else
+            return cursor.getCount();
+    }
+    public ArrayList<fsCatched> getAllEntry(String Trip_ID) {
+        ArrayList<fsCatched> catcheds = new ArrayList<>();
+        String Query = "SELECT * FROM " + TABLE_NAME;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(Query, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+        else
+            return null;
+        while (cursor.isAfterLast() == false) {
+            fsCatched catched = new fsCatched(
+                    cursor.getInt(0),
+                    cursor.getInt(1),
+                    cursor.getString(2),
+                    cursor.getFloat(3) + "",
+                    cursor.getFloat(4) + "",
+                    cursor.getString(5),
+                    cursor.getString(6),
+                    cursor.getString(7),
+                    cursor.getString(8),
+                    cursor.getString(9),
+                    cursor.getString(10)
+            );
+            if (catched.getTrip_id().equals(Trip_ID))
+            {
+                catcheds.add(0, catched);
+            }
+            cursor.moveToNext();
+        }
+        return catcheds;
+    }
+
+    public int UpdateAllFinishedTimeOfATrip(String trip_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues c = new ContentValues();
+        c.put(CATCHED_TIME, TNLib.Using.GetNowTimeString());
+        int x = db.update(TABLE_NAME, c, this.TRIP_ID + " = ?", new String[]{trip_id});
+        db.close();
+        return x;
     }
 
     public void updateEntry(fsCatched catched) {
@@ -145,6 +206,8 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
         c.put(LATITUDE, catched.getLatitude());
         c.put(LONGITUDE, catched.getLongitude());
         c.put(IMAGE_PATH, catched.getImagePath());
+        c.put(TRIP_ID, catched.getTrip_id());
+        c.put(CATCHED_TIME, catched.getCatchedTime());
         db.update(TABLE_NAME, c, this.ID + " = ?", new String[]{String.valueOf(catched.getID())});
         db.close();
     }

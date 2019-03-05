@@ -39,6 +39,9 @@ public class fsHome extends AppCompatActivity
     public TextView tvPhone;
     public TextView tvBoatCode;
     public TextView tvPreviewCount;
+    public LinearLayout lnAllFamilies;
+    public TextView tvNoTrips;
+    public TextView tvEndTripText;
 
     /* Declare presenter */
     fsHomePresenter presenter;
@@ -88,6 +91,9 @@ public class fsHome extends AppCompatActivity
         tvPhone = (TextView) findViewById(R.id.fsh_phone_number);
         tvBoatCode = (TextView) findViewById(R.id.fsh_boat_code);
         tvPreviewCount = (TextView) findViewById(R.id.preview_count);
+        lnAllFamilies = (LinearLayout) findViewById(R.id.all_families);
+        tvNoTrips = (TextView) findViewById(R.id.no_trip_show);
+        tvEndTripText = (TextView) findViewById(R.id.end_trip_txt);
     }
 
     @Override
@@ -100,6 +106,19 @@ public class fsHome extends AppCompatActivity
         }
     }
 
+    public void CreateEndTripButton() {
+        lnAllFamilies.setVisibility(View.VISIBLE);
+        tvNoTrips.setVisibility(View.INVISIBLE);
+        lnEndTrip.setBackground(getResources().getDrawable(R.drawable.background_danger));
+        tvEndTripText.setText(R.string.end_trip);
+    }
+    public void CreateNewTripButton() {
+        lnAllFamilies.setVisibility(View.INVISIBLE);
+        tvNoTrips.setVisibility(View.VISIBLE);
+        lnEndTrip.setBackground(getResources().getDrawable(R.drawable.background_blue));
+        tvEndTripText.setText(R.string.new_trip);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -109,16 +128,7 @@ public class fsHome extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -127,20 +137,6 @@ public class fsHome extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-//        if (id == R.id.nav_camera) {
-//            // Handle the camera action
-//        } else if (id == R.id.nav_gallery) {
-//
-//        } else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
