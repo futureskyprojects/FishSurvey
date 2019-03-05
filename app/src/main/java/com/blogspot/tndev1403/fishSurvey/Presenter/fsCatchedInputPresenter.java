@@ -14,8 +14,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -53,6 +55,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import es.dmoral.toasty.Toasty;
@@ -232,66 +235,88 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                 // Save iamge to app dir
                 if (ApplicationConfig.FOLDER.CheckAndCreate()) {
                     // --------------
-                    saving = new SweetAlertDialog(v.getContext(), SweetAlertDialog.PROGRESS_TYPE);
-                    saving.setCancelable(false);
-                    saving.setTitle(mContext.getResources().getString(R.string.saving));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        saving.create();
-                    }
-                    saving.show();
-                    // --------------
-
-                    final int finalMAX_ID = (int) (System.currentTimeMillis() / 1000);
-                    final String FLength = Length, FWeight = Weight;
-                    new Thread(new Runnable() {
+                    saving = new SweetAlertDialog(mContext, SweetAlertDialog.PROGRESS_TYPE);
+                    v.post(new Runnable() {
                         @Override
                         public void run() {
-                            for (int k = 0; k < LIST_CATCHED_IMAGES.size(); k++) {
-                                FileNames.add("Capture_" + (finalMAX_ID + 1) + "_" + k + "." + ApplicationConfig.FOLDER.APP_EXTENSION);
-                                if (TNLib.Using.SaveImage(LIST_CATCHED_IMAGES.get(k), FileNames.get(k), ApplicationConfig.FOLDER.APP_DIR)) {
-                                }
+                            saving.setCancelable(false);
+                            saving.setTitle(mContext.getResources().getString(R.string.saving));
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                saving.create();
                             }
-                            catched = new fsCatched(finalMAX_ID + 1, fsElementPresenter.CURRENT_SELECTED_ELEMENT.getID(), TNLib.Using.GetNowTimeString(),
-                                    FLength, FWeight, TNLib.Using.MyCalendarToReverseString(calendar), mLastLocation.getLatitude() + "", mLastLocation.getLongitude() + "", TNLib.Using.StringListToSingalString(FileNames), fsHomePresenter.CURRENT_TRIP_ID, "");
-                            try {
-                                handler.addEntry(catched);
-                                mContext.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (saving.isShowing())
-                                            saving.cancel();
-                                        Toasty.success(mContext, mContext.getResources().getString(R.string.save_success), Toast.LENGTH_SHORT, true);
-                                        mContext.startActivity(new Intent(mContext, fsSaveSuccessfulActivity.class));
-                                        mContext.finish();
-                                    }
-                                });
-                            } catch (Exception e) {
-                                mContext.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (saving.isShowing())
-                                            saving.cancel();
-                                        SweetAlertDialog alertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.ERROR_TYPE)
-                                                .setTitleText(mContext.getResources().getString(R.string.can_not_save))
-                                                .setContentText(mContext.getResources().getString(R.string.have_problem_when_save_plz_try))
-                                                .setConfirmButton(mContext.getResources().getString(R.string.close), null);
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                            alertDialog.create();
-                                        }
-                                        alertDialog.show();
-                                    }
-                                });
-                                Log.e(TAG, "onClick: " + e.getMessage());
-                                return;
-                            }
+                            saving.show();
                         }
-                    }).start();
+                    });
+                    // --------------
+                    try {
+                        new SaveFiles().execute(new String[]{String.valueOf((int) (System.currentTimeMillis() / 1000)),
+                        Length, Weight}).get();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     // --------------
                 } else {
                 }
                 //endregion
             }
         });
+    }
+
+    class SaveFiles extends AsyncTask<String, Integer, Boolean> {
+        Handler myhandler = new Handler();
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            int ID = (Integer.parseInt(strings[0]) + 1);
+            for (int k = 0; k < LIST_CATCHED_IMAGES.size(); k++) {
+                FileNames.add("Capture_" + ID + "_" + k + "." + ApplicationConfig.FOLDER.APP_EXTENSION);
+                if (TNLib.Using.SaveImage(LIST_CATCHED_IMAGES.get(k), FileNames.get(k), ApplicationConfig.FOLDER.APP_DIR)) {
+                }
+            }
+            catched = new fsCatched(ID, fsElementPresenter.CURRENT_SELECTED_ELEMENT.getID(), TNLib.Using.GetNowTimeString(),
+                    strings[0], strings[1], TNLib.Using.MyCalendarToReverseString(calendar), mLastLocation.getLatitude() + "", mLastLocation.getLongitude() + "", TNLib.Using.StringListToSingalString(FileNames), fsHomePresenter.CURRENT_TRIP_ID, "");
+            try {
+                handler.addEntry(catched);
+                return true;
+            } catch (Exception e) {
+                myhandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (saving.isShowing())
+                            saving.cancel();
+                        SweetAlertDialog alertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.ERROR_TYPE)
+                                .setTitleText(mContext.getResources().getString(R.string.can_not_save))
+                                .setContentText(mContext.getResources().getString(R.string.have_problem_when_save_plz_try))
+                                .setConfirmButton(mContext.getResources().getString(R.string.close), null);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            alertDialog.create();
+                        }
+                        alertDialog.show();
+                    }
+                });
+                Log.e(TAG, "onClick: " + e.getMessage());
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            if (aBoolean) {
+                myhandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (saving.isShowing())
+                            saving.cancel();
+                        Toasty.success(mContext, mContext.getResources().getString(R.string.save_success), Toast.LENGTH_SHORT, true);
+                        mContext.startActivity(new Intent(mContext, fsSaveSuccessfulActivity.class));
+                        mContext.finish();
+                    }
+                });
+            }
+            super.onPostExecute(aBoolean);
+        }
     }
 
     private void btnGalleryClick() {
