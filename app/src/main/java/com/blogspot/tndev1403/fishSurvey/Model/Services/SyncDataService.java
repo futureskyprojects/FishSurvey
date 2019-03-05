@@ -23,6 +23,7 @@ import com.blogspot.tndev1403.fishSurvey.R;
 import com.blogspot.tndev1403.fishSurvey.TNLib;
 import com.blogspot.tndev1403.fishSurvey.View.fsHome;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -65,6 +66,7 @@ public class SyncDataService extends Service {
         catchedHandler = new fsCatchedHandler(this);
         cathceds = new ArrayList<>();
         showNotification();
+//        Test();
         TimerCheckInternet();
         return START_STICKY;
     }
@@ -81,6 +83,65 @@ public class SyncDataService extends Service {
         this.stopSelf();
     }
 
+    void SyncRecord(final fsCatched catched) {
+        SyncNotificaion();
+        final JSONObject JSONSend = new JSONObject();
+        try {
+            JSONSend.put(API.Record.CAPTAIN_ID, CAPTAIN_ID);
+            // --- TRIP --- //
+            JSONObject trip = new JSONObject();
+            trip.put(API.Record.trip.FROM_DATE, TNLib.Using.DateTimeStringReverseFromTimeStamp(catched.getTrip_id()));
+            trip.put(API.Record.trip.TO_DATE, catched.getFinished_time());
+            trip.put(API.Record.trip.DESCRIPTION, "<Empty>");
+            JSONSend.put(API.Record.trip.class.getSimpleName().toLowerCase(), trip);
+            //-------------//
+            JSONSend.put(API.Record.FISH_ID, catched.getElementID());
+            JSONSend.put(API.Record.LONG, catched.getLength() + "");
+            JSONSend.put(API.Record.WEIGHT, catched.getWeight() + "");
+            JSONSend.put(API.Record.LAT, catched.getLatitude());
+            JSONSend.put(API.Record.LNG, catched.getLatitude());
+            JSONSend.put(API.Record.images.class.getSimpleName().toLowerCase(), GetJsonOfImages(catched));
+            JSONSend.put(API.Record.CATCHED_AT, catched.getCatchedTime());
+            Log.w(TAG, "SyncRecord: " + JSONSend.toString());
+        } catch (JSONException e) {
+            Log.e(TAG, "SyncRecords: " + e.getMessage());
+            e.printStackTrace();
+        }
+        //////
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL(ApplicationConfig.Record);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                    conn.setRequestProperty("Accept", "application/json");
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+                    DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+                    //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
+                    os.writeBytes(JSONSend.toString());
+
+                    os.flush();
+                    os.close();
+                    InputStream is = conn.getInputStream();
+                    Log.w(TAG, "run: " + TNLib.InputStreamToString(is));
+                    Log.w("STATUS", String.valueOf(conn.getResponseCode()));
+                    if (conn.getResponseCode() == 200) {
+                        Log.d(TAG, "SyncRecords: Have JSON is " + JSONSend.toString());
+                        catchedHandler.deleteEntry(catched.getID());
+                        FINISHED_SYNC_RECORDS++;
+                        Log.w(TAG, "run: " + TNLib.InputStreamToString(is));
+                    }
+                    conn.disconnect();
+                } catch (Exception e) {
+                    Log.e("API", "Send: " + e.getMessage());
+                }
+                stopSelf();
+            }
+        }).start();
+    }
     //region Sync Records
     void SyncRecords() {
         GetAndCheckData();
@@ -92,79 +153,28 @@ public class SyncDataService extends Service {
         FINISHED_SYNC_RECORDS = 0;
         SyncNotificaion();
 //        UpdateProgress(0);
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < cathceds.size(); i++) {
             final fsCatched catched = cathceds.get(i);
-            final JSONObject JSONSend = new JSONObject();
-            try {
-                JSONSend.put(API.Record.CAPTAIN_ID, CAPTAIN_ID);
-                // --- TRIP --- //
-                JSONObject trip = new JSONObject();
-                trip.put(API.Record.trip.FROM_DATE, TNLib.Using.DateTimeStringReverseFromTimeStamp(catched.getTrip_id()));
-                trip.put(API.Record.trip.TO_DATE, catched.getFinished_time());
-                trip.put(API.Record.trip.DESCRIPTION, "<Empty>");
-                JSONSend.put(API.Record.trip.class.getSimpleName().toLowerCase(), trip);
-                //-------------//
-                JSONSend.put(API.Record.FISH_ID, catched.getElementID());
-                JSONSend.put(API.Record.LONG, catched.getLength());
-                JSONSend.put(API.Record.WEIGHT, catched.getWeight());
-                JSONSend.put(API.Record.LAT, catched.getLatitude());
-                JSONSend.put(API.Record.LNG, catched.getLatitude());
-                JSONSend.put(API.Record.images.class.getSimpleName().toLowerCase(), GetJsonOfImages(catched));
-                JSONSend.put(API.Record.CATCHED_AT, catched.getCatchedTime());
-            } catch (JSONException e) {
-                Log.e(TAG, "SyncRecords: " + e.getMessage());
-                e.printStackTrace();
-            }
-            //////
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        URL url = new URL(ApplicationConfig.Record);
-                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                        conn.setRequestMethod("POST");
-                        conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                        conn.setRequestProperty("Accept", "application/json");
-                        conn.setDoOutput(true);
-                        conn.setDoInput(true);
-                        DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-                        //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
-                        os.writeBytes(JSONSend.toString());
-                        os.flush();
-                        os.close();
-                        InputStream is = conn.getInputStream();
-                        Log.w(TAG, "run: " + TNLib.InputStreamToString(is));
-                        Log.w("STATUS", String.valueOf(conn.getResponseCode()));
-                        if (conn.getResponseCode() == 200) {
-                            Log.d(TAG, "SyncRecords: Have JSON is " + JSONSend.toString());
-                            catchedHandler.deleteEntry(catched.getID());
-                            FINISHED_SYNC_RECORDS++;
-                            Log.w(TAG, "run: " + TNLib.InputStreamToString(is));
-                        }
-                        conn.disconnect();
-                    } catch (Exception e) {
-                        Log.e("API", "Send: " + e.getMessage());
-                    }
-//                    UpdateProgress(i + 1);
-                }
-            }).start();
+            SyncRecord(catched);
         }
     }
 
-    private JSONObject GetJsonOfImages(fsCatched catched) {
+    private Object GetJsonOfImages(fsCatched catched) {
         if (catched.getImagePath().trim().isEmpty())
             return new JSONObject();
+        JSONArray imageArray = new JSONArray();
         String[] FileNames = catched.getImagePath().trim().split(" ");
-        JSONObject images = new JSONObject();
         for (String x : FileNames) {
             try {
-                images.put(API.Record.images.BASE_64_ENCODED, TNLib.Using.Base64FromImageFile(ApplicationConfig.FOLDER.APP_DIR + File.separator + x));
+                JSONObject image = new JSONObject();
+                image.put(API.Record.images.BASE_64_ENCODED, TNLib.Using.Base64FromImageFile(ApplicationConfig.FOLDER.APP_DIR + File.separator + x));
+                imageArray.put(image);
             } catch (JSONException e) {
                 Log.e(TAG, "GetJsonOfImages: " + e.getMessage());
                 e.printStackTrace();
             }
         }
-        return images;
+        return (Object)imageArray;
     }
     //endregion
 
