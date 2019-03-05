@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsUser;
+import com.blogspot.tndev1403.fishSurvey.R;
 import com.blogspot.tndev1403.fishSurvey.View.fsHome;
 import com.blogspot.tndev1403.fishSurvey.View.fsNewUserActivity;
 
@@ -53,9 +54,9 @@ public class fsNewUserPresenter {
                         newUserActivity.user_boat_code.getText().toString().isEmpty())
                 {
                     SweetAlertDialog dialog = new SweetAlertDialog(newUserActivity, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText("CÒN THIẾU")
-                            .setContentText("Vui lòng nhập đầy đủ thông tin!")
-                            .setConfirmButton("Đóng",null);
+                            .setTitleText(newUserActivity.getResources().getString(R.string.not_enough))
+                            .setContentText(newUserActivity.getResources().getString(R.string.plz_insert_full_info))
+                            .setConfirmButton(newUserActivity.getResources().getString(R.string.close),null);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         dialog.create();
                     }
@@ -65,9 +66,9 @@ public class fsNewUserPresenter {
                     if (newUserActivity.user_name.getText().toString().matches(".*\\d+.*"))
                     {
                         SweetAlertDialog dialog = new SweetAlertDialog(newUserActivity, SweetAlertDialog.ERROR_TYPE)
-                                .setTitleText("XEM LẠI!")
-                                .setContentText("Tên không thể có số!")
-                                .setConfirmButton("Đóng",null);
+                                .setTitleText(newUserActivity.getResources().getString(R.string.review).toUpperCase() + "!")
+                                .setContentText(newUserActivity.getResources().getString(R.string.name_can_not_included_number))
+                                .setConfirmButton(newUserActivity.getResources().getString(R.string.close),null);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             dialog.create();
                         }
@@ -76,10 +77,10 @@ public class fsNewUserPresenter {
                     }
                     /* else ask for sure of user */
                     SweetAlertDialog confirm = new SweetAlertDialog(newUserActivity, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("HOÀN TẤT?")
-                            .setContentText("Chắc chắn lưu lại những thông tin trên?")
-                            .setCancelButton("Xem lại", null)
-                            .setConfirmButton("Lưu", new SweetAlertDialog.OnSweetClickListener() {
+                            .setTitleText(newUserActivity.getResources().getString(R.string.finish).toUpperCase() + "?")
+                            .setContentText(newUserActivity.getResources().getString(R.string.sure_save_all_infor_above))
+                            .setCancelButton(newUserActivity.getResources().getString(R.string.review), null)
+                            .setConfirmButton(newUserActivity.getResources().getString(R.string.save), new SweetAlertDialog.OnSweetClickListener() {
                                 @Override
                                 public void onClick(SweetAlertDialog sweetAlertDialog) {
                                     sweetAlertDialog.cancel();
@@ -88,11 +89,11 @@ public class fsNewUserPresenter {
                                             newUserActivity.user_boat_code.getText().toString());
                                     if (user.commit())
                                     {
-                                        Toasty.success(newUserActivity, "Khai báo thông tin thành công!", Toast.LENGTH_SHORT, true).show();
+                                        Toasty.success(newUserActivity, newUserActivity.getResources().getString(R.string.declare_info_successfully), Toast.LENGTH_SHORT, true).show();
                                         newUserActivity.startActivity(new Intent(newUserActivity, fsHome.class));
                                         newUserActivity.finish();
                                     } else {
-                                        Toasty.error(newUserActivity, "Không thể cập nhật thông tin. Vui lòng thử lại", Toast.LENGTH_SHORT, true).show();
+                                        Toasty.error(newUserActivity, newUserActivity.getResources().getString(R.string.can_not_update_info_plz_try), Toast.LENGTH_SHORT, true).show();
                                     }
                                 }
                             });

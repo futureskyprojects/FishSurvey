@@ -62,7 +62,7 @@ public class fsHomePresenter {
                 mContext.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mContext.tvNotSyncShow.setText("Còn " + notSyncNumber +" bản ghi chưa đồng bộ");
+                        mContext.tvNotSyncShow.setText(mContext.getResources().getString(R.string.still_have) + notSyncNumber + mContext.getResources().getString(R.string.records_not_sync));
                     }
                 });
             }
@@ -112,9 +112,9 @@ public class fsHomePresenter {
                 if (!CURRENT_TRIP_ID.isEmpty()) {
                     if (TNLib.Using.IsMyServiceRunning(mContext, SyncDataService.class)) {
                         SweetAlertDialog alert = new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("KHÔNG THỂ KẾT THÚC!")
-                                .setContentText("Đồng bộ trước đó chưa xong! Vui lòng kết nối mạng để thục hiện tiếp.");
-                        alert.setConfirmButton("Đóng", null);
+                                .setTitleText(mContext.getResources().getString(R.string.can_not_finish))
+                                .setContentText(mContext.getResources().getString(R.string.sync_not_finish_please_connect_internet));
+                        alert.setConfirmButton(mContext.getResources().getString(R.string.close), null);
                         alert.show();
                         return;
                     } else {
@@ -129,14 +129,14 @@ public class fsHomePresenter {
 
     void EndtripButton() {
         SweetAlertDialog swt = new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText("KẾT THÚC CHUYẾN?")
+                .setTitleText(mContext.getResources().getString(R.string.end_trip).toUpperCase() + "?")
                 .setContentText("ID: " + CURRENT_TRIP_ID)
-                .setConfirmButton("Kết thúc", new SweetAlertDialog.OnSweetClickListener() {
+                .setConfirmButton(mContext.getResources().getString(R.string.end), new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         sweetAlertDialog.cancel();
                         final SweetAlertDialog al = new SweetAlertDialog(mContext, SweetAlertDialog.PROGRESS_TYPE)
-                                .setTitleText("ĐANG XỬ LÝ");
+                                .setTitleText(mContext.getResources().getString(R.string.processing));
                         al.setCancelable(false);
                         al.show();
                         // Thực hiện quét CSDL ở đây
@@ -148,8 +148,8 @@ public class fsHomePresenter {
                                         @Override
                                         public void run() {
                                             SweetAlertDialog sw = new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
-                                                    .setTitleText("HOÀN TẤT!")
-                                                    .setConfirmButton("Đóng", null);
+                                                    .setTitleText(mContext.getResources().getString(R.string.finish).toUpperCase())
+                                                    .setConfirmButton(mContext.getResources().getString(R.string.close), null);
                                             sw.show();
                                         }
                                     });
@@ -172,7 +172,7 @@ public class fsHomePresenter {
 
                     }
                 })
-                .setCancelButton("Hủy", null);
+                .setCancelButton(mContext.getResources().getString(R.string.cancle), null);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             swt.create();
         }
@@ -182,9 +182,9 @@ public class fsHomePresenter {
     void NewTripEvent() {
         final String CurrentTimeStamp = TNLib.Using.GetCurrentTimeStamp();
         SweetAlertDialog swt = new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText("TẠO CHUYẾN MỚI?")
+                .setTitleText(mContext.getResources().getString(R.string.create_new_trip))
                 .setContentText("ID: " + CurrentTimeStamp)
-                .setConfirmButton("Tạo", new SweetAlertDialog.OnSweetClickListener() {
+                .setConfirmButton(mContext.getResources().getString(R.string.create), new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         sweetAlertDialog.cancel();
@@ -192,16 +192,16 @@ public class fsHomePresenter {
                         editor.commit();
                         initTrips();
                         SweetAlertDialog ok = new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
-                                .setTitleText("THÀNH CÔNG!")
+                                .setTitleText(mContext.getResources().getString(R.string.success).toUpperCase() + "!")
                                 .setContentText("ID: " + CurrentTimeStamp)
-                                .setConfirmButton("Đóng", null);
+                                .setConfirmButton(mContext.getResources().getString(R.string.close), null);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             ok.create();
                         }
                         ok.show();
                     }
                 })
-                .setCancelButton("Hủy", null);
+                .setCancelButton(mContext.getResources().getString(R.string.cancle), null);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             swt.create();
         }
@@ -214,15 +214,15 @@ public class fsHomePresenter {
             @Override
             public void onClick(View v) {
                 SweetAlertDialog alert = new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("SỬA THÔNG TIN?")
-                        .setConfirmButton("Sửa", new SweetAlertDialog.OnSweetClickListener() {
+                        .setTitleText(mContext.getResources().getString(R.string.edit_user_info))
+                        .setConfirmButton(mContext.getResources().getString(R.string.edit), new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sweetAlertDialog) {
                                 mContext.startActivity(new Intent(mContext, fsNewUserActivity.class));
                                 mContext.finish();
                             }
                         })
-                        .setCancelButton("Đóng", new SweetAlertDialog.OnSweetClickListener() {
+                        .setCancelButton(mContext.getResources().getString(R.string.close), new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sweetAlertDialog) {
                                 sweetAlertDialog.cancel();
@@ -301,7 +301,7 @@ public class fsHomePresenter {
         mContext.btnOtherCategorizes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toasty.info(mContext, "Hiện tại chưa hỗ trợ!", Toast.LENGTH_SHORT, true).show();
+                Toasty.info(mContext, mContext.getResources().getString(R.string.not_support), Toast.LENGTH_SHORT, true).show();
             }
         });
     }

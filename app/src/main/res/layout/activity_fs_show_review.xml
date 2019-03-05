@@ -6,15 +6,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_home"
     tools:context=".View.fsSaveSuccessfulActivity">
-
-    <!--<ImageView-->
-        <!--android:scaleType="centerCrop"-->
-        <!--android:id="@+id/fssr_image_view"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_above="@id/fss_bottom_group"-->
-        <!--android:layout_marginBottom="@dimen/standard_margin"-->
-        <!--android:src="@drawable/ic_error_404" />-->
     <com.smarteist.autoimageslider.SliderLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -64,8 +55,7 @@
                 android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="right"
-                android:text="Con cá dài nhất hành tinh" />
+                android:gravity="right"/>
         </LinearLayout>
 
         <LinearLayout
@@ -100,8 +90,7 @@
                 android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="right"
-                android:text="50 cm" />
+                android:gravity="right"/>
         </LinearLayout>
 
         <LinearLayout
@@ -136,8 +125,7 @@
                 android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="right"
-                android:text="50 kg" />
+                android:gravity="right"/>
         </LinearLayout>
 
         <LinearLayout
@@ -171,7 +159,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="right"
-                android:text="Lat: 12445\nLng: 456777"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -208,8 +195,7 @@
                 android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="right"
-                android:text="13h20 - 31/12/2018" />
+                android:gravity="right"/>
         </LinearLayout>
 
         <Button

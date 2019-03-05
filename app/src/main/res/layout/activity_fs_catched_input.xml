@@ -50,7 +50,7 @@
             android:shadowDx="3"
             android:shadowDy="2"
             android:shadowRadius="1"
-            android:text="Chưa chụp ảnh nào về loài này"/>
+            android:text="@string/no_photo_about_this_family"/>
         <android.support.v7.widget.RecyclerView
             android:layout_marginTop="5dp"
             android:background="@drawable/background_wrap_box"

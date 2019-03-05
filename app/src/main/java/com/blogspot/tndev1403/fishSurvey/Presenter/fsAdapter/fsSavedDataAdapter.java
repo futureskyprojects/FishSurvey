@@ -74,7 +74,7 @@ public class fsSavedDataAdapter extends RecyclerView.Adapter<fsSavedDataAdapter.
 
     private void PrepareBitmapForShowHere(final String[] FileNames) {
         final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.PROGRESS_TYPE)
-                .setTitleText("ĐANG XỬ LÝ");
+                .setTitleText(mContext.getResources().getString(R.string.processing));
         sweetAlertDialog.setCancelable(false);
         sweetAlertDialog.show();
         new Thread(new Runnable() {

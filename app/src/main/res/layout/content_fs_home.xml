@@ -136,5 +136,5 @@
         android:background="@drawable/background_home"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Vui lòng tạo chuyến mới"/>
+        android:text="@string/please_create_new_tri"/>
 </android.support.constraint.ConstraintLayout>

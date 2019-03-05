@@ -63,7 +63,7 @@
                             android:drawableTint="@android:color/white"
                             android:gravity="center|left"
                             android:singleLine="true"
-                            android:text="Nguyễn Trọng Nghĩa"
+                            android:text="@string/author_name"
                             android:textColor="@android:color/white"
                             android:textSize="@dimen/text_size"
                             android:textStyle="bold"
@@ -81,7 +81,7 @@
                             android:drawableTint="@android:color/white"
                             android:gravity="center|left"
                             android:singleLine="true"
-                            android:text="0886483147"
+                            android:text="@string/author_phone"
                             android:textColor="@android:color/white"
                             android:textSize="@dimen/text_size"
                             android:textStyle="bold"
@@ -99,7 +99,6 @@
                             android:drawableTint="@android:color/white"
                             android:gravity="center|left"
                             android:singleLine="true"
-                            android:text="PY-140398-TS"
                             android:textColor="@android:color/white"
                             android:textSize="@dimen/text_size"
                             android:textStyle="bold"
@@ -253,7 +252,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/darker_gray"
                 android:textStyle="italic"
-                android:text="© Develop by NTD Group"/>
+                android:text="@string/author_groups"/>
         </RelativeLayout>
     </android.support.design.widget.NavigationView>
     <!--         app:headerLayout="@layout/nav_header_fs_home" -->

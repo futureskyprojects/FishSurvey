@@ -1,5 +1,6 @@
 package com.blogspot.tndev1403.fishSurvey.Presenter.fsAdapter;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -45,6 +46,7 @@ public class fsCatchedPreviewAdapter extends RecyclerView.Adapter<fsCatchedPrevi
     }
     @Override
     public void onBindViewHolder(@NonNull final MyHolder myHolder, final int i) {
+        final Context mContext = myHolder.img.getContext();
         myHolder.img.setImageBitmap(catchedPreviews.get(i));
         myHolder.img.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,21 +60,21 @@ public class fsCatchedPreviewAdapter extends RecyclerView.Adapter<fsCatchedPrevi
             @Override
             public boolean onLongClick(final View v) {
                 SweetAlertDialog swd = new SweetAlertDialog(v.getContext(), SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("XÓA ẢNH?")
-                        .setContentText("Thực sự xóa ảnh thứ " + (i + 1) + "?")
-                        .setConfirmButton("Xóa", new SweetAlertDialog.OnSweetClickListener() {
+                        .setTitleText(mContext.getResources().getString(R.string.delete_image))
+                        .setContentText(mContext.getResources().getString(R.string.sure_to_do_delete_image_num) + (i + 1) + "?")
+                        .setConfirmButton(mContext.getResources().getString(R.string.delete), new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sweetAlertDialog) {
                                 ((fsCatchedInputActivity) v.getContext()).presenter.LIST_CATCHED_IMAGES.remove(i);
                                 fsCatchedInputPresenter.CURRENT_BITMAP = fsElementPresenter.CURRENT_SELECTED_ELEMENT.getFeatureImage();
                                 ((fsCatchedInputActivity) v.getContext()).presenter.setImageToShow();
                                 ((fsCatchedInputActivity) v.getContext()).presenter.adapter.notifyDataSetChanged();
-                                Toasty.info(v.getContext(), "Đã xóa", Toast.LENGTH_SHORT, true);
+                                Toasty.info(v.getContext(), mContext.getResources().getString(R.string.deleted), Toast.LENGTH_SHORT, true);
                                 CheckEmpty(v);
                                 sweetAlertDialog.cancel();
                             }
                         })
-                        .setCancelButton("Đóng", null);
+                        .setCancelButton(mContext.getResources().getString(R.string.close), null);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     swd.create();
                 }

@@ -115,11 +115,11 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
             setUpLocationClientIfNeeded();
             buildLocationRequest();
         } else {
-            Toasty.error(mContext, "Xin lỗi, Thiết bị này không hỗ trợ dịch vụ của Google", Toast.LENGTH_SHORT, true).show();
+            Toasty.error(mContext, mContext.getResources().getString(R.string.device_not_sp_gg_services), Toast.LENGTH_SHORT, true).show();
             mContext.finish();
         }
         if (!isGpsOn()) {
-            Toasty.error(mContext, "Vui lòng bật định vị GPS lên trước!", Toast.LENGTH_SHORT, true).show();
+            Toasty.error(mContext, mContext.getResources().getString(R.string.please_turn_on_GPS), Toast.LENGTH_SHORT, true).show();
             mContext.finish();
         }
     }
@@ -176,9 +176,9 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
 
     void UnLocatedAlert() {
         SweetAlertDialog warning = new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText("CHƯA ĐỊNH VỊ ĐƯỢC")
-                .setContentText("Hiện tại vẫn chưa định vị được vị trí, hãy thử lại!")
-                .setConfirmButton("Đóng", new SweetAlertDialog.OnSweetClickListener() {
+                .setTitleText(mContext.getResources().getString(R.string.not_located_yet))
+                .setContentText(mContext.getResources().getString(R.string.not_located_plz_try_again))
+                .setConfirmButton(mContext.getResources().getString(R.string.close), new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         sweetAlertDialog.dismiss();
@@ -210,9 +210,9 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                         @Override
                         public void run() {
                             SweetAlertDialog alertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("THIẾU!")
-                                    .setContentText("Vui lòng nhập đầy đủ thông tin.")
-                                    .setConfirmButton("Đóng", null);
+                                    .setTitleText(mContext.getResources().getString(R.string.not_enough))
+                                    .setContentText(mContext.getResources().getString(R.string.plz_insert_full_info))
+                                    .setConfirmButton(mContext.getResources().getString(R.string.close), null);
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 alertDialog.create();
                             }
@@ -234,7 +234,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                     // --------------
                     saving = new SweetAlertDialog(v.getContext(), SweetAlertDialog.PROGRESS_TYPE);
                     saving.setCancelable(false);
-                    saving.setTitle("Đang lưu");
+                    saving.setTitle(mContext.getResources().getString(R.id.saving));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         saving.create();
                     }
@@ -260,7 +260,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                                     public void run() {
                                         if (saving.isShowing())
                                             saving.cancel();
-                                        Toasty.success(mContext, "Lưu thành công!", Toast.LENGTH_SHORT, true);
+                                        Toasty.success(mContext, mContext.getResources().getString(R.string.save_success), Toast.LENGTH_SHORT, true);
                                         mContext.startActivity(new Intent(mContext, fsSaveSuccessfulActivity.class));
                                         mContext.finish();
                                     }
@@ -272,9 +272,9 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                                         if (saving.isShowing())
                                             saving.cancel();
                                         SweetAlertDialog alertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.ERROR_TYPE)
-                                                .setTitleText("KHÔNG LƯU ĐƯỢC!")
-                                                .setContentText("Gặp vấn đề khi lưu dữ liệu, hãy thử lại!.")
-                                                .setConfirmButton("Đóng", null);
+                                                .setTitleText(mContext.getResources().getString(R.string.can_not_save))
+                                                .setContentText(mContext.getResources().getString(R.string.have_problem_when_save_plz_try))
+                                                .setConfirmButton(mContext.getResources().getString(R.string.close), null);
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                             alertDialog.create();
                                         }
@@ -400,10 +400,10 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                         public void onClick(View v) {
                             ok.cancel();
                             SweetAlertDialog ask = new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText("CHẮC CHẮN XÓA?")
-                                    .setContentText("Ảnh hiện tại sẽ bị xóa và thay thế bằng ảnh mặc định của phần mềm!")
-                                    .setCancelButton("Hủy", null)
-                                    .setConfirmButton("Xóa", new SweetAlertDialog.OnSweetClickListener() {
+                                    .setTitleText(mContext.getResources().getString(R.string.sure_delete))
+                                    .setContentText(mContext.getResources().getString(R.string.current_image_will_be_replace_by_default))
+                                    .setCancelButton(mContext.getResources().getString(R.string.cancle), null)
+                                    .setConfirmButton(mContext.getResources().getString(R.string.delete), new SweetAlertDialog.OnSweetClickListener() {
                                         @Override
                                         public void onClick(SweetAlertDialog sweetAlertDialog) {
                                             CURRENT_BITMAP = null;
@@ -466,20 +466,20 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
     public void permissionResultProcessing(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == ApplicationConfig.PERMISSION.CAMERA) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toasty.success(mContext, "Cấp quyền sử dụng máy ảnh thành công!", Toast.LENGTH_SHORT, true).show();
+                Toasty.success(mContext, mContext.getResources().getString(R.string.camera_permission_success), Toast.LENGTH_SHORT, true).show();
                 startCamera();
             } else {
-                Toasty.error(mContext, "Đã từ chối cấp quyền sử dụng máy ảnh", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(mContext, mContext.getResources().getString(R.string.camera_permission_denied), Toast.LENGTH_SHORT, true).show();
             }
         } else if (requestCode == ApplicationConfig.PERMISSION.LOCATION_GPS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toasty.success(mContext, "Cấp quyền truy cập vị trí thành công!", Toast.LENGTH_SHORT, true).show();
+                Toasty.success(mContext, mContext.getResources().getString(R.string.locate_permission_success), Toast.LENGTH_SHORT, true).show();
             } else {
                 requestLocationPermissions();
             }
         } else if (requestCode == ApplicationConfig.PERMISSION.WRITE_EXTERNAL_STORAGE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toasty.success(mContext, "Cấp quyền truy cập bộ nhớ thành công!", Toast.LENGTH_SHORT, true).show();
+                Toasty.success(mContext, mContext.getResources().getString(R.string.write_external_permission_success), Toast.LENGTH_SHORT, true).show();
                 mContext.btnFinish.setEnabled(true);
             } else {
                 requestLocationPermissions();
@@ -553,20 +553,17 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.e(TAG, "onConnectionFailed:  ĐM nó fail cmnr!");
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG, String.format(Locale.getDefault(), "onLocationChanged : %f, %f",
-                location.getLatitude(), location.getLongitude()));
         mLastLocation = location;
     }
 
     //endregion
     /* Annoucement */
     void fail() {
-        Toasty.error(mContext, "Xin lỗi! Thao tác không thành công.", Toast.LENGTH_SHORT, true);
+        Toasty.error(mContext, mContext.getResources().getString(R.string.operation_fail), Toast.LENGTH_SHORT, true);
     }
 
     public void setImageToListAndShowIt(Bitmap bm) {

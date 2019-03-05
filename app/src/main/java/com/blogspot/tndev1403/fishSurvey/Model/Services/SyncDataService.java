@@ -81,7 +81,7 @@ public class SyncDataService extends Service {
                 Log.w(TAG, "Init: Success upadate host " + ApplicationConfig.Host);
             }
         } catch (Exception e) {
-            Toasty.error(this, "Không thể cập nhật địa chỉ máy chủ", Toast.LENGTH_SHORT, true);
+            Toasty.error(this, R.string.can_not_update_host_address, Toast.LENGTH_SHORT, true);
         }
     }
 
@@ -303,7 +303,7 @@ public class SyncDataService extends Service {
             notificationBuilder.setColor(ContextCompat.getColor(this,
                     R.color.blue_btn_bg_pressed_color));
         }
-        notificationBuilder.setContentTitle("ĐỒNG BỘ");
+        notificationBuilder.setContentTitle(getResources().getString(R.string.sync).toUpperCase());
         notificationManager.cancelAll();
         notificationManager.notify(ApplicationConfig.CODE.NOTIFICATION_REQUEST_CODE, notification);
     }
@@ -319,7 +319,7 @@ public class SyncDataService extends Service {
         }
         notificationBuilder.setContentText("");
         notificationBuilder.setProgress(100, 30, true);
-        notificationBuilder.setContentTitle("CẬP NHẬT NGƯỜI DÙNG");
+        notificationBuilder.setContentTitle(getResources().getString(R.string.update_user).toUpperCase());
         notificationManager.cancelAll();
         notificationManager.notify(ApplicationConfig.CODE.NOTIFICATION_REQUEST_CODE, notification);
     }
@@ -333,8 +333,8 @@ public class SyncDataService extends Service {
             notificationBuilder.setColor(ContextCompat.getColor(this,
                     R.color.blue_btn_bg_pressed_color));
         }
-        notificationBuilder.setContentTitle("ĐỢI MẠNG");
-        notificationBuilder.setContentText("Cần có mạng để hoàn tất");
+        notificationBuilder.setContentTitle(getResources().getString(R.string.waiting_internet).toUpperCase());
+        notificationBuilder.setContentText(getResources().getString(R.string.need_network_to_finish));
         notificationBuilder.setProgress(100, 30, true);
         notificationManager.cancelAll();
         notificationManager.notify(ApplicationConfig.CODE.NOTIFICATION_REQUEST_CODE, notification);

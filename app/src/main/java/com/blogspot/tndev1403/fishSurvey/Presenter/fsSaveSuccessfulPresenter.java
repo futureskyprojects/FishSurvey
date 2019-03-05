@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsCatched;
 import com.blogspot.tndev1403.fishSurvey.Model.fsCatchedHandler;
+import com.blogspot.tndev1403.fishSurvey.R;
 import com.blogspot.tndev1403.fishSurvey.TNLib;
 import com.blogspot.tndev1403.fishSurvey.View.fsHome;
 import com.blogspot.tndev1403.fishSurvey.View.fsSaveSuccessfulActivity;
@@ -27,8 +28,7 @@ public class fsSaveSuccessfulPresenter {
     }
 
     private void initSlider() {
-        for (int i = 0; i < fsCatchedInputPresenter.LIST_CATCHED_IMAGES.size(); i++)
-        {
+        for (int i = 0; i < fsCatchedInputPresenter.LIST_CATCHED_IMAGES.size(); i++) {
             SliderView sliderView = new DefaultSliderView(mContext);
             sliderView.setImageByte(TNLib.Using.BitmapToBytes(
                     fsCatchedInputPresenter.LIST_CATCHED_IMAGES.get(i)
@@ -37,6 +37,7 @@ public class fsSaveSuccessfulPresenter {
             mContext.slSlideReview.addSliderView(sliderView);
         }
     }
+
     private void initEvents() {
         initNextButton();
     }
@@ -57,8 +58,8 @@ public class fsSaveSuccessfulPresenter {
         mContext.tvName.setText(fsElementPresenter.CURRENT_SELECTED_ELEMENT.getName());
         mContext.tvLength.setText(fsCatchedInputPresenter.catched.getLength() + " (cm)");
         mContext.tvWeight.setText(fsCatchedInputPresenter.catched.getWeight() + " (kg)");
-        mContext.tvPosition.setText("Kinh độ: " + fsCatchedInputPresenter.catched.getLatitude() +
-                "\nVĩ độ: " + fsCatchedInputPresenter.catched.getLongitude());
+        mContext.tvPosition.setText(mContext.getResources().getString(R.string.longitude) + ": " + fsCatchedInputPresenter.catched.getLatitude() +
+                "\n" + mContext.getResources().getString(R.string.latitude) + ": " + fsCatchedInputPresenter.catched.getLongitude());
         mContext.tvCatchedTime.setText(fsCatchedInputPresenter.catched.getCatchedTime());
     }
 }

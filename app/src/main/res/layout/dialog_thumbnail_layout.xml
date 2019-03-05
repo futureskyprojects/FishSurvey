@@ -30,7 +30,7 @@
             android:layout_height="wrap_content" />
         <TextView
             android:lines="1"
-            android:text="Lấy ảnh đổi tượng qua camera"
+            android:text="@string/get_object_via_camera"
             android:textSize="@dimen/dialog_context_size"
             android:layout_marginLeft="15dp"
             android:layout_alignParentBottom="true"
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content" />
         <TextView
             android:lines="1"
-            android:text="Chọn từ ảnh trong thư viện trong máy"
+            android:text="@string/image_from_gallery"
             android:textSize="@dimen/dialog_context_size"
             android:layout_marginLeft="15dp"
             android:layout_alignParentBottom="true"
@@ -107,7 +107,7 @@
             android:layout_height="wrap_content" />
         <TextView
             android:lines="1"
-            android:text="Bỏ ảnh hiện tại và trở về ảnh mặc định"
+            android:text="@string/bring_this_image_to_default"
             android:textSize="@dimen/dialog_context_size"
             android:layout_marginLeft="15dp"
             android:layout_alignParentBottom="true"
@@ -121,7 +121,8 @@
         android:layout_marginRight="15dp"
         android:layout_width="match_parent"
         android:background="@color/line_color"
-        android:layout_height="1dp" />
+        android:layout_height="1dp"
+        android:orientation="horizontal" />
     <RelativeLayout
         android:id="@+id/dialog_close"
         android:padding="5dp"
@@ -146,7 +147,7 @@
             android:layout_height="wrap_content" />
         <TextView
             android:lines="1"
-            android:text="Đóng bảng tùy chọn"
+            android:text="@string/close_options"
             android:textSize="@dimen/dialog_context_size"
             android:layout_marginLeft="15dp"
             android:layout_alignParentBottom="true"

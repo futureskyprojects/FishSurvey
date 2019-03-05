@@ -3,6 +3,7 @@ package com.blogspot.tndev1403.fishSurvey.Presenter;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.blogspot.tndev1403.fishSurvey.R;
 import com.blogspot.tndev1403.fishSurvey.TNLib;
 import com.blogspot.tndev1403.fishSurvey.View.fsSavedDataActivity;
 import com.blogspot.tndev1403.fishSurvey.View.fsShowReviewActivity;
@@ -52,8 +53,8 @@ public class fsShowReviewPresenter {
         mContext.tvName.setText(fsSavedDataActivity.REVIEW_ELEMENT.getName());
         mContext.tvLength.setText(fsSavedDataActivity.REVIEW_CATCHED.getLength() + " (cm)");
         mContext.tvWeight.setText(fsSavedDataActivity.REVIEW_CATCHED.getWeight() + " (kg)");
-        mContext.tvPosition.setText("Kinh độ: " + fsSavedDataActivity.REVIEW_CATCHED.getLatitude() +
-                "\nVĩ độ: " + fsSavedDataActivity.REVIEW_CATCHED.getLongitude());
+        mContext.tvPosition.setText(mContext.getResources().getString(R.string.longitude) + ": " + fsCatchedInputPresenter.catched.getLatitude() +
+                "\n" + mContext.getResources().getString(R.string.latitude) + ": " + fsCatchedInputPresenter.catched.getLongitude());
         mContext.tvCatchedTime.setText(fsSavedDataActivity.REVIEW_CATCHED.getCatchedTime());
     }
 }
