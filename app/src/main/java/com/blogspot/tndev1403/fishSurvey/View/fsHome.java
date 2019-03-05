@@ -74,6 +74,12 @@ public class fsHome extends AppCompatActivity
         initPresenter();
     }
 
+    @Override
+    protected void onDestroy() {
+        if (presenter.tmUpdate != null)
+            presenter.tmUpdate.cancel();
+        super.onDestroy();
+    }
 
     private void initPresenter() {
         presenter = new fsHomePresenter(fsHome.this);

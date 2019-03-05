@@ -48,6 +48,7 @@ public class fsHomePresenter {
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
     fsCatchedHandler catchedHandler;
+    public Timer tmUpdate;
     /* Data store declare */
 
     public fsHomePresenter(fsHome fshome) {
@@ -62,7 +63,8 @@ public class fsHomePresenter {
         initNotSync();
     }
     private void initNotSync() {
-        new Timer().schedule(new TimerTask() {
+        tmUpdate = new Timer();
+        tmUpdate.schedule(new TimerTask() {
             @Override
             public void run() {
                 final int notSyncNumber = catchedHandler.CountNotSyncRecords();
