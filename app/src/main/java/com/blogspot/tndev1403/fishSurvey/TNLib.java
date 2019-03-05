@@ -9,6 +9,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
 import java.util.concurrent.ExecutionException;
 
 public class TNLib {
@@ -46,6 +48,11 @@ public class TNLib {
         }
     }
     public static class Using {
+        public static String DateTimeStringFromTimeStamp(String timestamp) {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            String dateString = formatter.format(new Date(Long.parseLong(timestamp)));
+            return dateString;
+        }
         public static boolean IsMyServiceRunning(Context mContext, Class<?> serviceClass) {
             ActivityManager manager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
             for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -77,6 +84,14 @@ public class TNLib {
             }
             Log.d(TAG, "StringListToSingalString: >" + res);
             return res;
+        }
+        public static String Base64FromImageFile(String _Path) {
+            Bitmap bm = BitmapFromFilePath(_Path);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream .toByteArray();
+            String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+            return encoded;
         }
         public static Bitmap BitmapFromFilePath(String _Path) {
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -240,12 +255,6 @@ public class TNLib {
             }
         } catch (IOException e) {
             Log.e(TAG, "> " + e.getMessage());
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                Log.e(TAG, "> " + e.getMessage());
-            }
         }
         return sb.toString();
     }

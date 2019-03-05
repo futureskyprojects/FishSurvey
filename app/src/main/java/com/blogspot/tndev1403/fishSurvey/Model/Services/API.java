@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsUser;
+import com.blogspot.tndev1403.fishSurvey.TNLib;
 
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -28,80 +29,22 @@ public class API {
         public static final String FULL_NAME = "fullname";
         public static final String PHONE = "phone";
         public static final String VESSEL = "vessel";
-        public static class CreateNew extends AsyncTask<String, String, String> {
-            public static void Send(final Context mContext) {
-                fsUser user = new fsUser(mContext);
-                final JSONObject JSONSend = new JSONObject();
-
-                try {
-                    JSONSend.put(FULL_NAME, user.getUserName());
-                    JSONSend.put(PHONE, user.getPhoneNumber());
-                    JSONSend.put(VESSEL, user.getBoatCode());
-
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-
-                }
-                //////
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            URL url = new URL(ApplicationConfig.Captiain);
-                            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                            conn.setRequestMethod("POST");
-                            conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                            conn.setRequestProperty("Accept", "application/json");
-                            conn.setDoOutput(true);
-                            conn.setDoInput(true);
-                            DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-                            //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
-                            os.writeBytes(JSONSend.toString());
-
-                            os.flush();
-                            os.close();
-
-                            Log.w("STATUS", String.valueOf(conn.getResponseCode()));
-                            Log.w("MSG", conn.getResponseMessage());
-                            conn.disconnect();
-
-                        } catch (Exception e) {
-                            Log.e("API", "Send: " + e.getMessage() );
-                        }
-                    }
-                }).start();
-            }
-            public CreateNew(){
-                //set context variables if required
-            }
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-            }
-            @Override
-            protected String doInBackground(String... params) {
-                String FullName = params[0];
-                String Phone = params[1];
-                String Vessel = params[2];
-                OutputStream out = null;
-                try {
-                    URL url = new URL(ApplicationConfig.Captiain);
-                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                    out = new BufferedOutputStream(urlConnection.getOutputStream());
-
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-//                    writer.write(data);
-                    writer.flush();
-                    writer.close();
-                    out.close();
-
-                    urlConnection.connect();
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-                return "";
-            }
+    }
+    public static class Record {
+        public final static String CAPTAIN_ID = "captain_id";
+        public static class trip {
+            public final static String FROM_DATE = "from_date";
+            public final static String TO_DATE = "to_date";
+            public final static String DESCRIPTION = "description";
         }
+        public final static String FISH_ID = "fish_id";
+        public final static String LONG = "long";
+        public final static String WEIGHT = "weight";
+        public final static String LAT = "lat";
+        public final static String LNG = "lng";
+        public static class images {
+            public final static String BASE_64_ENCODED = "Base64Encoded";
+        }
+        public final static String CATCHED_AT = "catched_at";
     }
 }

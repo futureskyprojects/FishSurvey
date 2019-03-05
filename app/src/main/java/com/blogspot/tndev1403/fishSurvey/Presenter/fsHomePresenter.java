@@ -143,7 +143,6 @@ public class fsHomePresenter {
                                 }
                             }
                         }).start();
-                        API.Captain.CreateNew.Send(mContext);
                         // Khởi động services để đồng bộ tại đây
                         mContext.startService(new Intent(mContext, SyncDataService.class));
                         // Start send captain here

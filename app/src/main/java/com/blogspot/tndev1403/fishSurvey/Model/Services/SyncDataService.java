@@ -16,13 +16,21 @@ import android.widget.Toast;
 
 import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsCatched;
+import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsUser;
 import com.blogspot.tndev1403.fishSurvey.Model.fsCatchedHandler;
 import com.blogspot.tndev1403.fishSurvey.Presenter.fsHomePresenter;
 import com.blogspot.tndev1403.fishSurvey.R;
+import com.blogspot.tndev1403.fishSurvey.TNLib;
 import com.blogspot.tndev1403.fishSurvey.View.fsHome;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -40,7 +48,13 @@ public class SyncDataService extends Service {
     fsCatchedHandler catchedHandler;
     ArrayList<fsCatched> cathceds;
     Intent mIntent;
-    boolean IS_HAVE_INTERNET = false;
+    boolean IS_FINISHED_CAPTAIN_SYNC = false;
+    int FINISHED_SYNC_RECORDS = 0;
+    boolean isUpAndSyncCaptain = false;
+    boolean isSyncRecords = false;
+    Timer mServiceTimer;
+    int TYPE = -1;
+
     public SyncDataService() {
     }
 
@@ -54,8 +68,161 @@ public class SyncDataService extends Service {
         TimerCheckInternet();
         return START_STICKY;
     }
-    void UpAndSyncCaptain() {
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        notification.flags = STOP_FOREGROUND_REMOVE;
+        notification.contentIntent = null;
+        notificationManager.cancelAll();
+        notificationManager.notify(ApplicationConfig.CODE.NOTIFICATION_REQUEST_CODE, notification);
+        notificationManager.cancelAll();
+        stopForeground(true);
+        this.stopSelf();
+    }
+
+    //region Sync Records
+    void SyncRecords() {
+        if (isSyncRecords)
+            return;
+        else
+            isSyncRecords = true;
+        FINISHED_SYNC_RECORDS = 0;
+        SyncNotificaion();
+//        UpdateProgress(0);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 1; i++) {
+                    final fsCatched catched = cathceds.get(i);
+                    final JSONObject JSONSend = new JSONObject();
+                    try {
+                        JSONSend.put(API.Record.CAPTAIN_ID, catched.getID());
+                        // --- TRIP --- //
+                        JSONObject trip = new JSONObject();
+                        trip.put(API.Record.trip.FROM_DATE, TNLib.Using.DateTimeStringFromTimeStamp(catched.getTrip_id()));
+                        trip.put(API.Record.trip.TO_DATE, catched.getFinished_time());
+                        trip.put(API.Record.trip.DESCRIPTION, "<Empty>");
+                        JSONSend.put(API.Record.trip.class.getSimpleName().toLowerCase(), trip);
+                        //-------------//
+                        JSONSend.put(API.Record.FISH_ID, catched.getElementID());
+                        JSONSend.put(API.Record.LONG, catched.getLength());
+                        JSONSend.put(API.Record.WEIGHT, catched.getWeight());
+                        JSONSend.put(API.Record.LAT, catched.getLatitude());
+                        JSONSend.put(API.Record.LNG, catched.getLatitude());
+                        JSONSend.put(API.Record.images.class.getSimpleName().toLowerCase(), null);//GetJsonOfImages(catched));
+                        JSONSend.put(API.Record.CATCHED_AT, catched.getCatchedTime());
+                    } catch (JSONException e) {
+                        Log.e(TAG, "SyncRecords: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                    //////
+                    try {
+                        URL url = new URL(ApplicationConfig.Record);
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setRequestMethod("POST");
+                        conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                        conn.setRequestProperty("Accept", "application/json");
+                        conn.setDoOutput(true);
+                        conn.setDoInput(true);
+                        DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+                        //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
+                        os.writeBytes(JSONSend.toString());
+                        os.flush();
+                        os.close();
+                        InputStream is = conn.getInputStream();
+                        Log.w(TAG, "run: " + TNLib.InputStreamToString(is));
+                        Log.w("STATUS", String.valueOf(conn.getResponseCode()));
+//                        if (conn.getResponseCode() == 200) {
+//                            Log.d(TAG, "SyncRecords: Have JSON is " + JSONSend.toString());
+//                            catchedHandler.deleteEntry(catched.getID());
+//                            FINISHED_SYNC_RECORDS++;
+//                            Log.w(TAG, "run: " + TNLib.InputStreamToString(is));
+//                        }
+                        conn.disconnect();
+                    } catch (Exception e) {
+                        Log.e("API", "Send: " + e.getMessage());
+                    }
+//                    UpdateProgress(i + 1);
+                }
+                isSyncRecords = false;
+            }
+        }).start();
+    }
+
+    private JSONObject GetJsonOfImages(fsCatched catched) {
+        if (catched.getImagePath().trim().isEmpty())
+            return new JSONObject();
+        String[] FileNames = catched.getImagePath().trim().split(" ");
+        JSONObject images = new JSONObject();
+        for (String x : FileNames) {
+            try {
+                images.put(API.Record.images.BASE_64_ENCODED, TNLib.Using.Base64FromImageFile(ApplicationConfig.FOLDER.APP_DIR + File.separator + x));
+            } catch (JSONException e) {
+                Log.e(TAG, "GetJsonOfImages: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return images;
+    }
+    //endregion
+
+
+    void UpAndSyncCaptain() {
+        if (isUpAndSyncCaptain)
+            return;
+        else
+            isUpAndSyncCaptain = true;
+        SyncCaptainInfoNotificaion();
+        final fsUser user = new fsUser(this);
+        final JSONObject JSONSend = new JSONObject();
+        try {
+            if (!user.getUserID().isEmpty()) {
+                Log.w(TAG, "UpAndSyncCaptain: " + "OK have ID is " + user.getUserID());
+                JSONSend.put(API.Captain.ID, user.getUserID());
+            }
+            JSONSend.put(API.Captain.FULL_NAME, user.getUserName());
+            JSONSend.put(API.Captain.PHONE, user.getPhoneNumber());
+            JSONSend.put(API.Captain.VESSEL, user.getBoatCode());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //////
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL(ApplicationConfig.Captiain);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                    conn.setRequestProperty("Accept", "application/json");
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+                    DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+                    //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
+                    os.writeBytes(JSONSend.toString());
+
+                    os.flush();
+                    os.close();
+                    InputStream is = conn.getInputStream();
+                    if (conn.getResponseCode() == 200) {
+                        JSONObject obj = new JSONObject(TNLib.InputStreamToString(is));
+                        String ResponeID = obj.getJSONObject("data").getString(API.Captain.ID);
+                        user.setUserID(ResponeID);
+                        user.commit();
+                    }
+                    Log.w(TAG, "run: " + TNLib.InputStreamToString(is));
+                    Log.w("STATUS", String.valueOf(conn.getResponseCode()));
+                    conn.disconnect();
+                } catch (Exception e) {
+                    Log.e("API", "Send: " + e.getMessage());
+                }
+                IS_FINISHED_CAPTAIN_SYNC = true;
+                isUpAndSyncCaptain = false;
+            }
+        }).start();
     }
 
     private void GetAndCheckData() {
@@ -66,6 +233,7 @@ public class SyncDataService extends Service {
         }
         UpdateProgress(0);
     }
+
     void UpdateProgress(int Current) {
         notificationBuilder.setContentText(Current + "/" + cathceds.size());
         notificationBuilder.setProgress(cathceds.size(), 0, false);
@@ -74,6 +242,10 @@ public class SyncDataService extends Service {
 
     //region Notification
     void SyncNotificaion() {
+        if (TYPE != 1)
+            TYPE = 1;
+        else
+            return;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             notificationBuilder.setColor(ContextCompat.getColor(this,
                     R.color.blue_btn_bg_pressed_color));
@@ -82,7 +254,28 @@ public class SyncDataService extends Service {
         notificationManager.cancelAll();
         notificationManager.notify(ApplicationConfig.CODE.NOTIFICATION_REQUEST_CODE, notification);
     }
+
+    void SyncCaptainInfoNotificaion() {
+        if (TYPE != 2)
+            TYPE = 2;
+        else
+            return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            notificationBuilder.setColor(ContextCompat.getColor(this,
+                    R.color.blue_btn_bg_pressed_color));
+        }
+        notificationBuilder.setContentText("");
+        notificationBuilder.setProgress(100, 30, true);
+        notificationBuilder.setContentTitle("CẬP NHẬT NGƯỜI DÙNG");
+        notificationManager.cancelAll();
+        notificationManager.notify(ApplicationConfig.CODE.NOTIFICATION_REQUEST_CODE, notification);
+    }
+
     void WaitInternetNotificaion() {
+        if (TYPE != 3)
+            TYPE = 3;
+        else
+            return;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             notificationBuilder.setColor(ContextCompat.getColor(this,
                     R.color.blue_btn_bg_pressed_color));
@@ -93,7 +286,9 @@ public class SyncDataService extends Service {
         notificationManager.cancelAll();
         notificationManager.notify(ApplicationConfig.CODE.NOTIFICATION_REQUEST_CODE, notification);
     }
+
     void showNotification() {
+        TYPE = 0;
         Intent notificationIntent = new Intent(this, fsHome.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -117,25 +312,26 @@ public class SyncDataService extends Service {
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
     }
+
     void TimerCheckInternet() {
-        new Timer().schedule(new TimerTask() {
+        mServiceTimer = new Timer();
+        mServiceTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 // if not connect to the network, set warning
                 if (!isInternetAvailable()) {
-                    if (IS_HAVE_INTERNET)
-                        IS_HAVE_INTERNET = false;
-                    else
-                        return;
                     // If havn't internet
                     WaitInternetNotificaion();
                 } else {
-                    if (!IS_HAVE_INTERNET)
-                        IS_HAVE_INTERNET = true;
-                    else
-                        return;
                     // Have internet
-                    SyncNotificaion();
+                    if (!IS_FINISHED_CAPTAIN_SYNC)
+                        UpAndSyncCaptain();
+                    else if (FINISHED_SYNC_RECORDS < cathceds.size())
+                        SyncRecords();
+                    else {
+                        mServiceTimer.cancel();
+                        stopSelf();
+                    }
                 }
             }
         }, 200, 300);
