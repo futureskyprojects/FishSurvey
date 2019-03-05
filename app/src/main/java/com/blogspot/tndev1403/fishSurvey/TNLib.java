@@ -1,5 +1,6 @@
 package com.blogspot.tndev1403.fishSurvey;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -45,6 +46,15 @@ public class TNLib {
         }
     }
     public static class Using {
+        public static boolean IsMyServiceRunning(Context mContext, Class<?> serviceClass) {
+            ActivityManager manager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+            for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+                if (serviceClass.getName().equals(service.service.getClassName())) {
+                    return true;
+                }
+            }
+            return false;
+        }
         public static String MyCalendarToString(Calendar calendarX) {
             String String = calendarX.get(Calendar.HOUR_OF_DAY) + ":" +
                     calendarX.get(Calendar.MINUTE) + " " + calendarX.get(Calendar.DAY_OF_MONTH) + "/" +
@@ -186,7 +196,7 @@ public class TNLib {
                 URL url = new URL(urls[0]);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("User-Agent", "Mozilla/5.0");
-                return InputStringToString(conn.getInputStream());
+                return InputStreamToString(conn.getInputStream());
             } catch (Exception e) {
                 Log.e(TAG, "<getContentFromURL> " + e.getMessage());
             }
@@ -219,7 +229,7 @@ public class TNLib {
         }
     }
     //region InputStream to String
-    public static String InputStringToString(InputStream is) {
+    public static String InputStreamToString(InputStream is) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
 

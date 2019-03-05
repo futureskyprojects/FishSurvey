@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.blogspot.tndev1403.fishSurvey">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -15,7 +16,6 @@
         android:required="true" />
 
     <application
-
         android:allowBackup="true"
         android:icon="@drawable/app_icon_show"
         android:label="@string/app_name"
@@ -24,10 +24,15 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:icon,android:supportsRtl">
+        <service
+            android:name=".Model.Services.SyncDataService"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <activity
             android:name=".View.fsHome"
             android:label="@string/title_activity_fs_home"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".View.fsShowReviewActivity" />
         <activity android:name=".View.fsSavedDataActivity" />
         <activity android:name=".View.fsSaveSuccessfulActivity" />

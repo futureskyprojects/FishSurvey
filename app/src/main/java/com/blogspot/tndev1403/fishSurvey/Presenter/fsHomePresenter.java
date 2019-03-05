@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsUser;
+import com.blogspot.tndev1403.fishSurvey.Model.Services.API;
+import com.blogspot.tndev1403.fishSurvey.Model.Services.SyncDataService;
 import com.blogspot.tndev1403.fishSurvey.Model.fsCatchedHandler;
 import com.blogspot.tndev1403.fishSurvey.R;
 import com.blogspot.tndev1403.fishSurvey.TNLib;
@@ -90,7 +92,16 @@ public class fsHomePresenter {
             @Override
             public void onClick(View v) {
                 if (!CURRENT_TRIP_ID.isEmpty()) {
-                    EndtripButton();
+                    if (TNLib.Using.IsMyServiceRunning(mContext, SyncDataService.class)) {
+                        SweetAlertDialog alert = new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("KHÔNG THỂ KẾT THÚC!")
+                                .setContentText("Đồng bộ trước đó chưa xong! Vui lòng kết nối mạng để thục hiện tiếp.");
+                        alert.setConfirmButton("Đóng", null);
+                        alert.show();
+                        return;
+                    } else {
+                        EndtripButton();
+                    }
                 } else {
                     NewTripEvent();
                 }
@@ -132,6 +143,11 @@ public class fsHomePresenter {
                                 }
                             }
                         }).start();
+                        API.Captain.CreateNew.Send(mContext);
+                        // Khởi động services để đồng bộ tại đây
+                        mContext.startService(new Intent(mContext, SyncDataService.class));
+                        // Start send captain here
+
                     }
                 })
                 .setCancelButton("Hủy", null);

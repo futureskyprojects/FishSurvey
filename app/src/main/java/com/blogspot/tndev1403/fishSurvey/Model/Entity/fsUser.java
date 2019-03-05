@@ -7,21 +7,31 @@ import java.util.Date;
 
 public class fsUser {
     public final static String TAG = "fsUser";
+    public final static String USER_ID = "USER_ID";
     public final static String USER_NAME = "USER_NAME";
     public final static String PHONE_NUMBER = "PHONE_NUMBER";
     public final static String BOAT_CODE = "BOAT_CODE";
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     Context mContext;
+    String UserID;
     String UserName;
     String PhoneNumber;
     String BoatCode;
 
     @Override
     public String toString() {
-        return "Người dùng có tên: " + UserName + "\n" +
+        return "Người dùng mang mã" + UserID + " có tên: " + UserName + "\n" +
                 "Số điện thoại: " + PhoneNumber + "\n" +
                 "Mã tàu: " + BoatCode + "\n";
+    }
+
+    public String getUserID() {
+        return UserID;
+    }
+
+    public void setUserID(String userID) {
+        UserID = userID;
     }
 
     public fsUser(Context mContext) {
@@ -40,16 +50,20 @@ public class fsUser {
         editor = sharedPreferences.edit();
         commit();
     }
+
     public boolean get() {
+        UserID = sharedPreferences.getString(USER_ID, "");
         UserName = sharedPreferences.getString(USER_NAME, "");
-        PhoneNumber = sharedPreferences.getString(PHONE_NUMBER,"");
-        BoatCode = sharedPreferences.getString(BOAT_CODE,"");
+        PhoneNumber = sharedPreferences.getString(PHONE_NUMBER, "");
+        BoatCode = sharedPreferences.getString(BOAT_CODE, "");
         if (UserName.isEmpty() || PhoneNumber.isEmpty() || BoatCode.isEmpty())
             return false;
         else
             return true;
     }
+
     public boolean commit() {
+        editor.putString(USER_ID, UserID);
         editor.putString(USER_NAME, UserName);
         editor.putString(PHONE_NUMBER, PhoneNumber);
         editor.putString(BOAT_CODE, BoatCode);

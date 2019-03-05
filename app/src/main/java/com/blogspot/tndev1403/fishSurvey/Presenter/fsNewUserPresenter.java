@@ -1,6 +1,7 @@
 package com.blogspot.tndev1403.fishSurvey.Presenter;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.view.View;
 import android.widget.Toast;
@@ -15,11 +16,17 @@ import es.dmoral.toasty.Toasty;
 public class fsNewUserPresenter {
     fsNewUserActivity newUserActivity;
     fsUser previousUser;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     public fsNewUserPresenter(fsNewUserActivity newUserActivity) {
         this.newUserActivity = newUserActivity;
+        initSharedPreferences();
         initUserAndFill();
         initEvent();
+    }
+
+    private void initSharedPreferences() {
     }
 
     private void initUserAndFill() {
