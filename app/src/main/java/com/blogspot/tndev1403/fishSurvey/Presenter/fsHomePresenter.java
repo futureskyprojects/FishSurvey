@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -298,17 +299,18 @@ public class fsHomePresenter {
 
 
     private void initCategozieClick() {
-        for (int i = 0; i < mContext.categozies.length; i++) {
+        for (int i = 0; i < mContext.categozies.size(); i++) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mContext.categozies[i].setClipToOutline(true);
+                mContext.categozies.get(i).setClipToOutline(true);
             }
             final int finalI = i;
-            mContext.categozies[i].setOnClickListener(new View.OnClickListener() {
+            final int finalI1 = i;
+            mContext.categozies.get(i).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if ((finalI + 1) == mContext.categozies.length)
+                    if ((finalI + 1) == mContext.categozies.size())
                     {
-                        fsElement element = new fsElement(-1, -1, "Other families - Những loài khác", TNLib.Using.DrawableToBitmap(mContext, R.drawable.ic_question), "");
+                        fsElement element = new fsElement(-1, -1, "Other families - Những loài khác", ((BitmapDrawable)mContext.categozies.get(finalI1).getDrawable()).getBitmap(), "");
                         fsElementPresenter.CURRENT_SELECTED_ELEMENT = element;
                         Intent catchedIntent = new Intent(mContext, fsCatchedInputActivity.class);
                         mContext.startActivity(catchedIntent);
@@ -323,10 +325,10 @@ public class fsHomePresenter {
                     }
                 }
             });
-            mContext.categozies[i].setOnLongClickListener(new View.OnLongClickListener() {
+            mContext.categozies.get(i).setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    if ((finalI + 1) == mContext.categozies.length)
+                    if ((finalI + 1) == mContext.categozies.size())
                         return true;
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     LayoutInflater layoutInflater = LayoutInflater.from(mContext);

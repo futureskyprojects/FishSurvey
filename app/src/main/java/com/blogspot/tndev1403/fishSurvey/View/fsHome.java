@@ -23,6 +23,7 @@ import com.blogspot.tndev1403.fishSurvey.Model.fsCatchedHandler;
 import com.blogspot.tndev1403.fishSurvey.Presenter.fsHomePresenter;
 import com.blogspot.tndev1403.fishSurvey.R;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -31,7 +32,7 @@ public class fsHome extends AppCompatActivity
     /* Declare global view */
     public Button btnOtherCategorizes;
     public Toolbar toolbar;
-    public ImageView categozies[];
+    public ArrayList<ImageView> categozies;
     public DrawerLayout drawer;
 
     public ImageView ivEditProfile;
@@ -51,6 +52,7 @@ public class fsHome extends AppCompatActivity
     /* Declare presenter */
     fsHomePresenter presenter;
     public static int FishList[] = {R.drawable.f1, R.drawable.f2, R.drawable.f3, R.drawable.f4, R.drawable.f5, R.drawable.f6, R.drawable.f7, R.drawable.ic_question};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,20 +78,22 @@ public class fsHome extends AppCompatActivity
     private void initPresenter() {
         presenter = new fsHomePresenter(fsHome.this);
     }
+
     private void initToolbar() {
         getSupportActionBar().setTitle(R.string.choose_family);
     }
+
     private void initView() {
         btnOtherCategorizes = (Button) findViewById(R.id.fsc_other_btn);
-        categozies = new ImageView[6];
-        categozies[0] = (ImageView) findViewById(R.id.fsc_g1);
-        categozies[1] = (ImageView) findViewById(R.id.fsc_g2);
-        categozies[2] = (ImageView) findViewById(R.id.fsc_g3);
-        categozies[3] = (ImageView) findViewById(R.id.fsc_g4);
-        categozies[4] = (ImageView) findViewById(R.id.fsc_g5);
-        categozies[5] = (ImageView) findViewById(R.id.fsc_g6);
-        categozies[6] = (ImageView) findViewById(R.id.fsc_g7);
-        categozies[7] = (ImageView) findViewById(R.id.fsc_g8);
+        categozies = new ArrayList<>();
+        categozies.add((ImageView) findViewById(R.id.fsc_g1));
+        categozies.add((ImageView) findViewById(R.id.fsc_g2));
+        categozies.add((ImageView) findViewById(R.id.fsc_g3));
+        categozies.add((ImageView) findViewById(R.id.fsc_g4));
+        categozies.add((ImageView) findViewById(R.id.fsc_g5));
+        categozies.add((ImageView) findViewById(R.id.fsc_g6));
+        categozies.add((ImageView) findViewById(R.id.fsc_g7));
+        categozies.add((ImageView) findViewById(R.id.fsc_g8));
         //--------------------------
         ivEditProfile = (ImageView) findViewById(R.id.edit_profile);
         lnReview = (LinearLayout) findViewById(R.id.review);
@@ -122,6 +126,7 @@ public class fsHome extends AppCompatActivity
         lnEndTrip.setBackground(getResources().getDrawable(R.drawable.background_danger));
         tvEndTripText.setText(R.string.end_trip);
     }
+
     public void CreateNewTripButton() {
         lnAllFamilies.setVisibility(View.INVISIBLE);
         tvNoTrips.setVisibility(View.VISIBLE);
