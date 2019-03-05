@@ -34,7 +34,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/background_image"
                 android:scaleType="fitXY"
-                android:src="@drawable/g1" />
+                android:src="@drawable/f1" />
 
             <ImageView
                 android:id="@+id/fsc_g2"
@@ -45,7 +45,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/background_image"
                 android:scaleType="fitXY"
-                android:src="@drawable/g2" />
+                android:src="@drawable/f2" />
         </LinearLayout>
 
         <LinearLayout
@@ -67,7 +67,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/background_image"
                 android:scaleType="fitXY"
-                android:src="@drawable/g3" />
+                android:src="@drawable/f3" />
 
             <ImageView
                 android:id="@+id/fsc_g4"
@@ -78,7 +78,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/background_image"
                 android:scaleType="fitXY"
-                android:src="@drawable/g4" />
+                android:src="@drawable/f4" />
         </LinearLayout>
 
         <LinearLayout
@@ -100,7 +100,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/background_image"
                 android:scaleType="fitXY"
-                android:src="@drawable/g5" />
+                android:src="@drawable/f5" />
 
             <ImageView
                 android:id="@+id/fsc_g6"
@@ -111,9 +111,41 @@
                 android:layout_weight="1"
                 android:background="@drawable/background_image"
                 android:scaleType="fitXY"
-                android:src="@drawable/g6" />
+                android:src="@drawable/f6" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <ImageView
+                android:id="@+id/fsc_g7"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/background_image"
+                android:scaleType="fitXY"
+                android:src="@drawable/f7" />
+
+            <ImageView
+                android:id="@+id/fsc_g8"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/background_image"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_question" />
+        </LinearLayout>
         <Button
             android:id="@+id/fsc_other_btn"
             android:layout_width="match_parent"
@@ -123,18 +155,21 @@
             android:text="@string/otherCategorize"
             android:textColor="@android:color/white" />
     </LinearLayout>
+
     <TextView
         android:id="@+id/no_trip_show"
-        android:textStyle="bold"
-        android:shadowRadius="1"
-        android:shadowDy="2"
-        android:shadowDx="2"
-        android:shadowColor="@color/colorAccent"
-        android:textSize="24sp"
-        android:textColor="@android:color/holo_red_dark"
-        android:gravity="center"
-        android:background="@drawable/background_home"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/please_create_new_tri"/>
+        android:background="@drawable/background_home"
+        android:gravity="center"
+        android:shadowColor="@color/colorAccent"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="1"
+        android:text="@string/please_create_new_tri"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
 </android.support.constraint.ConstraintLayout>

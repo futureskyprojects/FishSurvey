@@ -53,7 +53,12 @@ public class fsSavedDataAdapter extends RecyclerView.Adapter<fsSavedDataAdapter.
     public void onBindViewHolder(@NonNull final fsSavedDataAdapter.fsRecycleViewHolder fsRecycleViewHolder, final int i) {
         final fsCatched catched = catcheds.get(i);
         final fsElement element = handler.getEntry(catched.getElementID());
-        fsRecycleViewHolder.tvFishName.setText(element.getName());
+        String code = ApplicationConfig.LANGUAGE.GetLanguageCode(mContext);
+        String[] names = element.getName().split(" - ");
+        if (code == "vi") {
+            fsRecycleViewHolder.tvFishName.setText(names[(names.length >= 2 ? 1 : 0)]);
+        } else
+            fsRecycleViewHolder.tvFishName.setText(names[0]);
         fsRecycleViewHolder.tvClock.setText(catched.getCatchedTime());
         final String[] FileNames = catched.getImagePath().trim().split(" ");
         Log.d("XXXYYY", "onBindViewHolder: \n[" + catched.getImagePath().trim() + "]");

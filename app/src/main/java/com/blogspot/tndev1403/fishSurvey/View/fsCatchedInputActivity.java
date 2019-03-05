@@ -86,9 +86,14 @@ public class fsCatchedInputActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent elementIntent = new Intent(this, fsElementActivity.class);
-        elementIntent.putExtra(ApplicationConfig.CategorizeAPI.ID, fsHomePresenter.GID  + 1);
-        elementIntent.putExtra(ApplicationConfig.CategorizeAPI.Name, "G" + fsHomePresenter.GID);
+        Intent elementIntent;
+        if (fsElementPresenter.CURRENT_SELECTED_ELEMENT.getID() != -1) {
+            elementIntent = new Intent(this, fsElementActivity.class);
+            elementIntent.putExtra(ApplicationConfig.CategorizeAPI.ID, fsHomePresenter.GID  + 1);
+            elementIntent.putExtra(ApplicationConfig.CategorizeAPI.Name, "G" + fsHomePresenter.GID);
+        } else {
+            elementIntent = new Intent(this, fsHome.class);
+        }
         startActivity(elementIntent);
         finish();
         super.onBackPressed();

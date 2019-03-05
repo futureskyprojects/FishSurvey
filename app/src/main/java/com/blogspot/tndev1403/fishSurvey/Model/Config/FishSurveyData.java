@@ -72,6 +72,11 @@ public class FishSurveyData {
         elements.add(new fsElement(44, 6, "Banded Eagle ray (Aetomylaeus nichofii) - Cá ó không gai", BitmapFromID(R.drawable.feature_image_44), ""));
         elements.add(new fsElement(45, 6, "Blotched Fantail ray (Taeniura meyeni) - Cá đuối", BitmapFromID(R.drawable.feature_image_45), ""));
         elements.add(new fsElement(46, 6, "Zebra shark (Stegostoma fasciatum) - Cá nhám nhu mì", BitmapFromID(R.drawable.feature_image_46), ""));
+        elements.add(new fsElement(47, 7, "Green turtle - Rùa xanh", BitmapFromID(R.drawable.feature_image_47), ""));
+        elements.add(new fsElement(48, 7, "Hawksbill turtle - Rùa Hawksbill", BitmapFromID(R.drawable.feature_image_48), ""));
+        elements.add(new fsElement(49, 7, "Leatherback turtle - Rùa da lưng", BitmapFromID(R.drawable.feature_image_49), ""));
+        elements.add(new fsElement(50, 7, "Loggerhead turtle - Rùa đầu to", BitmapFromID(R.drawable.feature_image_50), ""));
+        elements.add(new fsElement(51, 7, "Olive Ridley turtle - Rùa Olive Ridley", BitmapFromID(R.drawable.feature_image_51), ""));
         return elements;
     }
 

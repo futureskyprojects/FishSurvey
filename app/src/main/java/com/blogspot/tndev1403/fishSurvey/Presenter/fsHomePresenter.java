@@ -17,12 +17,14 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
+import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsElement;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsUser;
 import com.blogspot.tndev1403.fishSurvey.Model.Services.API;
 import com.blogspot.tndev1403.fishSurvey.Model.Services.SyncDataService;
 import com.blogspot.tndev1403.fishSurvey.Model.fsCatchedHandler;
 import com.blogspot.tndev1403.fishSurvey.R;
 import com.blogspot.tndev1403.fishSurvey.TNLib;
+import com.blogspot.tndev1403.fishSurvey.View.fsCatchedInputActivity;
 import com.blogspot.tndev1403.fishSurvey.View.fsElementActivity;
 import com.blogspot.tndev1403.fishSurvey.View.fsHome;
 import com.blogspot.tndev1403.fishSurvey.View.fsNewUserActivity;
@@ -62,7 +64,7 @@ public class fsHomePresenter {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                final int notSyncNumber = catchedHandler.getAllEntryDifferentWithCurrentTripID(fsHomePresenter.CURRENT_TRIP_ID).size();
+                final int notSyncNumber = catchedHandler.CountNotSyncRecords();
                 mContext.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -300,22 +302,32 @@ public class fsHomePresenter {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 mContext.categozies[i].setClipToOutline(true);
             }
-            final int temp = i;
+            final int finalI = i;
             mContext.categozies[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    GID = temp;
-                    Intent elementIntent = new Intent(mContext, fsElementActivity.class);
-                    elementIntent.putExtra(ApplicationConfig.CategorizeAPI.ID, temp + 1);
-                    elementIntent.putExtra(ApplicationConfig.CategorizeAPI.Name, "G" + temp);
-                    mContext.startActivity(elementIntent);
-                    mContext.finish();
+                    if ((finalI + 1) == mContext.categozies.length)
+                    {
+                        fsElement element = new fsElement(-1, -1, "Other families - Những loài khác", TNLib.Using.DrawableToBitmap(mContext, R.drawable.ic_question), "");
+                        fsElementPresenter.CURRENT_SELECTED_ELEMENT = element;
+                        Intent catchedIntent = new Intent(mContext, fsCatchedInputActivity.class);
+                        mContext.startActivity(catchedIntent);
+                        mContext.finish();
+                    } else {
+                        GID = finalI;
+                        Intent elementIntent = new Intent(mContext, fsElementActivity.class);
+                        elementIntent.putExtra(ApplicationConfig.CategorizeAPI.ID, finalI + 1);
+                        elementIntent.putExtra(ApplicationConfig.CategorizeAPI.Name, "G" + finalI);
+                        mContext.startActivity(elementIntent);
+                        mContext.finish();
+                    }
                 }
             });
-            final int finalI = i;
             mContext.categozies[i].setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+                    if ((finalI + 1) == mContext.categozies.length)
+                        return true;
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     LayoutInflater layoutInflater = LayoutInflater.from(mContext);
                     View full_preview = layoutInflater.inflate(R.layout.dialog_preview, null);

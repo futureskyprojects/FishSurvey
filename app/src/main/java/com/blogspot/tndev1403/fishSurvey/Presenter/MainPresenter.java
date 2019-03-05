@@ -1,8 +1,12 @@
 package com.blogspot.tndev1403.fishSurvey.Presenter;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 
 import com.blogspot.tndev1403.fishSurvey.MainActivity;
+import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
 import com.blogspot.tndev1403.fishSurvey.Model.Config.FishSurveyData;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsElement;
 import com.blogspot.tndev1403.fishSurvey.Model.MainModel;
@@ -27,14 +31,30 @@ public class MainPresenter {
         mainModel = new MainModel(mContext);
         data = new FishSurveyData(mContext);
         initArguments();
-        CheckInitData();
+        CheckPermission();
+    }
+
+    private void CheckPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (mContext.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                    mContext.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    mContext.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    mContext.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+            ) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    mContext.requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE}, ApplicationConfig.PERMISSION.ALL_PERMISSION);
+                }
+            } else
+                CheckInitData();
+        }
+        else CheckInitData();
     }
 
     private void initArguments() {
         handler = new fsElementHandler(mContext);
     }
 
-    private void CheckInitData() {
+    public void CheckInitData() {
         count = 0;
         int length = handler.getAllEntry().size();
         final ArrayList<fsElement> elements = data.CreateData();
@@ -82,12 +102,10 @@ public class MainPresenter {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                if (count < 30)
-                {
+                if (count < 30) {
                     count++;
                     return;
-                }
-                else {
+                } else {
                     this.cancel();
                     mContext.runOnUiThread(new Runnable() {
                         @Override

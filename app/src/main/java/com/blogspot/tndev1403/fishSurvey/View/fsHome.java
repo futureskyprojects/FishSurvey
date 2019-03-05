@@ -50,7 +50,7 @@ public class fsHome extends AppCompatActivity
 
     /* Declare presenter */
     fsHomePresenter presenter;
-    public static int FishList[] = {R.drawable.g1, R.drawable.g2, R.drawable.g3, R.drawable.g4, R.drawable.g5, R.drawable.g6};
+    public static int FishList[] = {R.drawable.f1, R.drawable.f2, R.drawable.f3, R.drawable.f4, R.drawable.f5, R.drawable.f6, R.drawable.f7, R.drawable.ic_question};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +88,8 @@ public class fsHome extends AppCompatActivity
         categozies[3] = (ImageView) findViewById(R.id.fsc_g4);
         categozies[4] = (ImageView) findViewById(R.id.fsc_g5);
         categozies[5] = (ImageView) findViewById(R.id.fsc_g6);
+        categozies[6] = (ImageView) findViewById(R.id.fsc_g7);
+        categozies[7] = (ImageView) findViewById(R.id.fsc_g8);
         //--------------------------
         ivEditProfile = (ImageView) findViewById(R.id.edit_profile);
         lnReview = (LinearLayout) findViewById(R.id.review);

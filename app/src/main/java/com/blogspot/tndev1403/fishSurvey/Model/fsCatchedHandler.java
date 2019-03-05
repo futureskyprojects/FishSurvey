@@ -5,10 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsCatched;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsCatched;
+import com.blogspot.tndev1403.fishSurvey.Presenter.fsHomePresenter;
 import com.blogspot.tndev1403.fishSurvey.TNLib;
 
 import java.util.ArrayList;
@@ -114,16 +116,27 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
         return catched;
     }
 
-    public ArrayList<fsCatched> getAllEntryDifferentWithCurrentTripID(String Trip_ID) {
-        ArrayList<fsCatched> catcheds = new ArrayList<>();
-        String Query = "SELECT * FROM " + TABLE_NAME;
+
+    public int CountNotSyncRecords() {
+        String Query = "SELECT * FROM " + TABLE_NAME + " WHERE " + TRIP_ID + " !=?";
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(Query, null);
+        Cursor cursor = db.rawQuery(Query, new String[]{fsHomePresenter.CURRENT_TRIP_ID});
+        if (cursor == null)
+            return 0;
+        else
+            return cursor.getCount();
+    }
+    public ArrayList<fsCatched> getAllEntryDifferentWithCurrentTripID(String Trip_ID) {
+        Log.w(">>>>>>>>>>>>>>>> ", Trip_ID);
+        ArrayList<fsCatched> catcheds = new ArrayList<>();
+        String Query = "SELECT * FROM " + TABLE_NAME + " WHERE " + TRIP_ID + " !=?";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(Query, new String[]{Trip_ID});
         if (cursor != null)
             cursor.moveToFirst();
         else
-            return catcheds;
-        while (cursor.isAfterLast() == false) {
+            return null;
+        while (!cursor.isAfterLast()) {
             fsCatched catched = new fsCatched(
                     cursor.getInt(0),
                     cursor.getInt(1),
@@ -137,8 +150,7 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
                     cursor.getString(9),
                     cursor.getString(10)
             );
-            if (!catched.getTrip_id().equals(Trip_ID))
-                catcheds.add(catched);
+            catcheds.add(catched);
             cursor.moveToNext();
         }
         return catcheds;
@@ -147,12 +159,13 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
     public int CountAllEntry(String Trip_ID) {
         String Query = "SELECT * FROM " + TABLE_NAME + " WHERE " + TRIP_ID + " =?";
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(Query, new String[] {Trip_ID});
+        Cursor cursor = db.rawQuery(Query, new String[]{Trip_ID});
         if (cursor == null)
             return 0;
         else
             return cursor.getCount();
     }
+
     public ArrayList<fsCatched> getAllEntry(String Trip_ID) {
         ArrayList<fsCatched> catcheds = new ArrayList<>();
         String Query = "SELECT * FROM " + TABLE_NAME;
@@ -176,8 +189,7 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
                     cursor.getString(9),
                     cursor.getString(10)
             );
-            if (catched.getTrip_id().equals(Trip_ID))
-            {
+            if (catched.getTrip_id().equals(Trip_ID)) {
                 catcheds.add(0, catched);
             }
             cursor.moveToNext();
