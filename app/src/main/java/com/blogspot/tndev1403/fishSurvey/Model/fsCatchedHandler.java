@@ -188,7 +188,7 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
     public int UpdateAllFinishedTimeOfATrip(String trip_id) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues c = new ContentValues();
-        c.put(CATCHED_TIME, TNLib.Using.GetNowTimeString());
+        c.put(FINISHED_TIME, TNLib.Using.GetReverseCurrentDateString());
         int x = db.update(TABLE_NAME, c, this.TRIP_ID + " = ?", new String[]{trip_id});
         db.close();
         return x;

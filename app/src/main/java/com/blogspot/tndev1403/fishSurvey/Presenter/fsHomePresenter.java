@@ -117,10 +117,6 @@ public class fsHomePresenter {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         sweetAlertDialog.cancel();
-                        editor.putString(ID_KEY, "");
-                        editor.commit();
-                        initTrips();
-                        initButtonReview();
                         final SweetAlertDialog al = new SweetAlertDialog(mContext, SweetAlertDialog.PROGRESS_TYPE)
                                 .setTitleText("ĐANG XỬ LÝ");
                         al.setCancelable(false);
@@ -138,6 +134,15 @@ public class fsHomePresenter {
                                                     .setTitleText("HOÀN TẤT!")
                                                     .setConfirmButton("Đóng", null);
                                             sw.show();
+                                        }
+                                    });
+                                    editor.putString(ID_KEY, "");
+                                    editor.commit();
+                                    mContext.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            initTrips();
+                                            initButtonReview();
                                         }
                                     });
                                 }

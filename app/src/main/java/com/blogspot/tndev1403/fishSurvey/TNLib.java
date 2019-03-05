@@ -33,6 +33,7 @@ import java.util.concurrent.ExecutionException;
 
 public class TNLib {
     public final static String TAG = "TNLib";
+
     public static class Location {
         public static Address getAddress(Context mContext, double lat, double lng) {
             Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
@@ -42,17 +43,25 @@ public class TNLib {
                 return obj;
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.e(TAG, "getAddress: " +e.getMessage() );
+                Log.e(TAG, "getAddress: " + e.getMessage());
             }
             return null;
         }
     }
+
     public static class Using {
-        public static String DateTimeStringFromTimeStamp(String timestamp) {
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        public static String DateTimeStringReverseFromTimeStamp(String timestamp) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             String dateString = formatter.format(new Date(Long.parseLong(timestamp)));
             return dateString;
         }
+
+        public static String DateTimeStringFromTimeStamp(String timestamp) {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            String dateString = formatter.format(new Date(Long.parseLong(timestamp)));
+            return dateString;
+        }
+
         public static boolean IsMyServiceRunning(Context mContext, Class<?> serviceClass) {
             ActivityManager manager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
             for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -62,43 +71,63 @@ public class TNLib {
             }
             return false;
         }
+
+        public static String GetReverseCurrentDateString() {
+            Calendar calendarX = Calendar.getInstance();
+            String str = calendarX.get(Calendar.YEAR) + "-" + (calendarX.get(Calendar.MONTH) + 1) + "-"
+                    + calendarX.get(Calendar.DAY_OF_MONTH);
+            return str;
+        }
+
+        public static String MyCalendarToReverseString(Calendar calendarX) {
+            String str = calendarX.get(Calendar.YEAR) + "-" + (calendarX.get(Calendar.MONTH) + 1) +
+                    "-" + calendarX.get(Calendar.DAY_OF_MONTH) + " " + calendarX.get(Calendar.HOUR_OF_DAY) + ":" +
+                    calendarX.get(Calendar.MINUTE) + ":" + calendarX.get(Calendar.SECOND);
+            return str;
+        }
         public static String MyCalendarToString(Calendar calendarX) {
             String String = calendarX.get(Calendar.HOUR_OF_DAY) + ":" +
-                    calendarX.get(Calendar.MINUTE) + " " + calendarX.get(Calendar.DAY_OF_MONTH) + "/" +
-                    (calendarX.get(Calendar.MONTH) + 1) + "/" + calendarX.get(Calendar.YEAR);
+                    calendarX.get(Calendar.MINUTE) + " " + calendarX.get(Calendar.DAY_OF_MONTH) + "-" +
+                    (calendarX.get(Calendar.MONTH) + 1) + "-" + calendarX.get(Calendar.YEAR);
             return String;
         }
+
         public static String GetNowTimeString() {
             Calendar calendarX = Calendar.getInstance();
             return MyCalendarToString(calendarX);
         }
+
         public static String GetCurrentTimeStamp() {
-            Long tsLong = System.currentTimeMillis()/1000;
+            Long tsLong = System.currentTimeMillis() / 1000;
             String ts = tsLong.toString();
             return ts;
         }
+
         public static String StringListToSingalString(ArrayList<String> arr) {
             String res = "";
-            for (int i = 0; i < arr.size();i++) {
+            for (int i = 0; i < arr.size(); i++) {
                 res += arr.get(i) + " ";
             }
             Log.d(TAG, "StringListToSingalString: >" + res);
             return res;
         }
+
         public static String Base64FromImageFile(String _Path) {
             Bitmap bm = BitmapFromFilePath(_Path);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             bm.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-            byte[] byteArray = byteArrayOutputStream .toByteArray();
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
             String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
             return encoded;
         }
+
         public static Bitmap BitmapFromFilePath(String _Path) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             Bitmap bitmap = BitmapFactory.decodeFile(_Path, options);
             return bitmap;
         }
+
         public static boolean SaveImage(Bitmap bm, String fn, String destDir) {
             // Check and create dir if nessasary
             File dest = new File(destDir);
@@ -121,6 +150,7 @@ public class TNLib {
             }
 
         }
+
         private void createDirectoryAndSaveFile(Bitmap imageToSave, String fileName) {
 
             File direct = new File(Environment.getExternalStorageDirectory() + "/DirName");
@@ -143,15 +173,18 @@ public class TNLib {
                 e.printStackTrace();
             }
         }
+
         public static Bitmap BytesToBitmap(byte[] bytes) {
             return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         }
+
         public static byte[] BitmapToBytes(Bitmap bm) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
             return stream.toByteArray();
         }
-        public static String getContent(String _URL){
+
+        public static String getContent(String _URL) {
             String result = "";
             try {
                 result = new getContentFromURL().execute(_URL).get();
@@ -161,6 +194,7 @@ public class TNLib {
             Log.d(TAG, "getContent: " + result);
             return result;
         }
+
         public static Bitmap getBitmap(String _URL) {
             try {
                 return new getBitmapFromURL().execute(_URL).get();
@@ -169,16 +203,18 @@ public class TNLib {
                 return null;
             }
         }
-        public static String DateToString(Date inp){
+
+        public static String DateToString(Date inp) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss'Z'dd/MM/yyyy'T'");
             try {
                 String result = simpleDateFormat.format(inp);
                 return result;
             } catch (Exception e) {
-                Log.e(TAG, "DateToString: " + e.getMessage() );
+                Log.e(TAG, "DateToString: " + e.getMessage());
                 return "";
             }
         }
+
         public static Date StringToDateTime(String inp) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss'Z'dd/MM/yyyy'T'");
             try {
@@ -189,6 +225,7 @@ public class TNLib {
                 return null;
             }
         }
+
         public static Date StringToDate(String inp) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             try {
@@ -203,6 +240,7 @@ public class TNLib {
             return ((BitmapDrawable) mContext.getResources().getDrawable(id)).getBitmap();
         }
     }
+
     public static class getContentFromURL extends AsyncTask<String, Integer, String> {
 
         @Override
@@ -223,11 +261,12 @@ public class TNLib {
             super.onPostExecute(s);
         }
     }
+
     public static class getBitmapFromURL extends AsyncTask<String, Integer, Bitmap> {
         @Override
         protected Bitmap doInBackground(String... imageUrl) {
             try {
-                URL url = new URL(imageUrl[0].replace("https","http"));
+                URL url = new URL(imageUrl[0].replace("https", "http"));
                 return BitmapFactory.decodeStream(url.openConnection().getInputStream());
             } catch (Exception e) {
                 return null;
@@ -243,6 +282,7 @@ public class TNLib {
             super.onPostExecute(bitmap);
         }
     }
+
     //region InputStream to String
     public static String InputStreamToString(InputStream is) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));

@@ -209,8 +209,6 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                     mContext.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (saving.isShowing())
-                                saving.cancel();
                             SweetAlertDialog alertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("THIẾU!")
                                     .setContentText("Vui lòng nhập đầy đủ thông tin.")
@@ -260,7 +258,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                                 }
                             }
                             catched = new fsCatched(finalMAX_ID + 1, fsElementPresenter.CURRENT_SELECTED_ELEMENT.getID(), TNLib.Using.GetNowTimeString(),
-                                    FLength, FWeight, TNLib.Using.MyCalendarToString(calendar), mLastLocation.getLatitude() + "", mLastLocation.getLongitude() + "", TNLib.Using.StringListToSingalString(FileNames), fsHomePresenter.CURRENT_TRIP_ID, "");
+                                    FLength, FWeight, TNLib.Using.MyCalendarToReverseString(calendar), mLastLocation.getLatitude() + "", mLastLocation.getLongitude() + "", TNLib.Using.StringListToSingalString(FileNames), fsHomePresenter.CURRENT_TRIP_ID, "");
                             try {
                                 handler.addEntry(catched);
                                 mContext.runOnUiThread(new Runnable() {

@@ -51,8 +51,9 @@ public class SyncDataService extends Service {
     boolean IS_FINISHED_CAPTAIN_SYNC = false;
     int FINISHED_SYNC_RECORDS = 0;
     boolean isUpAndSyncCaptain = false;
-    boolean isSyncRecords = false;
+    boolean isSyncRecording = false;
     Timer mServiceTimer;
+    int CAPTAIN_ID = -1;
     int TYPE = -1;
 
     public SyncDataService() {
@@ -64,7 +65,6 @@ public class SyncDataService extends Service {
         catchedHandler = new fsCatchedHandler(this);
         cathceds = new ArrayList<>();
         showNotification();
-        GetAndCheckData();
         TimerCheckInternet();
         return START_STICKY;
     }
@@ -83,40 +83,42 @@ public class SyncDataService extends Service {
 
     //region Sync Records
     void SyncRecords() {
-        if (isSyncRecords)
-            return;
-        else
-            isSyncRecords = true;
+        GetAndCheckData();
+        if (cathceds.size() <= 0)
+        {
+            Log.w(TAG, "SyncRecords: Empty!" );
+            stopSelf();
+        }
         FINISHED_SYNC_RECORDS = 0;
         SyncNotificaion();
 //        UpdateProgress(0);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < 1; i++) {
-                    final fsCatched catched = cathceds.get(i);
-                    final JSONObject JSONSend = new JSONObject();
-                    try {
-                        JSONSend.put(API.Record.CAPTAIN_ID, catched.getID());
-                        // --- TRIP --- //
-                        JSONObject trip = new JSONObject();
-                        trip.put(API.Record.trip.FROM_DATE, TNLib.Using.DateTimeStringFromTimeStamp(catched.getTrip_id()));
-                        trip.put(API.Record.trip.TO_DATE, catched.getFinished_time());
-                        trip.put(API.Record.trip.DESCRIPTION, "<Empty>");
-                        JSONSend.put(API.Record.trip.class.getSimpleName().toLowerCase(), trip);
-                        //-------------//
-                        JSONSend.put(API.Record.FISH_ID, catched.getElementID());
-                        JSONSend.put(API.Record.LONG, catched.getLength());
-                        JSONSend.put(API.Record.WEIGHT, catched.getWeight());
-                        JSONSend.put(API.Record.LAT, catched.getLatitude());
-                        JSONSend.put(API.Record.LNG, catched.getLatitude());
-                        JSONSend.put(API.Record.images.class.getSimpleName().toLowerCase(), null);//GetJsonOfImages(catched));
-                        JSONSend.put(API.Record.CATCHED_AT, catched.getCatchedTime());
-                    } catch (JSONException e) {
-                        Log.e(TAG, "SyncRecords: " + e.getMessage());
-                        e.printStackTrace();
-                    }
-                    //////
+        for (int i = 0; i < 1; i++) {
+            final fsCatched catched = cathceds.get(i);
+            final JSONObject JSONSend = new JSONObject();
+            try {
+                JSONSend.put(API.Record.CAPTAIN_ID, CAPTAIN_ID);
+                // --- TRIP --- //
+                JSONObject trip = new JSONObject();
+                trip.put(API.Record.trip.FROM_DATE, TNLib.Using.DateTimeStringReverseFromTimeStamp(catched.getTrip_id()));
+                trip.put(API.Record.trip.TO_DATE, catched.getFinished_time());
+                trip.put(API.Record.trip.DESCRIPTION, "<Empty>");
+                JSONSend.put(API.Record.trip.class.getSimpleName().toLowerCase(), trip);
+                //-------------//
+                JSONSend.put(API.Record.FISH_ID, catched.getElementID());
+                JSONSend.put(API.Record.LONG, catched.getLength());
+                JSONSend.put(API.Record.WEIGHT, catched.getWeight());
+                JSONSend.put(API.Record.LAT, catched.getLatitude());
+                JSONSend.put(API.Record.LNG, catched.getLatitude());
+                JSONSend.put(API.Record.images.class.getSimpleName().toLowerCase(), GetJsonOfImages(catched));
+                JSONSend.put(API.Record.CATCHED_AT, catched.getCatchedTime());
+            } catch (JSONException e) {
+                Log.e(TAG, "SyncRecords: " + e.getMessage());
+                e.printStackTrace();
+            }
+            //////
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
                     try {
                         URL url = new URL(ApplicationConfig.Record);
                         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -133,21 +135,20 @@ public class SyncDataService extends Service {
                         InputStream is = conn.getInputStream();
                         Log.w(TAG, "run: " + TNLib.InputStreamToString(is));
                         Log.w("STATUS", String.valueOf(conn.getResponseCode()));
-//                        if (conn.getResponseCode() == 200) {
-//                            Log.d(TAG, "SyncRecords: Have JSON is " + JSONSend.toString());
-//                            catchedHandler.deleteEntry(catched.getID());
-//                            FINISHED_SYNC_RECORDS++;
-//                            Log.w(TAG, "run: " + TNLib.InputStreamToString(is));
-//                        }
+                        if (conn.getResponseCode() == 200) {
+                            Log.d(TAG, "SyncRecords: Have JSON is " + JSONSend.toString());
+                            catchedHandler.deleteEntry(catched.getID());
+                            FINISHED_SYNC_RECORDS++;
+                            Log.w(TAG, "run: " + TNLib.InputStreamToString(is));
+                        }
                         conn.disconnect();
                     } catch (Exception e) {
                         Log.e("API", "Send: " + e.getMessage());
                     }
 //                    UpdateProgress(i + 1);
                 }
-                isSyncRecords = false;
-            }
-        }).start();
+            }).start();
+        }
     }
 
     private JSONObject GetJsonOfImages(fsCatched catched) {
@@ -212,6 +213,7 @@ public class SyncDataService extends Service {
                         String ResponeID = obj.getJSONObject("data").getString(API.Captain.ID);
                         user.setUserID(ResponeID);
                         user.commit();
+                        CAPTAIN_ID = Integer.parseInt(ResponeID);
                     }
                     Log.w(TAG, "run: " + TNLib.InputStreamToString(is));
                     Log.w("STATUS", String.valueOf(conn.getResponseCode()));
@@ -221,6 +223,7 @@ public class SyncDataService extends Service {
                 }
                 IS_FINISHED_CAPTAIN_SYNC = true;
                 isUpAndSyncCaptain = false;
+                RunSync();
             }
         }).start();
     }
@@ -327,7 +330,7 @@ public class SyncDataService extends Service {
                     if (!IS_FINISHED_CAPTAIN_SYNC)
                         UpAndSyncCaptain();
                     else if (FINISHED_SYNC_RECORDS < cathceds.size())
-                        SyncRecords();
+                        RunSync();
                     else {
                         mServiceTimer.cancel();
                         stopSelf();
@@ -337,7 +340,12 @@ public class SyncDataService extends Service {
         }, 200, 300);
     }
     //endregion
-
+    void RunSync() {
+        if (!isSyncRecording) {
+            isSyncRecording = true;
+            SyncRecords();
+        }
+    }
     @Override
     public IBinder onBind(Intent intent) {
         // Don't use it
