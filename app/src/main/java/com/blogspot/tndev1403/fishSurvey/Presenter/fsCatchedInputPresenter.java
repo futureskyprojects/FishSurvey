@@ -581,7 +581,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
     }
 
     public void setImageToListAndShowIt(Bitmap bm) {
-        bm = TNLib.Using.ResizeBitmap(bm, (int)(bm.getWidth()*ApplicationConfig.REDUCE_QUALITY_TO));
+        bm = TNLib.Using.ResizeBitmap(bm, 500);
         LIST_CATCHED_IMAGES.add(bm);
         adapter.notifyDataSetChanged();
         CURRENT_BITMAP = bm;

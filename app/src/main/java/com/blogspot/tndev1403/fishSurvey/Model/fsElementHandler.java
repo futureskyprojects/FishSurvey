@@ -98,16 +98,19 @@ public class fsElementHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
         else
             return new ArrayList<>();
-        while (cursor.isAfterLast() == false) {
-            fsElement element = new fsElement(
-                    cursor.getInt(0),
-                    cursor.getInt(1),
-                    cursor.getString(2),
-                    cursor.getBlob(3),
-                    cursor.getString(4)
-            );
-            elements.add(element);
-            cursor.moveToNext();
+        try {
+            while (cursor.isAfterLast() == false) {
+                fsElement element = new fsElement(
+                        cursor.getInt(0),
+                        cursor.getInt(1),
+                        cursor.getString(2),
+                        cursor.getBlob(3),
+                        cursor.getString(4)
+                );
+                elements.add(element);
+                cursor.moveToNext();
+            }
+        } catch (Exception e) {
         }
         return elements;
     }
