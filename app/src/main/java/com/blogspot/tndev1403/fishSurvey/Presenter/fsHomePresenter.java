@@ -21,6 +21,7 @@ import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsElement;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsUser;
 import com.blogspot.tndev1403.fishSurvey.Model.Services.API;
+import com.blogspot.tndev1403.fishSurvey.Model.Services.SleepServices;
 import com.blogspot.tndev1403.fishSurvey.Model.Services.SyncDataService;
 import com.blogspot.tndev1403.fishSurvey.Model.fsCatchedHandler;
 import com.blogspot.tndev1403.fishSurvey.R;
@@ -61,7 +62,15 @@ public class fsHomePresenter {
         initTrips();
         initEvent();
         initNotSync();
+        startBackgroundServicesIfNowHaveNow();
     }
+
+    private void startBackgroundServicesIfNowHaveNow() {
+        if (TNLib.Using.IsMyServiceRunning(mContext, SleepServices.class)) {
+            mContext.startService(new Intent(mContext, SleepServices.class));
+        }
+    }
+
     private void initNotSync() {
         tmUpdate = new Timer();
         tmUpdate.schedule(new TimerTask() {

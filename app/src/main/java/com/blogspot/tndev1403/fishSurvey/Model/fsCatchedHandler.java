@@ -116,6 +116,17 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
         return catched;
     }
 
+    public int CountNotSyncRecords(String ID) {
+        String Query = "SELECT * FROM " + TABLE_NAME + " WHERE " + TRIP_ID + " !=?";
+        SQLiteDatabase db = this.getReadableDatabase();
+        if (db == null || !db.isOpen())
+            return -1;
+        Cursor cursor = db.rawQuery(Query, new String[]{ID});
+        if (cursor == null)
+            return 0;
+        else
+            return cursor.getCount();
+    }
 
     public int CountNotSyncRecords() {
         String Query = "SELECT * FROM " + TABLE_NAME + " WHERE " + TRIP_ID + " !=?";

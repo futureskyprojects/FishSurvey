@@ -61,6 +61,7 @@ public class SyncDataService extends Service {
     Timer mServiceTimer;
     int CAPTAIN_ID = -1;
     int TYPE = -1;
+    boolean IS_FINISH_HOST = false;
 
     fsUser user;
 
@@ -82,6 +83,7 @@ public class SyncDataService extends Service {
         try {
             if (new API.UpdateHost().execute(ApplicationConfig.Host).get()) {
                 Log.w(TAG, "Init: Success upadate host " + ApplicationConfig.Host);
+                IS_FINISH_HOST = true;
             }
         } catch (Exception e) {
             Toasty.error(this, R.string.can_not_update_host_address, Toast.LENGTH_SHORT, true);
@@ -232,7 +234,7 @@ public class SyncDataService extends Service {
         user = new fsUser(this);
         final JSONObject JSONSend = new JSONObject();
         try {
-            if (!user.getUserID().isEmpty() && Integer.parseInt(user.getUserID())!= -1) {
+            if (!user.getUserID().isEmpty() && Integer.parseInt(user.getUserID()) != -1) {
                 Log.w(TAG, "UpAndSyncCaptain: " + "OK have ID is " + user.getUserID());
                 JSONSend.put(API.Captain.ID, Integer.parseInt(user.getUserID()));
             }
@@ -275,7 +277,7 @@ public class SyncDataService extends Service {
                         CAPTAIN_ID = Integer.parseInt(ResponeID);
                     }
                     Log.w(TAG, "run: " + response);
-                    Log.w("STATUS", "[" + conn.getURL() +"]" + response_code + "\n" + conn.getContent().toString());
+                    Log.w("STATUS", "[" + conn.getURL() + "]" + response_code + "\n" + conn.getContent().toString());
                     conn.disconnect();
                 } catch (Exception e) {
                     Log.e("API", "Send: " + e.getMessage());
@@ -390,7 +392,9 @@ public class SyncDataService extends Service {
                     WaitInternetNotificaion();
                 } else {
                     // Have internet
-                    if (!IS_FINISHED_CAPTAIN_SYNC)
+                    if (!IS_FINISH_HOST)
+                        Init();
+                    else if (!IS_FINISHED_CAPTAIN_SYNC)
                         UpAndSyncCaptain();
                     else if (FINISHED_SYNC_RECORDS < cathceds.size())
                         RunSync();
@@ -405,8 +409,7 @@ public class SyncDataService extends Service {
 
     //endregion
     void RunSync() {
-        if (CAPTAIN_ID == -1)
-        {
+        if (CAPTAIN_ID == -1) {
             stopSelf();
             return;
         }
