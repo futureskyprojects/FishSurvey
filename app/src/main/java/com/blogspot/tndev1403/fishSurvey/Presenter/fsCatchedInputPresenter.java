@@ -274,7 +274,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                     FileNames.add(FileName);
             }
             catched = new fsCatched(ID, fsElementPresenter.CURRENT_SELECTED_ELEMENT.getID(), TNLib.Using.GetNowTimeString(),
-                    strings[0], strings[1], TNLib.Using.MyCalendarToReverseString(calendar), mLastLocation.getLatitude() + "", mLastLocation.getLongitude() + "", TNLib.Using.StringListToSingalString(FileNames), fsHomePresenter.CURRENT_TRIP_ID, "");
+                    strings[1], strings[2], TNLib.Using.MyCalendarToReverseString(calendar), mLastLocation.getLatitude() + "", mLastLocation.getLongitude() + "", TNLib.Using.StringListToSingalString(FileNames), fsHomePresenter.CURRENT_TRIP_ID, "");
             try {
                 handler.addEntry(catched);
                 return true;

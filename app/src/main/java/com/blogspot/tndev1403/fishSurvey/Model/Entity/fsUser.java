@@ -2,6 +2,7 @@ package com.blogspot.tndev1403.fishSurvey.Model.Entity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import java.util.Date;
 
@@ -31,6 +32,7 @@ public class fsUser {
     }
 
     public void setUserID(String userID) {
+        Log.e(TAG, "setUserID: <140398> to " + userID);
         UserID = userID;
     }
 

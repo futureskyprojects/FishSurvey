@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.blogspot.tndev1403.fishSurvey.Model.fsCatchedHandler;
 import com.blogspot.tndev1403.fishSurvey.Presenter.fsHomePresenter;
@@ -25,26 +26,10 @@ public class SleepServices extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         init();
+        Toast.makeText(this, "Service run here", Toast.LENGTH_SHORT).show();
         return START_STICKY;
     }
-    class RunCheckRealTime extends AsyncTask<Void, Void, Void> {
 
-        @Override
-        protected Void doInBackground(Void... voids) {
-            if (Check() && !CheckRunningServices(SyncDataService.class))
-                startService(new Intent(getApplicationContext(), SyncDataService.class));
-            return null;
-        }
-    }
-    boolean CheckRunningServices(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
     boolean Check() {
         String ID = preferences.getString(fsHomePresenter.ID_KEY, "");
         int count = catchedHandler.CountNotSyncRecords(ID);
@@ -60,7 +45,7 @@ public class SleepServices extends Service {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                if (Check() && !CheckRunningServices(SyncDataService.class))
+                if (Check() && !TNLib.Using.IsMyServiceRunning(getApplicationContext(), SyncDataService.class))
                     startService(new Intent(getApplicationContext(), SyncDataService.class));
                 Log.w("SLEEP_SERVICES", "running...");
             }
@@ -71,6 +56,6 @@ public class SleepServices extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return null;
     }
 }

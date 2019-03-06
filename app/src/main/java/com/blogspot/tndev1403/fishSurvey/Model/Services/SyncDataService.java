@@ -1,6 +1,7 @@
 package com.blogspot.tndev1403.fishSurvey.Model.Services;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -10,6 +11,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -42,8 +44,6 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import es.dmoral.toasty.Toasty;
-
 public class SyncDataService extends Service {
     public final static String TAG = "SYNC_DATA_SERVICES";
     NotificationManager notificationManager;
@@ -54,15 +54,16 @@ public class SyncDataService extends Service {
     ArrayList<fsCatched> cathceds;
     Intent mIntent;
 
+    SharedPreferences preferences;
     boolean IS_FINISHED_CAPTAIN_SYNC = false;
     int FINISHED_SYNC_RECORDS = 0;
     boolean isUpAndSyncCaptain = false;
     boolean isSyncRecording = false;
     Timer mServiceTimer;
-    int CAPTAIN_ID = -1;
     int TYPE = -1;
     boolean IS_FINISH_HOST = false;
 
+    Handler viewHandler = new Handler();
     fsUser user;
 
     public SyncDataService() {
@@ -71,6 +72,7 @@ public class SyncDataService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         this.mIntent = intent;
+        preferences = getSharedPreferences("TRIP", Context.MODE_PRIVATE);
         Init();
         catchedHandler = new fsCatchedHandler(this);
         cathceds = new ArrayList<>();
@@ -86,7 +88,7 @@ public class SyncDataService extends Service {
                 IS_FINISH_HOST = true;
             }
         } catch (Exception e) {
-            Toasty.error(this, R.string.can_not_update_host_address, Toast.LENGTH_SHORT, true);
+            Toast.makeText(this, R.string.can_not_update_host_address, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -105,7 +107,7 @@ public class SyncDataService extends Service {
     void SyncRecord(final fsCatched catched) {
         final JSONObject JSONSend = new JSONObject();
         try {
-            JSONSend.put(API.Record.CAPTAIN_ID, CAPTAIN_ID);
+            JSONSend.put(API.Record.CAPTAIN_ID, Integer.parseInt(user.getUserID()));
             // --- TRIP --- //
             JSONObject trip = new JSONObject();
             trip.put(API.Record.trip.FROM_DATE, TNLib.Using.DateTimeStringReverseFromTimeStamp(catched.getTrip_id()));
@@ -188,7 +190,7 @@ public class SyncDataService extends Service {
                             }
                             _conn.disconnect();
                         }
-                        if (ImageSent >= FileNames.length - 1) {
+                        if (ImageSent >= FileNames.length) {
                             catchedHandler.deleteEntry(catched.getID());
                             FINISHED_SYNC_RECORDS++;
                             UpdateProgress(FINISHED_SYNC_RECORDS);
@@ -203,7 +205,6 @@ public class SyncDataService extends Service {
                 } catch (Exception e) {
                     Log.e("API", "Send: " + e.getMessage());
                 }
-                stopSelf();
             }
         }).start();
     }
@@ -214,7 +215,14 @@ public class SyncDataService extends Service {
         if (cathceds.size() <= 0) {
             Log.w(TAG, "SyncRecords: Empty!");
             stopSelf();
+            return;
         }
+        viewHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(SyncDataService.this, "synchronizing...", Toast.LENGTH_SHORT).show();
+            }
+        });
         FINISHED_SYNC_RECORDS = 0;
         SyncNotificaion();
         for (int i = 0; i < cathceds.size(); i++) {
@@ -274,7 +282,6 @@ public class SyncDataService extends Service {
                         String ResponeID = obj.getJSONObject("data").getString(API.Captain.ID);
                         user.setUserID(ResponeID);
                         user.commit();
-                        CAPTAIN_ID = Integer.parseInt(ResponeID);
                     }
                     Log.w(TAG, "run: " + response);
                     Log.w("STATUS", "[" + conn.getURL() + "]" + response_code + "\n" + conn.getContent().toString());
@@ -290,7 +297,8 @@ public class SyncDataService extends Service {
     }
 
     private void GetAndCheckData() {
-        cathceds = catchedHandler.getAllEntryDifferentWithCurrentTripID(fsHomePresenter.CURRENT_TRIP_ID);
+        String ID = preferences.getString(fsHomePresenter.ID_KEY, "");
+        cathceds = catchedHandler.getAllEntryDifferentWithCurrentTripID(ID);
         if (cathceds.size() <= 0) {
             stopSelf();
             return;
@@ -363,15 +371,23 @@ public class SyncDataService extends Service {
         pendingIntent = PendingIntent.getActivity(this, ApplicationConfig.CODE.NOTIFICATION_REQUEST_CODE,
                 notificationIntent, 0);
         /* Create notification builder */
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationBuilder = new Notification.Builder(this);
         /* Apply config */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            int importantce = NotificationManager.IMPORTANCE_HIGH;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                NotificationChannel mChannel = notificationManager.getNotificationChannel("1998");
+                if (mChannel == null) {
+                    mChannel = new NotificationChannel("1998", "Test", importantce);
+                    notificationManager.createNotificationChannel(mChannel);
+                }
+            }
             notification = notificationBuilder.build();
         }
         notification.icon = R.drawable.ic_cloud_sync; // icon for services
         notification.flags = Notification.FLAG_ONGOING_EVENT;
         notification.contentIntent = pendingIntent;
-        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
 
@@ -401,6 +417,14 @@ public class SyncDataService extends Service {
                     else {
                         mServiceTimer.cancel();
                         stopSelf();
+                        if (FINISHED_SYNC_RECORDS > 0) {
+                            viewHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(SyncDataService.this, "Sync finish successfully!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
                     }
                 }
             }
@@ -409,7 +433,7 @@ public class SyncDataService extends Service {
 
     //endregion
     void RunSync() {
-        if (CAPTAIN_ID == -1) {
+        if (user.getUserID() == "-1") {
             stopSelf();
             return;
         }

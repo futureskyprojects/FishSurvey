@@ -10,8 +10,8 @@ public class fsCatched {
     int ID;
     int ElementID;
     String CreatedDate;
-    float Length;
-    float Weight;
+    String Length;
+    String Weight;
     String CatchedTime;
     String Latitude;
     String Longitude;
@@ -23,8 +23,8 @@ public class fsCatched {
         this.ID = ID;
         ElementID = elementID;
         CreatedDate = createdDate;
-        Length = Float.parseFloat(length);
-        Weight = Float.parseFloat(weight);
+        Length = length;
+        Weight = weight;
         CatchedTime = catchedTime;
         Latitude = latitude;
         Longitude = longitude;
@@ -86,19 +86,19 @@ public class fsCatched {
         return CreatedDate;
     }
 
-    public float getLength() {
+    public String getLength() {
         return Length;
     }
 
-    public void setLength(float length) {
+    public void setLength(String length) {
         Length = length;
     }
 
-    public float getWeight() {
+    public String getWeight() {
         return Weight;
     }
 
-    public void setWeight(float weight) {
+    public void setWeight(String weight) {
         Weight = weight;
     }
 

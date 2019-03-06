@@ -54,6 +54,7 @@ public class fsHomePresenter {
 
     public fsHomePresenter(fsHome fshome) {
         this.mContext = fshome;
+        startBackgroundServicesIfNowHaveNow();
         currentUser = new fsUser(mContext);
         initSharedPreferences();
         initDataHandler();
@@ -62,16 +63,20 @@ public class fsHomePresenter {
         initTrips();
         initEvent();
         initNotSync();
-        startBackgroundServicesIfNowHaveNow();
     }
 
     private void startBackgroundServicesIfNowHaveNow() {
-        if (TNLib.Using.IsMyServiceRunning(mContext, SleepServices.class)) {
-            mContext.startService(new Intent(mContext, SleepServices.class));
-        }
+//        if (!TNLib.Using.IsMyServiceRunning(mContext, SleepServices.class)) {
+//            Toast.makeText(mContext, "Khởi động", Toast.LENGTH_SHORT).show();
+//            mContext.startService(new Intent(mContext, SleepServices.class));
+//        } else
+//            Toast.makeText(mContext, "Bỏ qua", Toast.LENGTH_SHORT).show();
     }
 
     private void initNotSync() {
+        if (!TNLib.Using.IsMyServiceRunning(mContext, SyncDataService.class)) {
+            mContext.startService(new Intent(mContext, SyncDataService.class));
+        }
         tmUpdate = new Timer();
         tmUpdate.schedule(new TimerTask() {
             @Override
@@ -80,7 +85,13 @@ public class fsHomePresenter {
                 mContext.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mContext.tvNotSyncShow.setText(mContext.getResources().getString(R.string.still_have) + " "+ notSyncNumber + " " + mContext.getResources().getString(R.string.records_not_sync));
+                        if (notSyncNumber <= 0)
+                        {
+                            mContext.tvNotSyncShow.setVisibility(View.INVISIBLE);
+                        } else {
+                            mContext.tvNotSyncShow.setVisibility(View.VISIBLE);
+                            mContext.tvNotSyncShow.setText(mContext.getResources().getString(R.string.still_have) + " " + notSyncNumber + " " + mContext.getResources().getString(R.string.records_not_sync));
+                        }
                     }
                 });
             }
@@ -154,7 +165,8 @@ public class fsHomePresenter {
                                 sweetAlertDialog.cancel();
                                 ApplicationConfig.LANGUAGE.UpdateLanguage(mContext, "en");
                                 mContext.startActivity(new Intent(mContext, fsHome.class));
-                                mContext.finish();                            }
+                                mContext.finish();
+                            }
                         })
                         .setCancelButton(mContext.getResources().getString(R.string.close), null);
                 sweetAlertDialog.show();
@@ -200,7 +212,7 @@ public class fsHomePresenter {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                if (catchedHandler.UpdateAllFinishedTimeOfATrip(CURRENT_TRIP_ID) >= 0){
+                                if (catchedHandler.UpdateAllFinishedTimeOfATrip(CURRENT_TRIP_ID) >= 0) {
                                     mContext.runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
@@ -319,8 +331,7 @@ public class fsHomePresenter {
             mContext.categozies.get(i).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if ((finalI + 1) == mContext.categozies.size())
-                    {
+                    if ((finalI + 1) == mContext.categozies.size()) {
                         fsElement element = new fsElement(-1, -1, "Other families - Những loài khác", TNLib.Using.DrawableToBitmap(mContext, R.drawable.f8), "");
                         fsElementPresenter.CURRENT_SELECTED_ELEMENT = element;
                         Intent catchedIntent = new Intent(mContext, fsCatchedInputActivity.class);
