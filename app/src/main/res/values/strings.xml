@@ -92,4 +92,7 @@
     <string name="choose_fish">Choose fish</string>
     <string name="change_language">Change language?</string>
     <string name="change">Change</string>
+    <string name="loading_image">Loading image(s)</string>
+    <string name="error">Error</string>
+    <string name="extract_data_fail">Extract data fail!</string>
 </resources>

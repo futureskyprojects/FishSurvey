@@ -37,6 +37,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -60,6 +61,8 @@ public class SyncDataService extends Service {
     Timer mServiceTimer;
     int CAPTAIN_ID = -1;
     int TYPE = -1;
+
+    fsUser user;
 
     public SyncDataService() {
     }
@@ -153,10 +156,11 @@ public class SyncDataService extends Service {
                         int ImageSent = 0;
                         String[] FileNames = catched.getImagePath().trim().split(" ");
                         for (String x : FileNames) {
+                            String FileName = ApplicationConfig.FOLDER.APP_DIR + File.separator + x;
                             // --- Declare JSON
                             JSONObject ImageJSONObject = new JSONObject();
                             ImageJSONObject.put(API.Image.RECORD_ID, RecordID);
-                            ImageJSONObject.put(API.Image.BASE64_CONTENT, TNLib.Using.Base64FromImageFile(ApplicationConfig.FOLDER.APP_DIR + File.separator + x));
+                            ImageJSONObject.put(API.Image.BASE64_CONTENT, TNLib.Using.Base64FromImageFile(FileName));
                             // --- Send it
                             URL _url = new URL(ApplicationConfig.GetTrueURL(ApplicationConfig.Image));
                             HttpURLConnection _conn = (HttpURLConnection) _url.openConnection();
@@ -175,6 +179,10 @@ public class SyncDataService extends Service {
                             Log.w(TAG, "[" + String.valueOf(conn.getResponseCode()) + "]Upload Image Respone: " + TNLib.InputStreamToString(_is));
                             if (_conn.getResponseCode() == 200) {
                                 ImageSent++;
+                                if (TNLib.Using.DeleteFile(FileName)) {
+                                    catched.setImagePath(catched.getImagePath().replace(x, ""));
+                                    catchedHandler.updateEntry(catched);
+                                }
                             }
                             _conn.disconnect();
                         }
@@ -221,18 +229,19 @@ public class SyncDataService extends Service {
         else
             isUpAndSyncCaptain = true;
         SyncCaptainInfoNotificaion();
-        final fsUser user = new fsUser(this);
+        user = new fsUser(this);
         final JSONObject JSONSend = new JSONObject();
         try {
-            if (!user.getUserID().isEmpty()) {
+            if (!user.getUserID().isEmpty() && Integer.parseInt(user.getUserID())!= -1) {
                 Log.w(TAG, "UpAndSyncCaptain: " + "OK have ID is " + user.getUserID());
-                JSONSend.put(API.Captain.ID, user.getUserID());
+                JSONSend.put(API.Captain.ID, Integer.parseInt(user.getUserID()));
             }
-            JSONSend.put(API.Captain.FULL_NAME, user.getUserName());
+            JSONSend.put(API.Captain.FULL_NAME, URLEncoder.encode(user.getUserName(), "UTF-8"));
             JSONSend.put(API.Captain.PHONE, user.getPhoneNumber());
-            JSONSend.put(API.Captain.VESSEL, user.getBoatCode());
-
-        } catch (JSONException e) {
+            JSONSend.put(API.Captain.VESSEL, URLEncoder.encode(user.getBoatCode(), "UTF-8"));
+            Log.w(TAG, "JSON: " + JSONSend.toString());
+        } catch (Exception e) {
+            Log.e(TAG, "JSON PRASE: " + e.getMessage());
             e.printStackTrace();
         }
         //////
@@ -243,26 +252,30 @@ public class SyncDataService extends Service {
                     URL url = new URL(ApplicationConfig.GetTrueURL(ApplicationConfig.Captiain));
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                    conn.setRequestProperty("Content-Type", "application/json"); //;charset=UTF-8
                     conn.setRequestProperty("Accept", "application/json");
                     conn.setDoOutput(true);
                     conn.setDoInput(true);
                     DataOutputStream os = new DataOutputStream(conn.getOutputStream());
                     //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
                     os.writeBytes(JSONSend.toString());
-
+//                    os.writeUTF(JSONSend.toString());
+                    Log.w(TAG, "PREPARE: " + JSONSend.toString());
                     os.flush();
                     os.close();
+
                     InputStream is = conn.getInputStream();
-                    if (conn.getResponseCode() == 200) {
-                        JSONObject obj = new JSONObject(TNLib.InputStreamToString(is));
+                    String response = TNLib.InputStreamToString(is);
+                    int response_code = conn.getResponseCode();
+                    if (response_code == 200) {
+                        JSONObject obj = new JSONObject(response);
                         String ResponeID = obj.getJSONObject("data").getString(API.Captain.ID);
                         user.setUserID(ResponeID);
                         user.commit();
                         CAPTAIN_ID = Integer.parseInt(ResponeID);
                     }
-                    Log.w(TAG, "run: " + TNLib.InputStreamToString(is));
-                    Log.w("STATUS", String.valueOf(conn.getResponseCode()));
+                    Log.w(TAG, "run: " + response);
+                    Log.w("STATUS", "[" + conn.getURL() +"]" + response_code + "\n" + conn.getContent().toString());
                     conn.disconnect();
                 } catch (Exception e) {
                     Log.e("API", "Send: " + e.getMessage());
@@ -289,7 +302,7 @@ public class SyncDataService extends Service {
 
     void UpdateProgress(int Current) {
         notificationBuilder.setContentText(Current + "/" + cathceds.size());
-        notificationBuilder.setProgress(cathceds.size(), 0, false);
+        notificationBuilder.setProgress(cathceds.size(), Current, false);
     }
 
 
@@ -392,6 +405,11 @@ public class SyncDataService extends Service {
 
     //endregion
     void RunSync() {
+        if (CAPTAIN_ID == -1)
+        {
+            stopSelf();
+            return;
+        }
         UpdateProgress(FINISHED_SYNC_RECORDS);
         if (!isSyncRecording) {
             isSyncRecording = true;

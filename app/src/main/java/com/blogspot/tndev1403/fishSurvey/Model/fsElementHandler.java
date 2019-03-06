@@ -44,22 +44,38 @@ public class fsElementHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public boolean isHave(fsElement element) {
+        fsElement element1 = getEntry(element.getID());
+        Log.w("DATA_FS", "Check null is " + (element == null));
+        if (element1 == null)
+            return false;
+        else {
+            return true;
+        }
+    }
+
     public void addEntry(fsElement element) throws Exception {
-        SQLiteDatabase database = this.getWritableDatabase();
-        ContentValues c = new ContentValues();
-        c.put(ID, element.getID());
-        c.put(CATEGORIZE_ID, element.getSfCategorizeID());
-        c.put(NAME, element.getName());
-        c.put(FEATURE_IMAGE_BITMAP, element.getFeatureImageBytes());
-        c.put(FEATURE_IMAGE_URL, element.getFeatureImageLink());
-        database.insert(TABLE_NAME, null, c);
-        database.close();
+        if (!isHave(element)) {
+            Log.w("DATA_FS", "Have records");
+            SQLiteDatabase database = this.getWritableDatabase();
+            ContentValues c = new ContentValues();
+            c.put(ID, element.getID());
+            c.put(CATEGORIZE_ID, element.getSfCategorizeID());
+            c.put(NAME, element.getName());
+            c.put(FEATURE_IMAGE_BITMAP, element.getFeatureImageBytes());
+            c.put(FEATURE_IMAGE_URL, element.getFeatureImageLink());
+            database.insert(TABLE_NAME, null, c);
+            database.close();
+        } else {
+            Log.w("DATA_FS", "Havn't records");
+            updateEntry(element);
+        }
     }
 
     public fsElement getEntry(int ID) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_NAME, null, this.ID + " = ?", new String[]{String.valueOf(ID)}, null, null, null);
-        if (cursor != null)
+        if (cursor != null && cursor.getCount() > 0)
             cursor.moveToFirst();
         else
             return null;
@@ -78,10 +94,10 @@ public class fsElementHandler extends SQLiteOpenHelper {
         String Query = "SELECT * FROM " + TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(Query, null);
-        if (cursor != null)
+        if (cursor != null && cursor.getCount() > 0)
             cursor.moveToFirst();
         else
-            return null;
+            return new ArrayList<>();
         while (cursor.isAfterLast() == false) {
             fsElement element = new fsElement(
                     cursor.getInt(0),
@@ -100,7 +116,7 @@ public class fsElementHandler extends SQLiteOpenHelper {
         String Query = "SELECT * FROM " + TABLE_NAME + " WHERE " + CATEGORIZE_ID + " = " + fsCategorizeID;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(Query, null);
-        if (cursor != null)
+        if (cursor != null && cursor.getCount() > 0)
             cursor.moveToFirst();
         else
             return null;

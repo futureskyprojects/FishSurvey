@@ -312,7 +312,7 @@ public class fsHomePresenter {
                 public void onClick(View v) {
                     if ((finalI + 1) == mContext.categozies.size())
                     {
-                        fsElement element = new fsElement(-1, -1, "Other families - Những loài khác", ((BitmapDrawable)mContext.categozies.get(finalI1).getDrawable()).getBitmap(), "");
+                        fsElement element = new fsElement(-1, -1, "Other families - Những loài khác", TNLib.Using.DrawableToBitmap(mContext, R.drawable.f8), "");
                         fsElementPresenter.CURRENT_SELECTED_ELEMENT = element;
                         Intent catchedIntent = new Intent(mContext, fsCatchedInputActivity.class);
                         mContext.startActivity(catchedIntent);

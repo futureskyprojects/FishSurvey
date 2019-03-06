@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == ApplicationConfig.PERMISSION.ALL_PERMISSION) {
             if (grantResults.length >=4)
-                mainPresenter.CheckInitData();
+                mainPresenter.CallCheckInitData();
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }

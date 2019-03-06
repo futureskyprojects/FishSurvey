@@ -120,6 +120,8 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
     public int CountNotSyncRecords() {
         String Query = "SELECT * FROM " + TABLE_NAME + " WHERE " + TRIP_ID + " !=?";
         SQLiteDatabase db = this.getReadableDatabase();
+        if (db == null || !db.isOpen())
+            return -1;
         Cursor cursor = db.rawQuery(Query, new String[]{fsHomePresenter.CURRENT_TRIP_ID});
         if (cursor == null)
             return 0;
@@ -131,6 +133,8 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
         ArrayList<fsCatched> catcheds = new ArrayList<>();
         String Query = "SELECT * FROM " + TABLE_NAME + " WHERE " + TRIP_ID + " !=?";
         SQLiteDatabase db = this.getReadableDatabase();
+        if (db == null || !db.isOpen())
+            return null;
         Cursor cursor = db.rawQuery(Query, new String[]{Trip_ID});
         if (cursor != null)
             cursor.moveToFirst();
@@ -159,6 +163,8 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
     public int CountAllEntry(String Trip_ID) {
         String Query = "SELECT * FROM " + TABLE_NAME + " WHERE " + TRIP_ID + " =?";
         SQLiteDatabase db = this.getReadableDatabase();
+        if (db == null || !db.isOpen())
+            return -1;
         Cursor cursor = db.rawQuery(Query, new String[]{Trip_ID});
         if (cursor == null)
             return 0;
@@ -170,6 +176,8 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
         ArrayList<fsCatched> catcheds = new ArrayList<>();
         String Query = "SELECT * FROM " + TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
+        if (db == null || !db.isOpen())
+            return null;
         Cursor cursor = db.rawQuery(Query, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -199,6 +207,8 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
 
     public int UpdateAllFinishedTimeOfATrip(String trip_id) {
         SQLiteDatabase db = this.getWritableDatabase();
+        if (db == null || !db.isOpen())
+            return -1;
         ContentValues c = new ContentValues();
         c.put(FINISHED_TIME, TNLib.Using.GetReverseCurrentDateString());
         int x = db.update(TABLE_NAME, c, this.TRIP_ID + " = ?", new String[]{trip_id});

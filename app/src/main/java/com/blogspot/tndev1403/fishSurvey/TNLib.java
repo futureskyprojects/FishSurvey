@@ -16,6 +16,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -53,6 +55,16 @@ public class TNLib {
     }
 
     public static class Using {
+        public static boolean DeleteFile(String Path) {
+            File file = new File(Path);
+            return file.delete();
+        }
+        public static String[] StringArrayListToStringArray(ArrayList<String> arr) {
+            String[] strarr = new String[arr.size()];
+            for (int i = 0; i < arr.size(); i ++)
+                strarr[i] = arr.get(i);
+            return strarr;
+        }
         public static void ChangeLanguage(Context mContext, String code) {
             Locale locale = new Locale(code);
             Resources resources = mContext.getResources();
@@ -127,7 +139,7 @@ public class TNLib {
         public static String Base64FromImageFile(String _Path) {
             Bitmap bm = BitmapFromFilePath(_Path);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            bm.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+            bm.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
             byte[] byteArray = byteArrayOutputStream.toByteArray();
             String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
             return encoded;
@@ -189,10 +201,25 @@ public class TNLib {
         public static Bitmap BytesToBitmap(byte[] bytes) {
             return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         }
+        public static Bitmap ResizeBitmap(Bitmap image, int maxSize) {
+            int width = image.getWidth();
+            int height = image.getHeight();
+
+            float bitmapRatio = (float) width / (float) height;
+            if (bitmapRatio > 1) {
+                width = maxSize;
+                height = (int) (width / bitmapRatio);
+            } else {
+                height = maxSize;
+                width = (int) (height * bitmapRatio);
+            }
+
+            return Bitmap.createScaledBitmap(image, width, height, true);
+        }
 
         public static byte[] BitmapToBytes(Bitmap bm) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            bm.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             return stream.toByteArray();
         }
 

@@ -7,7 +7,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 20190306
-        versionName "2019.03.06"
+        versionName "2019.03.06-050"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -37,6 +37,7 @@ dependencies {
         exclude module: 'support-v4'
     }
     implementation 'com.github.bumptech.glide:glide:4.8.0'
+    //https://github.com/smarteist/android-image-slider
     implementation 'com.github.smarteist:autoimageslider:1.2.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

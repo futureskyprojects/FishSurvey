@@ -3,6 +3,7 @@ package com.blogspot.tndev1403.fishSurvey.Presenter.fsAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsCatched;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsElement;
 import com.blogspot.tndev1403.fishSurvey.Model.fsElementHandler;
 import com.blogspot.tndev1403.fishSurvey.Presenter.fsCatchedInputPresenter;
+import com.blogspot.tndev1403.fishSurvey.Presenter.fsShowReviewPresenter;
 import com.blogspot.tndev1403.fishSurvey.R;
 import com.blogspot.tndev1403.fishSurvey.TNLib;
 import com.blogspot.tndev1403.fishSurvey.View.fsSavedDataActivity;
@@ -78,33 +80,9 @@ public class fsSavedDataAdapter extends RecyclerView.Adapter<fsSavedDataAdapter.
     }
 
     private void PrepareBitmapForShowHere(final String[] FileNames) {
-        final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.PROGRESS_TYPE)
-                .setTitleText(mContext.getResources().getString(R.string.processing));
-        sweetAlertDialog.setCancelable(false);
-        sweetAlertDialog.show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (fsCatchedInputPresenter.LIST_CATCHED_IMAGES != null)
-                    fsCatchedInputPresenter.LIST_CATCHED_IMAGES.clear();
-                else
-                    fsCatchedInputPresenter.LIST_CATCHED_IMAGES = new ArrayList<>();
-                for (String x : FileNames) {
-                    fsCatchedInputPresenter.LIST_CATCHED_IMAGES.add(
-                            TNLib.Using.BitmapFromFilePath(ApplicationConfig.FOLDER.APP_DIR + File.separator + x)
-                    );
-                }
-                mContext.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        sweetAlertDialog.cancel();
-                        mContext.startActivity(
-                                new Intent(mContext, fsShowReviewActivity.class)
-                        );
-                    }
-                });
-            }
-        }).start();
+        mContext.startActivity(
+                new Intent(mContext, fsShowReviewActivity.class)
+        );
     }
 
     @Override

@@ -3,7 +3,10 @@ package com.blogspot.tndev1403.fishSurvey.Presenter;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
+import android.util.Log;
 
 import com.blogspot.tndev1403.fishSurvey.MainActivity;
 import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
@@ -11,6 +14,7 @@ import com.blogspot.tndev1403.fishSurvey.Model.Config.FishSurveyData;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsElement;
 import com.blogspot.tndev1403.fishSurvey.Model.MainModel;
 import com.blogspot.tndev1403.fishSurvey.Model.fsElementHandler;
+import com.blogspot.tndev1403.fishSurvey.R;
 import com.blogspot.tndev1403.fishSurvey.View.fsHome;
 import com.blogspot.tndev1403.fishSurvey.View.fsNewUserActivity;
 
@@ -18,13 +22,13 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class MainPresenter {
     MainActivity mContext;
     MainModel mainModel;
     fsElementHandler handler;
     FishSurveyData data;
-    int position = 0;
-    int count = 0;
 
     public MainPresenter(MainActivity mContext) {
         this.mContext = mContext;
@@ -34,6 +38,9 @@ public class MainPresenter {
         CheckPermission();
     }
 
+    public void CallCheckInitData() {
+        new CheckInitData().execute();
+    }
     private void CheckPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (mContext.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
@@ -42,88 +49,137 @@ public class MainPresenter {
                     mContext.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
             ) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    mContext.requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE}, ApplicationConfig.PERMISSION.ALL_PERMISSION);
+                    mContext.requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE}, ApplicationConfig.PERMISSION.ALL_PERMISSION);
                 }
             } else
-                CheckInitData();
-        }
-        else CheckInitData();
+                CallCheckInitData();
+        } else CallCheckInitData();
     }
 
     private void initArguments() {
         handler = new fsElementHandler(mContext);
     }
 
-    public void CheckInitData() {
-        count = 0;
-        int length = handler.getAllEntry().size();
-        final ArrayList<fsElement> elements = data.CreateData();
-        if (length <= 0) {
-            new Timer().schedule(new TimerTask() {
+    public class CheckInitData extends AsyncTask<Void, Void, Boolean> {
+        Handler handlerView = new Handler();
+        ArrayList<fsElement> elements;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            int length = handler.getAllEntry().size();
+            if (length < 50)
+                handler.deleteAll();
+            else
+                return true;
+            elements = data.CreateData();
+            // ---- //
+            handlerView.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (count < 5) {
-                        count++;
-                        return;
-                    } else {
-                        if (position >= elements.size()) {
-                            fCheckUserInfo();
-                            this.cancel();
-                            return;
-                        }
-                        final fsElement element = elements.get(position);
-                        mContext.runOnUiThread(new Runnable() {
+                    mContext.initData(elements.size());
+                }
+            });
+            // ---- //
+            if (length <= 0) {
+                for (int i = 0; i < elements.size(); i++) {
+                    final fsElement element = elements.get(i);
+                    try {
+                        handler.addEntry(element);
+                        final int finalI = i;
+                        handlerView.post(new Runnable() {
                             @Override
                             public void run() {
-                                if (position == 0)
-                                    mContext.initData(elements.size());
                                 mContext.tvStatusText.setText(String.format("(%s/%s) %s", element.getID(), elements.size(), element.getName()));
-                                mContext.prgHorizontial.setProgress(position);
-                                try {
-                                    handler.addEntry(element);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                position++;
+                                mContext.prgHorizontial.setProgress(finalI + 1);
+                            }
+                        });
+                        Thread.sleep(2);
+                    } catch (Exception e) {
+                        Log.w(MainPresenter.class.getSimpleName(), e.getMessage());
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (aBoolean)
+                new CheckUserInfo().execute();
+            else {
+                final SweetAlertDialog alertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText(mContext.getResources().getString(R.string.error).toUpperCase())
+                        .setContentText(mContext.getResources().getString(R.string.extract_data_fail))
+                        .setConfirmButton(mContext.getResources().getString(R.string.close), new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                handlerView.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mContext.finish();
+                                    }
+                                });
+                            }
+                        });
+                alertDialog.show();
+                handler.deleteAll();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        handlerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                alertDialog.cancel();
+                                mContext.finish();
                             }
                         });
                     }
-                }
-            }, 100, 100);
-
-
-        } else
-            fCheckUserInfo();
+                });
+            }
+        }
     }
 
-    public void fCheckUserInfo() {
-        count = 0;
-        mContext.UserData();
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (count < 30) {
-                    count++;
-                    return;
-                } else {
-                    this.cancel();
-                    mContext.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (!mainModel.user.get()) {
-                                // If info of user not exists or not enough then start acivity for ask new
-//                                mContext.startActivity(new Intent(mContext, fsNewUserActivity.class));
-                                mContext.startActivity(new Intent(mContext, fsNewUserActivity.class));
-                                mContext.finish();
-                            } else {
-//                                mContext.startActivity(new Intent(mContext, fsCategorizeActivity.class));
-                                mContext.startActivity(new Intent(mContext, fsHome.class));
-                                mContext.finish();
-                            }
-                        }
-                    });
-                }
+    class CheckUserInfo extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mContext.UserData();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                Thread.sleep(0);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        }, 100, 100);
+            return mainModel.user.get();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (aBoolean)
+            {
+                mContext.startActivity(new Intent(mContext, fsHome.class));
+                mContext.finish();
+            } else {
+                mContext.startActivity(new Intent(mContext, fsNewUserActivity.class));
+                mContext.finish();
+            }
+        }
     }
 }

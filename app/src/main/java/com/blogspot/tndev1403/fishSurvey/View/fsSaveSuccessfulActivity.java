@@ -58,7 +58,8 @@ public class fsSaveSuccessfulActivity extends AppCompatActivity {
 
     private void sliderInits() {
         slSlideReview = (SliderLayout) findViewById(R.id.imageSlider);
-        slSlideReview.setScrollTimeInSec(3); //set scroll delay in seconds :
+        slSlideReview.setAutoScrolling(false);
+//        slSlideReview.setScrollTimeInSec(3); //set scroll delay in seconds :
         slSlideReview.setIndicatorAnimation(IndicatorAnimations.FILL);
     }
 }

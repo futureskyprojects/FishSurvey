@@ -10,6 +10,7 @@ import com.blogspot.tndev1403.fishSurvey.TNLib;
 import java.io.File;
 
 public class ApplicationConfig {
+    public final static double REDUCE_QUALITY_TO = 0.7;
     public final static String APP_NAME = "COPPA";
     public final static String TAG = "ApplicationConfig";
     public static String Host = "http://jcenter.sytes.net/~quoctuan/public";
@@ -19,9 +20,9 @@ public class ApplicationConfig {
     public final static String Image = "image";
     public final static String HostCheckAddress = "https://raw.githubusercontent.com/futureskyprojects/CodeExperience/master/Host.coppa";
     public static String GetTrueURL(String kind) {
-        return "http://" + (Host + "/" + Key + "/" + kind).replace("http://","")
+        return ("http://" + (Host + "/" + Key + "/" + kind).replace("http://","")
                 .replace("https://", "")
-                .replace("//","/");
+                .replace("//","/")).replace("\n","").trim();
     }
     /* For categorize API */
     public static class CategorizeAPI {
