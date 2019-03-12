@@ -247,8 +247,7 @@ public class fsShowReviewPresenter {
                                     new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
                                             .setTitleText(mContext.getResources().getString(R.string.deleted))
                                             .show();
-                                    mContext.finish();
-                                    mContext.startActivity(new Intent(mContext, fsSavedDataActivity.class));
+                                    mContext.onBackPressed();
                                 }
                             }
                         })
@@ -265,7 +264,7 @@ public class fsShowReviewPresenter {
         mContext.btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mContext.finish();
+                mContext.onBackPressed();
             }
         });
     }

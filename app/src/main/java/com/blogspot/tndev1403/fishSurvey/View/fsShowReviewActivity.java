@@ -1,5 +1,6 @@
 package com.blogspot.tndev1403.fishSurvey.View;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -43,6 +44,14 @@ public class fsShowReviewActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(fsSavedDataActivity.REVIEW_ELEMENT.getName());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        startActivity(new Intent(this, fsSavedDataActivity.class));
+        super.onBackPressed();
+
     }
 
     @Override
