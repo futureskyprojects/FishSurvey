@@ -197,14 +197,38 @@
                 android:layout_height="match_parent"
                 android:gravity="right"/>
         </LinearLayout>
-
-        <Button
-            android:id="@+id/fssr_close_btn"
+        <LinearLayout
+            android:weightSum="3"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/warning_stroke_color"
-            android:textStyle="bold"
-            android:text="@string/close"
-            android:textColor="@android:color/white" />
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/fssr_delete_btn"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ff4757"
+                android:textStyle="bold"
+                android:text="@string/delete"
+                android:textColor="@android:color/white" />
+            <Button
+                android:layout_weight="1"
+                android:id="@+id/fssr_close_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#2ed573"
+                android:textStyle="bold"
+                android:text="@string/close"
+                android:textColor="@android:color/white" />
+            <Button
+                android:id="@+id/fssr_edit_btn"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffa502"
+                android:textStyle="bold"
+                android:text="@string/edit"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

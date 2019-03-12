@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/fsct_input_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <EditText
+            android:inputType="numberDecimal"
+            android:layout_marginLeft="@dimen/standard_margin"
+            android:layout_marginRight="@dimen/standard_margin"
+            android:drawableLeft="@drawable/ic_tool"
+            android:drawableStart="@drawable/ic_tool"
+            android:drawablePadding="@dimen/drawable_padding"
+            android:textSize="@dimen/text_size"
+            android:id="@+id/fsct_lengthZ"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/inp_margin_top"
+            android:background="@drawable/border_radius"
+            android:hint="@string/hint_length" />
+
+        <EditText
+            android:id="@+id/fsct_weightZ"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/standard_margin"
+            android:layout_marginTop="@dimen/inp_margin_top"
+            android:layout_marginRight="@dimen/standard_margin"
+            android:background="@drawable/border_radius"
+            android:drawableStart="@drawable/ic_weight"
+            android:drawableLeft="@drawable/ic_weight"
+            android:drawablePadding="@dimen/drawable_padding"
+            android:hint="@string/hint_weight"
+            android:inputType="numberDecimal"
+            android:textSize="@dimen/text_size" />
+
+        <TextView
+            android:id="@+id/fsct_timeZ"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/standard_margin"
+            android:layout_marginTop="@dimen/inp_margin_top"
+            android:layout_marginRight="@dimen/standard_margin"
+            android:background="@drawable/border_radius"
+            android:drawableStart="@drawable/ic_clock"
+            android:drawableLeft="@drawable/ic_clock"
+            android:drawablePadding="@dimen/drawable_padding"
+            android:hint="@string/hint_catched_time"
+            android:textSize="@dimen/text_size" />
+
+        <TextView
+            android:layout_marginLeft="@dimen/standard_margin"
+            android:layout_marginRight="@dimen/standard_margin"
+            android:drawableLeft="@drawable/ic_calendar"
+            android:drawableStart="@drawable/ic_calendar"
+            android:drawablePadding="@dimen/drawable_padding"
+            android:textSize="@dimen/text_size"
+            android:id="@+id/fsct_dateZ"
+            android:hint="@string/hint_catched_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/inp_margin_top"
+            android:background="@drawable/border_radius" />
+
+        <Button
+            android:id="@+id/fsct_finishZ"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/inp_margin_top"
+            android:background="@color/success"
+            android:text="@string/finish"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+</LinearLayout>

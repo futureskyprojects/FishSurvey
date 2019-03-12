@@ -227,7 +227,7 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
         return x;
     }
 
-    public void updateEntry(fsCatched catched) {
+    public long updateEntry(fsCatched catched) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues c = new ContentValues();
         c.put(ID, catched.getID());
@@ -241,13 +241,11 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
         c.put(IMAGE_PATH, catched.getImagePath());
         c.put(TRIP_ID, catched.getTrip_id());
         c.put(CATCHED_TIME, catched.getCatchedTime());
-        db.update(TABLE_NAME, c, this.ID + " = ?", new String[]{String.valueOf(catched.getID())});
-        db.close();
+        return db.update(TABLE_NAME, c, this.ID + " = ?", new String[]{String.valueOf(catched.getID())});
     }
 
-    public void deleteEntry(int ID) {
+    public long deleteEntry(int ID) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NAME, this.ID + " = ?", new String[]{String.valueOf(ID)});
-        db.close();
+        return db.delete(TABLE_NAME, this.ID + " = ?", new String[]{String.valueOf(ID)});
     }
 }

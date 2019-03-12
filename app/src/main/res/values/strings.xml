@@ -99,4 +99,6 @@
     <string name="loading">Loading</string>
     <string name="synchronizing">Synchronizing</string>
     <string name="sync_finish_success">Sync finish successfully</string>
+    <string name="update_success">Update success!</string>
+    <string name="update_fail">Update fail!</string>
 </resources>

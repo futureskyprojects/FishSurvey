@@ -22,6 +22,8 @@ public class fsShowReviewActivity extends AppCompatActivity {
     public TextView tvPosition;
     public TextView tvCatchedTime;
     public Button btnClose;
+    public Button btnDelete;
+    public Button btnEdit;
     /* Declare presenter */
     fsShowReviewPresenter presenter;
 
@@ -63,6 +65,8 @@ public class fsShowReviewActivity extends AppCompatActivity {
         tvPosition = (TextView) findViewById(R.id.fssr_position);
         tvCatchedTime = (TextView) findViewById(R.id.fssr_time);
         btnClose = (Button) findViewById(R.id.fssr_close_btn);
+        btnDelete = (Button) findViewById(R.id.fssr_delete_btn);
+        btnEdit = (Button) findViewById(R.id.fssr_edit_btn);
     }
     private void sliderInits() {
         slSlideReview = (SliderLayout) findViewById(R.id.imageSlider2);
