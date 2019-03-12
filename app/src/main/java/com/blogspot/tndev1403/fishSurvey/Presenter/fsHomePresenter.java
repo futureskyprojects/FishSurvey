@@ -306,6 +306,7 @@ public class fsHomePresenter {
             @Override
             public void onClick(View v) {
                 mContext.startActivity(new Intent(mContext, fsSavedDataActivity.class));
+                mContext.finish();
             }
         });
         PREVIEW_COUNT = catchedHandler.CountAllEntry(fsHomePresenter.CURRENT_TRIP_ID);

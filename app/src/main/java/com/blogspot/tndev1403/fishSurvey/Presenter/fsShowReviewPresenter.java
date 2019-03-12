@@ -125,6 +125,12 @@ public class fsShowReviewPresenter {
                 final AlertDialog alertDialog = builder.create();
                 alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 ///////////////// INIT
+                v.findViewById(R.id.fsct_backZ).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.cancel();
+                    }
+                });
                 etLength.setText(fsSavedDataActivity.REVIEW_CATCHED.getLength());
                 etWeight.setText(fsSavedDataActivity.REVIEW_CATCHED.getWeight());
                 tvClock.setText(calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE));
@@ -208,11 +214,13 @@ public class fsShowReviewPresenter {
                         fsSavedDataActivity.REVIEW_CATCHED.setWeight(etWeight.getText().toString());
                         fsSavedDataActivity.REVIEW_CATCHED.setLength(etLength.getText().toString());
                         fsSavedDataActivity.REVIEW_CATCHED.setCatchedTime(TNLib.Using.MyCalendarToReverseString(calendar));
-                        if (new fsCatchedHandler(mContext).updateEntry(fsSavedDataActivity.REVIEW_CATCHED) > 0)
+                        if (new fsCatchedHandler(mContext).updateEntry(fsSavedDataActivity.REVIEW_CATCHED) > 0) {
                             new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
                                     .setTitleText(mContext.getResources().getString(R.string.update_success))
                                     .show();
-                        else
+                            mContext.startActivity(new Intent(mContext, fsShowReviewActivity.class));
+                            mContext.finish();
+                        } else
                             new SweetAlertDialog(mContext, SweetAlertDialog.ERROR_TYPE)
                                     .setTitleText(mContext.getResources().getString(R.string.update_fail))
                                     .show();
@@ -239,6 +247,8 @@ public class fsShowReviewPresenter {
                                     new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
                                             .setTitleText(mContext.getResources().getString(R.string.deleted))
                                             .show();
+                                    mContext.finish();
+                                    mContext.startActivity(new Intent(mContext, fsSavedDataActivity.class));
                                 }
                             }
                         })

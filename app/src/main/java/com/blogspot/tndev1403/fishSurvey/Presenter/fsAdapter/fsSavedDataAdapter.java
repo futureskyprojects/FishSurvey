@@ -81,15 +81,16 @@ public class fsSavedDataAdapter extends RecyclerView.Adapter<fsSavedDataAdapter.
                     fsSavedDataActivity.REVIEW_ELEMENT = element;
                 else
                     fsSavedDataActivity.REVIEW_ELEMENT = null;
-                PrepareBitmapForShowHere(FileNames);
+                PrepareBitmapForShowHere();
             }
         });
     }
 
-    private void PrepareBitmapForShowHere(final String[] FileNames) {
+    private void PrepareBitmapForShowHere() {
         mContext.startActivity(
                 new Intent(mContext, fsShowReviewActivity.class)
         );
+        mContext.finish();
     }
 
     @Override
