@@ -22,7 +22,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import es.dmoral.toasty.Toasty;
 
 public class fsCatchedPreviewAdapter extends RecyclerView.Adapter<fsCatchedPreviewAdapter.MyHolder>{
-    private ArrayList<Bitmap> catchedPreviews;
+    private ArrayList<Bitmap> catchedPreviews = new ArrayList<>();
 
     public fsCatchedPreviewAdapter(ArrayList<Bitmap> catchedPreviews) {
         this.catchedPreviews = catchedPreviews;

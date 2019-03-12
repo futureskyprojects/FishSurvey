@@ -25,10 +25,6 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:icon,android:supportsRtl">
         <service
-            android:name=".Model.Services.SleepServices"
-            android:enabled="true"
-            android:exported="true"></service>
-        <service
             android:name=".Model.Services.SyncDataService"
             android:enabled="true"
             android:exported="true" />

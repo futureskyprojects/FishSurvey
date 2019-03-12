@@ -99,7 +99,10 @@ public class fsShowReviewPresenter {
 
     private void initArguments() {
 //        mContext.ivPreview.setImageBitmap(fsSavedDataActivity.CURRENT_BITMAP);
-        mContext.tvName.setText(fsSavedDataActivity.REVIEW_ELEMENT.getName());
+        if (fsSavedDataActivity.REVIEW_ELEMENT == null)
+            mContext.tvName.setText("Other families - Các loài khác");
+        else
+            mContext.tvName.setText(fsSavedDataActivity.REVIEW_ELEMENT.getName());
         mContext.tvLength.setText(fsSavedDataActivity.REVIEW_CATCHED.getLength() + " (cm)");
         mContext.tvWeight.setText(fsSavedDataActivity.REVIEW_CATCHED.getWeight() + " (kg)");
         mContext.tvPosition.setText(mContext.getResources().getString(R.string.longitude) + ": " + fsSavedDataActivity.REVIEW_CATCHED.getLatitude() +

@@ -54,9 +54,13 @@ public class fsSavedDataAdapter extends RecyclerView.Adapter<fsSavedDataAdapter.
     @Override
     public void onBindViewHolder(@NonNull final fsSavedDataAdapter.fsRecycleViewHolder fsRecycleViewHolder, final int i) {
         final fsCatched catched = catcheds.get(i);
-        final fsElement element = handler.getEntry(catched.getElementID());
         String code = ApplicationConfig.LANGUAGE.GetLanguageCode(mContext);
-        String[] names = element.getName().split(" - ");
+        final fsElement element = handler.getEntry(catched.getElementID());
+        String[] names;
+        if (catched.getElementID() != -1)
+            names = element.getName().split(" - ");
+        else
+            names = new String[]{"Các loài khác", "Other families"};
         if (code == "vi") {
             fsRecycleViewHolder.tvFishName.setText(names[(names.length >= 2 ? 1 : 0)]);
         } else
@@ -66,14 +70,17 @@ public class fsSavedDataAdapter extends RecyclerView.Adapter<fsSavedDataAdapter.
         Log.d("XXXYYY", "onBindViewHolder: \n[" + catched.getImagePath().trim() + "]");
         fsRecycleViewHolder.ivThumb.setImageBitmap(
                 TNLib.Using.BitmapFromFilePath(
-                        (FileNames.length>0? ApplicationConfig.FOLDER.APP_DIR + File.separator + FileNames[0]:null)
+                        (FileNames.length > 0 ? ApplicationConfig.FOLDER.APP_DIR + File.separator + FileNames[0] : null)
                 )
         );
         fsRecycleViewHolder.rlItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fsSavedDataActivity.REVIEW_CATCHED = catched;
-                fsSavedDataActivity.REVIEW_ELEMENT = element;
+                if (catched.getElementID() != -1)
+                    fsSavedDataActivity.REVIEW_ELEMENT = element;
+                else
+                    fsSavedDataActivity.REVIEW_ELEMENT = null;
                 PrepareBitmapForShowHere(FileNames);
             }
         });

@@ -25,26 +25,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void UserData() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                lnlayoutInitGroup.setVisibility(View.GONE);
-                prgCircle.setVisibility(View.VISIBLE);
-            }
-        });
+        lnlayoutInitGroup.setVisibility(View.GONE);
+        prgCircle.setVisibility(View.VISIBLE);
     }
 
     public void initData(final int MaxProgressbar) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                prgHorizontial.setIndeterminate(false);
-                prgHorizontial.setMax(MaxProgressbar);
-                tvStatusText.setText("");
-                lnlayoutInitGroup.setVisibility(View.VISIBLE);
-                prgCircle.setVisibility(View.INVISIBLE);
-            }
-        });
+        prgHorizontial.setIndeterminate(false);
+        prgHorizontial.setMax(MaxProgressbar);
+        tvStatusText.setText("");
+        lnlayoutInitGroup.setVisibility(View.VISIBLE);
+        prgCircle.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -59,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == ApplicationConfig.PERMISSION.ALL_PERMISSION) {
-            if (grantResults.length >=4)
+            if (grantResults.length >= 4)
                 mainPresenter.CallCheckInitData();
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -70,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         prgHorizontial = (ProgressBar) findViewById(R.id.home_init_progress_bar);
         tvStatusText = (TextView) findViewById(R.id.home_init_text);
         lnlayoutInitGroup = (LinearLayout) findViewById(R.id.home_init_group);
+        lnlayoutInitGroup.setVisibility(View.INVISIBLE);
     }
 
     private void initPresenter() {

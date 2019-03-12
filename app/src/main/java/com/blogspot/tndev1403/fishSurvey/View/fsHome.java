@@ -48,6 +48,7 @@ public class fsHome extends AppCompatActivity
     public TextView tvNoTrips;
     public TextView tvEndTripText;
     public TextView tvNotSyncShow;
+    public LinearLayout lnNoTripLayout;
 
     /* Declare presenter */
     fsHomePresenter presenter;
@@ -114,6 +115,7 @@ public class fsHome extends AppCompatActivity
         tvNoTrips = (TextView) findViewById(R.id.no_trip_show);
         tvEndTripText = (TextView) findViewById(R.id.end_trip_txt);
         tvNotSyncShow = (TextView) findViewById(R.id.not_sync);
+        lnNoTripLayout = (LinearLayout) findViewById(R.id.no_trip_layout);
     }
 
     @Override
@@ -128,6 +130,7 @@ public class fsHome extends AppCompatActivity
 
     public void CreateEndTripButton() {
         lnAllFamilies.setVisibility(View.VISIBLE);
+        lnNoTripLayout.setVisibility(View.INVISIBLE);
         tvNoTrips.setVisibility(View.INVISIBLE);
         lnEndTrip.setBackground(getResources().getDrawable(R.drawable.background_danger));
         tvEndTripText.setText(R.string.end_trip);
@@ -135,6 +138,7 @@ public class fsHome extends AppCompatActivity
 
     public void CreateNewTripButton() {
         lnAllFamilies.setVisibility(View.INVISIBLE);
+        lnNoTripLayout.setVisibility(View.VISIBLE);
         tvNoTrips.setVisibility(View.VISIBLE);
         lnEndTrip.setBackground(getResources().getDrawable(R.drawable.background_blue));
         tvEndTripText.setText(R.string.new_trip);

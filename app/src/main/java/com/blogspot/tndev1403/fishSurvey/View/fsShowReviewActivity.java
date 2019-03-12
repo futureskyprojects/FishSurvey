@@ -35,7 +35,10 @@ public class fsShowReviewActivity extends AppCompatActivity {
     }
 
     private void initToolbar() {
-        getSupportActionBar().setTitle(fsSavedDataActivity.REVIEW_ELEMENT.getName());
+        if (fsSavedDataActivity.REVIEW_ELEMENT == null)
+            getSupportActionBar().setTitle("Other families - Các loài khác");
+        else
+            getSupportActionBar().setTitle(fsSavedDataActivity.REVIEW_ELEMENT.getName());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }

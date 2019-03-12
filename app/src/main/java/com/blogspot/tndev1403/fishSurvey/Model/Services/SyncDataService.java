@@ -44,6 +44,8 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import es.dmoral.toasty.Toasty;
+
 public class SyncDataService extends Service {
     public final static String TAG = "SYNC_DATA_SERVICES";
     NotificationManager notificationManager;
@@ -56,7 +58,6 @@ public class SyncDataService extends Service {
 
     SharedPreferences preferences;
     boolean IS_FINISHED_CAPTAIN_SYNC = false;
-    int FINISHED_SYNC_RECORDS = 0;
     boolean isUpAndSyncCaptain = false;
     boolean isSyncRecording = false;
     Timer mServiceTimer;
@@ -95,7 +96,9 @@ public class SyncDataService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        notification.flags = STOP_FOREGROUND_REMOVE;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            notification.flags = STOP_FOREGROUND_REMOVE;
+        }
         notification.contentIntent = null;
         notificationManager.cancelAll();
         notificationManager.notify(ApplicationConfig.CODE.NOTIFICATION_REQUEST_CODE, notification);
@@ -191,14 +194,10 @@ public class SyncDataService extends Service {
                             _conn.disconnect();
                         }
                         if (ImageSent >= FileNames.length) {
-                            catchedHandler.deleteEntry(catched.getID());
-                            FINISHED_SYNC_RECORDS++;
-                            UpdateProgress(FINISHED_SYNC_RECORDS);
+                            CleanFinishRecord(catched);
                         }
                     } else {
-                        catchedHandler.deleteEntry(catched.getID());
-                        FINISHED_SYNC_RECORDS++;
-                        UpdateProgress(FINISHED_SYNC_RECORDS);
+                        CleanFinishRecord(catched);
                     }
                     //endregion
 
@@ -209,11 +208,25 @@ public class SyncDataService extends Service {
         }).start();
     }
 
+    void CleanFinishRecord(fsCatched catched) {
+        catchedHandler.deleteEntry(catched.getID());
+        cathceds.remove(catched);
+        if (cathceds.isEmpty()) {
+            mServiceTimer.cancel();
+            stopSelf();
+            viewHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toasty.success(SyncDataService.this, R.string.sync_finish_success, Toast.LENGTH_SHORT, true).show();
+                }
+            });
+        }
+    }
+
     //region Sync Records
     void SyncRecords() {
         GetAndCheckData();
         if (cathceds.size() <= 0) {
-            Log.w(TAG, "SyncRecords: Empty!");
             stopSelf();
             return;
         }
@@ -223,12 +236,12 @@ public class SyncDataService extends Service {
                 Toast.makeText(SyncDataService.this, "synchronizing...", Toast.LENGTH_SHORT).show();
             }
         });
-        FINISHED_SYNC_RECORDS = 0;
         SyncNotificaion();
         for (int i = 0; i < cathceds.size(); i++) {
             final fsCatched catched = cathceds.get(i);
             SyncRecord(catched);
         }
+
     }
     //endregion
 
@@ -238,7 +251,7 @@ public class SyncDataService extends Service {
             return;
         else
             isUpAndSyncCaptain = true;
-        SyncCaptainInfoNotificaion();
+        SyncNotificaion();
         user = new fsUser(this);
         final JSONObject JSONSend = new JSONObject();
         try {
@@ -307,13 +320,8 @@ public class SyncDataService extends Service {
             if (cathceds.get(i).getFinished_time().trim().isEmpty())
                 cathceds.remove(i);
         }
-        UpdateProgress(0);
     }
 
-    void UpdateProgress(int Current) {
-        notificationBuilder.setContentText(Current + "/" + cathceds.size());
-        notificationBuilder.setProgress(cathceds.size(), Current, false);
-    }
 
 
     //region Notification
@@ -326,27 +334,11 @@ public class SyncDataService extends Service {
             notificationBuilder.setColor(ContextCompat.getColor(this,
                     R.color.blue_btn_bg_pressed_color));
         }
-        notificationBuilder.setContentTitle(getResources().getString(R.string.sync).toUpperCase());
-        notificationManager.cancelAll();
-        notificationManager.notify(ApplicationConfig.CODE.NOTIFICATION_REQUEST_CODE, notification);
-    }
-
-    void SyncCaptainInfoNotificaion() {
-        if (TYPE != 2)
-            TYPE = 2;
-        else
-            return;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            notificationBuilder.setColor(ContextCompat.getColor(this,
-                    R.color.blue_btn_bg_pressed_color));
-        }
-        notificationBuilder.setContentText("");
+        notificationBuilder.setContentTitle(getResources().getString(R.string.synchronizing).toUpperCase());
         notificationBuilder.setProgress(100, 30, true);
-        notificationBuilder.setContentTitle(getResources().getString(R.string.update_user).toUpperCase());
         notificationManager.cancelAll();
         notificationManager.notify(ApplicationConfig.CODE.NOTIFICATION_REQUEST_CODE, notification);
     }
-
     void WaitInternetNotificaion() {
         if (TYPE != 3)
             TYPE = 3;
@@ -375,7 +367,10 @@ public class SyncDataService extends Service {
         notificationBuilder = new Notification.Builder(this);
         /* Apply config */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            int importantce = NotificationManager.IMPORTANCE_HIGH;
+            int importantce = 0;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                importantce = NotificationManager.IMPORTANCE_HIGH;
+            }
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 NotificationChannel mChannel = notificationManager.getNotificationChannel("1998");
                 if (mChannel == null) {
@@ -406,26 +401,15 @@ public class SyncDataService extends Service {
                 if (!isInternetAvailable()) {
                     // If havn't internet
                     WaitInternetNotificaion();
+                    Reset();
                 } else {
                     // Have internet
                     if (!IS_FINISH_HOST)
                         Init();
                     else if (!IS_FINISHED_CAPTAIN_SYNC)
                         UpAndSyncCaptain();
-                    else if (FINISHED_SYNC_RECORDS < cathceds.size())
+                    else
                         RunSync();
-                    else {
-                        mServiceTimer.cancel();
-                        stopSelf();
-                        if (FINISHED_SYNC_RECORDS > 0) {
-                            viewHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(SyncDataService.this, "Sync finish successfully!", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    }
                 }
             }
         }, 200, 300);
@@ -437,11 +421,15 @@ public class SyncDataService extends Service {
             stopSelf();
             return;
         }
-        UpdateProgress(FINISHED_SYNC_RECORDS);
         if (!isSyncRecording) {
             isSyncRecording = true;
             SyncRecords();
         }
+    }
+    void Reset() {
+        isSyncRecording = false;
+        IS_FINISH_HOST = false;
+        IS_FINISHED_CAPTAIN_SYNC = false;
     }
 
     @Override

@@ -76,13 +76,13 @@ public class TNLib {
         }
         public static String DateTimeStringReverseFromTimeStamp(String timestamp) {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            String dateString = formatter.format(new Date(Long.parseLong(timestamp)));
+            String dateString = formatter.format(new Date(Long.parseLong(timestamp)*1000));
             return dateString;
         }
 
         public static String DateTimeStringFromTimeStamp(String timestamp) {
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-            String dateString = formatter.format(new Date(Long.parseLong(timestamp)));
+            String dateString = formatter.format(new Date(Long.parseLong(timestamp)*1000));
             return dateString;
         }
 

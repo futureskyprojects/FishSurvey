@@ -24,6 +24,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,14 +73,14 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
     public GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
-    fsCatchedInputActivity mContext;
+    private fsCatchedInputActivity mContext;
     /* Declare varriable */
     public static ArrayList<Bitmap> LIST_CATCHED_IMAGES;
     public fsCatchedPreviewAdapter adapter;
     public static Bitmap CURRENT_BITMAP = null;
-    fsCatchedHandler handler;
-    Calendar calendar;
-    SweetAlertDialog saving;
+    private fsCatchedHandler handler;
+    private Calendar calendar;
+    private SweetAlertDialog saving;
     ArrayList<String> FileNames;
 
     public fsCatchedInputPresenter(fsCatchedInputActivity mContext) {
@@ -101,6 +102,12 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                 = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mContext.rvCatchedListImages.setLayoutManager(layoutManager);
         mContext.rvCatchedListImages.setAdapter(adapter);
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+            }
+        });
     }
 
     private void initDefaultValues() {
@@ -235,12 +242,11 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                 // Save iamge to app dir
                 if (ApplicationConfig.FOLDER.CheckAndCreate()) {
                     try {
-                        new SaveFiles().execute(new String[]{String.valueOf((int) (System.currentTimeMillis() / 1000)),
-                                Length, Weight});
+                        new SaveFiles().execute(String.valueOf((int) (System.currentTimeMillis() / 1000)),
+                                Length, Weight);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else {
                 }
                 //endregion
             }
@@ -251,7 +257,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (FileNames!=null) {
+            if (FileNames != null) {
                 FileNames.clear();
                 FileNames = null;
             }
@@ -383,7 +389,8 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                 dialog.setView(view);
                 final AlertDialog ok = dialog.create();
                 ok.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                ok.show();
+                if (!ok.isShowing())
+                    ok.show();
                 /* init data and event */
                 ImageView imageView = (ImageView) view.findViewById(R.id.item3_ic);
                 if (fsElementPresenter.CURRENT_SELECTED_ELEMENT.getFeatureImage() != null)

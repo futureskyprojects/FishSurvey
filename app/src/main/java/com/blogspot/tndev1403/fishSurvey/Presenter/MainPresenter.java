@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 
 import com.blogspot.tndev1403.fishSurvey.MainActivity;
 import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
@@ -49,6 +50,7 @@ public class MainPresenter {
                     mContext.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
             ) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    mContext.initData(100);
                     mContext.requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE}, ApplicationConfig.PERMISSION.ALL_PERMISSION);
                 }
             } else
@@ -67,6 +69,7 @@ public class MainPresenter {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            mContext.prgHorizontial.setVisibility(View.VISIBLE);
         }
 
         @Override

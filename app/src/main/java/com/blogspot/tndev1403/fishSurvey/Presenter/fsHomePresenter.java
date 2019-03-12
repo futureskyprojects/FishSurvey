@@ -5,13 +5,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,8 +16,6 @@ import android.widget.Toast;
 import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsElement;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsUser;
-import com.blogspot.tndev1403.fishSurvey.Model.Services.API;
-import com.blogspot.tndev1403.fishSurvey.Model.Services.SleepServices;
 import com.blogspot.tndev1403.fishSurvey.Model.Services.SyncDataService;
 import com.blogspot.tndev1403.fishSurvey.Model.fsCatchedHandler;
 import com.blogspot.tndev1403.fishSurvey.R;
@@ -32,7 +26,6 @@ import com.blogspot.tndev1403.fishSurvey.View.fsHome;
 import com.blogspot.tndev1403.fishSurvey.View.fsNewUserActivity;
 import com.blogspot.tndev1403.fishSurvey.View.fsSavedDataActivity;
 
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -54,7 +47,6 @@ public class fsHomePresenter {
 
     public fsHomePresenter(fsHome fshome) {
         this.mContext = fshome;
-        startBackgroundServicesIfNowHaveNow();
         currentUser = new fsUser(mContext);
         initSharedPreferences();
         initDataHandler();
@@ -64,15 +56,6 @@ public class fsHomePresenter {
         initEvent();
         initNotSync();
     }
-
-    private void startBackgroundServicesIfNowHaveNow() {
-//        if (!TNLib.Using.IsMyServiceRunning(mContext, SleepServices.class)) {
-//            Toast.makeText(mContext, "Khởi động", Toast.LENGTH_SHORT).show();
-//            mContext.startService(new Intent(mContext, SleepServices.class));
-//        } else
-//            Toast.makeText(mContext, "Bỏ qua", Toast.LENGTH_SHORT).show();
-    }
-
     private void initNotSync() {
         if (!TNLib.Using.IsMyServiceRunning(mContext, SyncDataService.class)) {
             mContext.startService(new Intent(mContext, SyncDataService.class));
@@ -85,12 +68,15 @@ public class fsHomePresenter {
                 mContext.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (notSyncNumber <= 0)
-                        {
+                        if (notSyncNumber <= 0) {
                             mContext.tvNotSyncShow.setVisibility(View.INVISIBLE);
                         } else {
                             mContext.tvNotSyncShow.setVisibility(View.VISIBLE);
-                            mContext.tvNotSyncShow.setText(mContext.getResources().getString(R.string.still_have) + " " + notSyncNumber + " " + mContext.getResources().getString(R.string.records_not_sync));
+                            if (!TNLib.Using.IsMyServiceRunning(mContext, SyncDataService.class)) {
+                                mContext.tvNotSyncShow.setText(mContext.getResources().getString(R.string.still_have) + " " + notSyncNumber + " " + mContext.getResources().getString(R.string.records_not_sync));
+                            } else {
+                                mContext.tvNotSyncShow.setText(mContext.getResources().getString(R.string.synchronizing_n_records, notSyncNumber + ""));
+                            }
                         }
                     }
                 });
@@ -133,6 +119,16 @@ public class fsHomePresenter {
         initButtonEditProfile();
         initEndTripsButton();
         initLanguaeFlagsButton();
+        initNorecordShowTextEvent();
+    }
+
+    private void initNorecordShowTextEvent() {
+        mContext.tvNoTrips.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NewTripEvent();
+            }
+        });
     }
 
     private void initLanguaeFlagsButton() {

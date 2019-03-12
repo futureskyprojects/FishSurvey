@@ -156,21 +156,30 @@
             android:text="@string/otherCategorize"
             android:textColor="@android:color/white" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/no_trip_show"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <LinearLayout
+        android:id="@+id/no_trip_layout"
         android:background="@drawable/background_home"
-        android:gravity="center"
-        android:shadowColor="@color/colorAccent"
-        android:shadowDx="2"
-        android:shadowDy="2"
-        android:shadowRadius="1"
-        android:text="@string/please_create_new_tri"
-        android:textColor="@android:color/holo_red_dark"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_margin="30dp"
+            android:background="@drawable/create_new_trip_btn"
+            android:id="@+id/no_trip_show"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:shadowColor="@color/colorAccent"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="1"
+            android:text="@string/please_create_new_tri"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp" />
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>

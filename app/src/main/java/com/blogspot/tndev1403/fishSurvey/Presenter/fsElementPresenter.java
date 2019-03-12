@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,8 @@ import com.blogspot.tndev1403.fishSurvey.View.fsElementActivity;
 
 import java.util.ArrayList;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class fsElementPresenter {
     public static fsElement CURRENT_SELECTED_ELEMENT;
     fsElementActivity mContext;
@@ -35,7 +38,7 @@ public class fsElementPresenter {
     public fsElementPresenter(fsElementActivity mContext) {
         this.mContext = mContext;
         initArguments();
-        initGridView();
+        new InitGridView().execute();
     }
 
     private void initArguments() {
@@ -45,37 +48,44 @@ public class fsElementPresenter {
         CATEGORIZE_NAME = currentIntent.getStringExtra(ApplicationConfig.CategorizeAPI.Name);
     }
 
-    private void initGridView() {
-//        elements = fsElement.getFromAPI(""); // Empty for test
-        elements = elementHandler.getEntriesByCategorizeID(CATEGORIZE_ID);
-        adapter = new fsElementAdapter(mContext, elements);
-        mContext.gridView.setAdapter(adapter);
-        mContext.gridView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                if (adapter == null || adapter.isEmpty()) {
-                    if (mContext.bottomEffect.isRippleAnimationRunning())
-                        mContext.bottomEffect.stopRippleAnimation();
-                    mContext.bottomEffect.setVisibility(View.INVISIBLE);
-                    return;
-                }
-                View view = (View) mContext.gridView.getChildAt(mContext.gridView.getChildCount() - 1);
 
-                int diff = (view.getBottom() - (mContext.gridView.getHeight() + mContext.gridView
-                        .getScrollY()));
-
-                if (diff == 0) {
-                    if (mContext.bottomEffect.isRippleAnimationRunning())
-                        mContext.bottomEffect.stopRippleAnimation();
-                    mContext.bottomEffect.setVisibility(View.INVISIBLE);
-                } else {
-                    if (!mContext.bottomEffect.isRippleAnimationRunning())
-                        mContext.bottomEffect.startRippleAnimation();
-                    mContext.bottomEffect.setVisibility(View.VISIBLE);
-                }
+    class InitGridView extends AsyncTask<Void, Void, Void> {
+        SweetAlertDialog mLoading;
+        @Override
+        protected void onPreExecute() {
+            final InitGridView itselft = this;
+            elements = new ArrayList<>();
+            mLoading = new SweetAlertDialog(mContext, SweetAlertDialog.PROGRESS_TYPE)
+                    .setTitleText(mContext.getResources().getString(R.string.loading))
+                    .setCancelButton(mContext.getResources().getString(R.string.cancle), new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            if (itselft.cancel(true))
+                                sweetAlertDialog.cancel();
+                        }
+                    });
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mLoading.create();
             }
-        });
-        gridViewItemClickedEvent();
+            mLoading.show();
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            elements = elementHandler.getEntriesByCategorizeID(CATEGORIZE_ID);
+            adapter = new fsElementAdapter(mContext, elements);
+            mContext.gridView.setAdapter(adapter);
+            gridViewItemClickedEvent();
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            if (mLoading.isShowing())
+                mLoading.cancel();
+            return null;
+        }
     }
 
     private void gridViewItemClickedEvent() {

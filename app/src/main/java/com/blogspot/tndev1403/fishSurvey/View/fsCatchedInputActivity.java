@@ -125,7 +125,6 @@ public class fsCatchedInputActivity extends AppCompatActivity {
         super.onStart();
         if (presenter.mGoogleApiClient != null)
         {
-            Log.d(TAG, "onStart: Không null");
             presenter.mGoogleApiClient.connect();
         }
 
@@ -148,7 +147,6 @@ public class fsCatchedInputActivity extends AppCompatActivity {
             presenter.mGoogleApiClient.disconnect();
             presenter.mGoogleApiClient = null;
         }
-        Log.d(TAG, "onDestroy LocationService");
         super.onDestroy();
     }
 }
