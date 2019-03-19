@@ -57,9 +57,6 @@ public class fsHomePresenter {
         initNotSync();
     }
     private void initNotSync() {
-        if (!TNLib.Using.IsMyServiceRunning(mContext, SyncDataService.class)) {
-            mContext.startService(new Intent(mContext, SyncDataService.class));
-        }
         tmUpdate = new Timer();
         tmUpdate.schedule(new TimerTask() {
             @Override
@@ -74,6 +71,7 @@ public class fsHomePresenter {
                             mContext.tvNotSyncShow.setVisibility(View.VISIBLE);
                             if (!TNLib.Using.IsMyServiceRunning(mContext, SyncDataService.class)) {
                                 mContext.tvNotSyncShow.setText(mContext.getResources().getString(R.string.still_have) + " " + notSyncNumber + " " + mContext.getResources().getString(R.string.records_not_sync));
+                                mContext.startService(new Intent(mContext, SyncDataService.class));
                             } else {
                                 mContext.tvNotSyncShow.setText(mContext.getResources().getString(R.string.synchronizing_n_records, notSyncNumber + ""));
                             }

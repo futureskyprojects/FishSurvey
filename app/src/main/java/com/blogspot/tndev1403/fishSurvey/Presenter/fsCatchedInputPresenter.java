@@ -184,7 +184,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
         });
     }
 
-    void UnLocatedAlert() {
+    private void UnLocatedAlert() {
         SweetAlertDialog warning = new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
                 .setTitleText(mContext.getResources().getString(R.string.not_located_yet))
                 .setContentText(mContext.getResources().getString(R.string.not_located_plz_try_again))

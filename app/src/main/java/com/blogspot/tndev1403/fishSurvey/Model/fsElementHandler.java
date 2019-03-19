@@ -46,7 +46,6 @@ public class fsElementHandler extends SQLiteOpenHelper {
 
     public boolean isHave(fsElement element) {
         fsElement element1 = getEntry(element.getID());
-        Log.w("DATA_FS", "Check null is " + (element == null));
         if (element1 == null)
             return false;
         else {
@@ -54,9 +53,9 @@ public class fsElementHandler extends SQLiteOpenHelper {
         }
     }
 
-    public void addEntry(fsElement element) throws Exception {
+    public void addEntry(fsElement element) {
         if (!isHave(element)) {
-            Log.w("DATA_FS", "Have records");
+            Log.d("THÊM CÁ", "Không có! thêm mới! " + element.toString());
             SQLiteDatabase database = this.getWritableDatabase();
             ContentValues c = new ContentValues();
             c.put(ID, element.getID());
@@ -65,9 +64,8 @@ public class fsElementHandler extends SQLiteOpenHelper {
             c.put(FEATURE_IMAGE_BITMAP, element.getFeatureImageBytes());
             c.put(FEATURE_IMAGE_URL, element.getFeatureImageLink());
             database.insert(TABLE_NAME, null, c);
-            database.close();
         } else {
-            Log.w("DATA_FS", "Havn't records");
+            Log.d("THÊM CÁ", "Đã có! Cập nhật!");
             updateEntry(element);
         }
     }
@@ -122,7 +120,7 @@ public class fsElementHandler extends SQLiteOpenHelper {
         if (cursor != null && cursor.getCount() > 0)
             cursor.moveToFirst();
         else
-            return null;
+            return elements;
         while (!cursor.isAfterLast()) {
             fsElement element = new fsElement(
                     cursor.getInt(0),
@@ -132,7 +130,6 @@ public class fsElementHandler extends SQLiteOpenHelper {
                     cursor.getString(4)
             );
             elements.add(element);
-            Log.d("FUCK", "getEntriesByCategorizeID: " + element.getName());
             cursor.moveToNext();
         }
         return elements;

@@ -13,7 +13,7 @@ public class ApplicationConfig {
     public final static double REDUCE_QUALITY_TO = 0.7;
     public final static String APP_NAME = "COPPA";
     public final static String TAG = "ApplicationConfig";
-    public static String Host = "http://jcenter.sytes.net/~quoctuan/public";
+    public static String Host = "http://coppa.vn";
     public final static String Key = "api";
     public final static String Captiain = "captain";
     public final static String Record = "record";

@@ -55,7 +55,7 @@
     <string name="device_not_sp_gg_services">Sorry, This device does not support Google services</string>
     <string name="please_turn_on_GPS">Please turn on GPS navigation first!</string>
     <string name="not_located_yet">NOT LOCATED</string>
-    <string name="not_located_plz_try_again">The location has not been located yet, please try again!</string>
+    <string name="not_located_plz_try_again">The location has not been located yet, please try after a few minutes!</string>
     <string name="not_enough">SHORT!</string>
     <string name="plz_insert_full_info">Please enter full information.</string>
     <string name="save_success">Save successfully!</string>
@@ -101,4 +101,5 @@
     <string name="sync_finish_success">Sync finish successfully</string>
     <string name="update_success">Update success!</string>
     <string name="update_fail">Update fail!</string>
+    <string name="plz_try_after_few_minutes">Please try after few minutes!</string>
 </resources>

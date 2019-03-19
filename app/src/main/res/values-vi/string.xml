@@ -56,14 +56,14 @@
     <string name="device_not_sp_gg_services">Xin lỗi, Thiết bị này không hỗ trợ dịch vụ của Google</string>
     <string name="please_turn_on_GPS">Vui lòng bật định vị GPS lên trước!</string>
     <string name="not_located_yet">CHƯA ĐỊNH VỊ ĐƯỢC</string>
-    <string name="not_located_plz_try_again">Hiện tại vẫn chưa định vị được vị trí, hãy thử lại!</string>
+    <string name="not_located_plz_try_again">Hiện tại vẫn chưa định vị được vị trí, hãy thử lại sau vài phút!</string>
     <string name="not_enough">THIẾU!</string>
     <string name="plz_insert_full_info">Vui lòng nhập đầy đủ thông tin.</string>
     <string name="save_success">Lưu thành công!</string>
     <string name="can_not_save">KHÔNG LƯU ĐƯỢC!</string>
     <string name="have_problem_when_save_plz_try">Gặp vấn đề khi lưu dữ liệu, hãy thử lại!.</string>
     <string name="sure_delete">CHẮC CHẮN XÓA?</string>
-    <string name="current_image_will_be_replace_by_default">\"Ảnh hiện tại sẽ bị xóa và thay thế bằng ảnh mặc định của phần mềm!\"</string>
+    <string name="current_image_will_be_replace_by_default">Ảnh hiện tại sẽ bị xóa và thay thế bằng ảnh mặc định của phần mềm!</string>
     <string name="cancle">Hủy</string>
     <string name="camera_permission_success">Cấp quyền sử dụng máy ảnh thành công!</string>
     <string name="camera_permission_denied">Đã từ chối cấp quyền sử dụng máy ảnh</string>
