@@ -104,7 +104,7 @@
                 android:layout_marginTop="@dimen/inp_margin_top"
                 android:layout_weight="1"
                 android:background="#ff6348"
-                android:text="@string/finish"
+                android:text="@string/close"
                 android:textColor="@android:color/white" />
         </LinearLayout>
     </LinearLayout>

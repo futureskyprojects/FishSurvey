@@ -18,9 +18,12 @@ import android.widget.Toast;
 
 import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,12 +62,14 @@ public class TNLib {
             File file = new File(Path);
             return file.delete();
         }
+
         public static String[] StringArrayListToStringArray(ArrayList<String> arr) {
             String[] strarr = new String[arr.size()];
-            for (int i = 0; i < arr.size(); i ++)
+            for (int i = 0; i < arr.size(); i++)
                 strarr[i] = arr.get(i);
             return strarr;
         }
+
         public static void ChangeLanguage(Context mContext, String code) {
             Locale locale = new Locale(code);
             Resources resources = mContext.getResources();
@@ -74,15 +79,16 @@ public class TNLib {
             }
             resources.updateConfiguration(configuration, resources.getDisplayMetrics());
         }
+
         public static String DateTimeStringReverseFromTimeStamp(String timestamp) {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            String dateString = formatter.format(new Date(Long.parseLong(timestamp)*1000));
+            String dateString = formatter.format(new Date(Long.parseLong(timestamp) * 1000));
             return dateString;
         }
 
         public static String DateTimeStringFromTimeStamp(String timestamp) {
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-            String dateString = formatter.format(new Date(Long.parseLong(timestamp)*1000));
+            String dateString = formatter.format(new Date(Long.parseLong(timestamp) * 1000));
             return dateString;
         }
 
@@ -109,6 +115,7 @@ public class TNLib {
                     calendarX.get(Calendar.MINUTE) + ":" + calendarX.get(Calendar.SECOND);
             return str;
         }
+
         public static String MyCalendarToString(Calendar calendarX) {
             String String = calendarX.get(Calendar.HOUR_OF_DAY) + ":" +
                     calendarX.get(Calendar.MINUTE) + " " + calendarX.get(Calendar.DAY_OF_MONTH) + "-" +
@@ -137,18 +144,28 @@ public class TNLib {
         }
 
         public static String Base64FromImageFile(String _Path) {
-            Bitmap bm = BitmapFromFilePath(_Path);
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            bm.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-            byte[] byteArray = byteArrayOutputStream.toByteArray();
-            String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
-            return encoded;
+            File file = new File(_Path);
+            int size = (int) file.length();
+            byte[] bytes = new byte[size];
+
+            try {
+                BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+                buf.read(bytes, 0, bytes.length);
+                buf.close();
+                String encoded = Base64.encodeToString(bytes, Base64.DEFAULT);
+                return encoded;
+            } catch (Exception e) {
+                Bitmap bm = BitmapFromFilePath(_Path);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bm.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                byte[] byteArray = byteArrayOutputStream.toByteArray();
+                String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                return encoded;
+            }
         }
 
         public static Bitmap BitmapFromFilePath(String _Path) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            Bitmap bitmap = BitmapFactory.decodeFile(_Path, options);
+            Bitmap bitmap = BitmapFactory.decodeFile(_Path);
             return bitmap;
         }
 
@@ -190,7 +207,7 @@ public class TNLib {
             }
             try {
                 FileOutputStream out = new FileOutputStream(file);
-                imageToSave.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                imageToSave.compress(Bitmap.CompressFormat.PNG, 100, out);
                 out.flush();
                 out.close();
             } catch (Exception e) {
@@ -201,6 +218,7 @@ public class TNLib {
         public static Bitmap BytesToBitmap(byte[] bytes) {
             return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         }
+
         public static Bitmap ResizeBitmap(Bitmap image, int maxSize) {
             int width = image.getWidth();
             int height = image.getHeight();
@@ -219,7 +237,7 @@ public class TNLib {
 
         public static byte[] BitmapToBytes(Bitmap bm) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bm.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
             return stream.toByteArray();
         }
 

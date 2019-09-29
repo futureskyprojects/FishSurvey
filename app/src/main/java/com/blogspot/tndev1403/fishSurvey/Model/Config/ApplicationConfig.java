@@ -10,7 +10,6 @@ import com.blogspot.tndev1403.fishSurvey.TNLib;
 import java.io.File;
 
 public class ApplicationConfig {
-    public final static double REDUCE_QUALITY_TO = 0.7;
     public final static String APP_NAME = "COPPA";
     public final static String TAG = "ApplicationConfig";
     public static String Host = "http://coppa.vn";
