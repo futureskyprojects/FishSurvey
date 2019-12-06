@@ -122,7 +122,7 @@ public class SyncDataService extends Service {
             JSONSend.put(API.Record.LONG, catched.getLength() + "");
             JSONSend.put(API.Record.WEIGHT, catched.getWeight() + "");
             JSONSend.put(API.Record.LAT, catched.getLatitude());
-            JSONSend.put(API.Record.LNG, catched.getLatitude());
+            JSONSend.put(API.Record.LNG, catched.getLongitude());
             JSONSend.put(API.Record.CATCHED_AT, catched.getCatchedTime());
             Log.w(TAG, "SyncRecord: " + JSONSend.toString());
         } catch (JSONException e) {

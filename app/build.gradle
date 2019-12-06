@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.blogspot.tndev1403.Coppa"
         minSdkVersion 16
-        targetSdkVersion 28
-        versionCode 201909296
-        versionName "2019.09.29-006"
+        targetSdkVersion 29
+        versionCode 201912051
+        versionName "2019.12.02-001"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
