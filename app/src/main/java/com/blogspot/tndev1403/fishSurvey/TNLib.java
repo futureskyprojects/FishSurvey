@@ -1,5 +1,6 @@
 package com.blogspot.tndev1403.fishSurvey;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -15,6 +16,8 @@ import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.core.graphics.BitmapCompat;
 
 import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
 
@@ -104,9 +107,16 @@ public class TNLib {
 
         public static String GetReverseCurrentDateString() {
             Calendar calendarX = Calendar.getInstance();
-            String str = calendarX.get(Calendar.YEAR) + "-" + (calendarX.get(Calendar.MONTH) + 1) + "-"
-                    + calendarX.get(Calendar.DAY_OF_MONTH);
-            return str;
+            @SuppressLint("DefaultLocale") String s = String.format("%04d-%02d-%02d",// %02d:%02d:%02d",
+                    calendarX.get(Calendar.YEAR),
+                    calendarX.get(Calendar.MONTH) + 1,
+                    calendarX.get(Calendar.DAY_OF_MONTH)
+//                    ,
+//                    calendarX.get(Calendar.HOUR_OF_DAY),
+//                    calendarX.get(Calendar.MINUTE),
+//                    calendarX.get(Calendar.SECOND)
+            );
+            return s;
         }
 
         public static String MyCalendarToReverseString(Calendar calendarX) {
@@ -157,7 +167,7 @@ public class TNLib {
             } catch (Exception e) {
                 Bitmap bm = BitmapFromFilePath(_Path);
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bm.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                bm.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
                 byte[] byteArray = byteArrayOutputStream.toByteArray();
                 String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
                 return encoded;
@@ -192,29 +202,6 @@ public class TNLib {
 
         }
 
-        private void createDirectoryAndSaveFile(Bitmap imageToSave, String fileName) {
-
-            File direct = new File(Environment.getExternalStorageDirectory() + "/DirName");
-
-            if (!direct.exists()) {
-                File wallpaperDirectory = new File("/sdcard/DirName/");
-                wallpaperDirectory.mkdirs();
-            }
-
-            File file = new File(new File("/sdcard/DirName/"), fileName);
-            if (file.exists()) {
-                file.delete();
-            }
-            try {
-                FileOutputStream out = new FileOutputStream(file);
-                imageToSave.compress(Bitmap.CompressFormat.PNG, 100, out);
-                out.flush();
-                out.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
         public static Bitmap BytesToBitmap(byte[] bytes) {
             return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         }
@@ -235,9 +222,31 @@ public class TNLib {
             return Bitmap.createScaledBitmap(image, width, height, true);
         }
 
+        // Phương thức nén để giảm chất lượng ảnh
         public static byte[] BitmapToBytes(Bitmap bm) {
+            int quality = 100;
+            int min = 20;
+            Log.d(TAG, "BitmapToBytes: Kích cỡ: " + bm.getWidth() + "x" + bm.getHeight());
+            int maxSize = 2048;
+            if (bm.getWidth() > maxSize || bm.getHeight() > maxSize) {
+                bm = ResizeBitmap(bm, maxSize);
+            }
+            int currentSize = BitmapCompat.getAllocationByteCount(bm);
+            Log.d(TAG, "BitmapToBytes: Size: " + currentSize);
+            float requireSize = (float) (1024 * 1024);
+            if (currentSize > requireSize) {
+                int ration = (int) (currentSize * 100 / requireSize);
+                if (ration > 100 && ration < 200 && quality - (ration - 100) > min) {
+                    quality = quality - ration;
+                } else {
+                    quality = min;
+                }
+            }
+            Log.d(TAG, "BitmapToBytes: Chất lượng mới " + quality);
+
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            bm.compress(Bitmap.CompressFormat.JPEG, quality, stream);
+            Log.d(TAG, "BitmapToBytes: new Size: " + stream.size());
             return stream.toByteArray();
         }
 

@@ -3,6 +3,7 @@ package com.blogspot.tndev1403.fishSurvey.Presenter;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
@@ -50,20 +51,32 @@ public class fsSaveSuccessfulPresenter {
 
         @Override
         protected Void doInBackground(String... strings) {
-            for (Bitmap bm : fsCatchedInputPresenter.LIST_CATCHED_IMAGES) {
+            for (final Bitmap bm : fsCatchedInputPresenter.LIST_CATCHED_IMAGES) {
                 final SliderView sliderView = new DefaultSliderView(mContext);
                 try {
                     if (bm == null)
                         return null;
+//                    if (sliderView.getView() instanceof ImageView) {
+//                        mContext.runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                ((ImageView) (sliderView.getView())).setImageBitmap(bm);
+//                            }
+//                        });
+//                    }
+//                    sliderView.setImageDrawable(new BitmapDrawable(mContext.getResources(), bm));
                     sliderView.setImageByte(TNLib.Using.BitmapToBytes(
                             bm
                     ));
-                    sliderView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
+//                    sliderView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
                     viewHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (sliderView != null)
+                            if (sliderView != null) {
                                 mContext.slSlideReview.addSliderView(sliderView);
+                                if (sweetAlertDialog.isShowing())
+                                    sweetAlertDialog.cancel();
+                            }
                         }
                     });
                 } catch (Exception e) {
@@ -77,7 +90,8 @@ public class fsSaveSuccessfulPresenter {
         @Override
         protected void onPostExecute(Void aSliderView) {
             super.onPostExecute(aSliderView);
-            sweetAlertDialog.cancel();
+            if (sweetAlertDialog.isShowing())
+                sweetAlertDialog.cancel();
         }
     }
 

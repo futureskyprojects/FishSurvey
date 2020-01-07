@@ -1,6 +1,7 @@
 package com.blogspot.tndev1403.fishSurvey.Presenter;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -12,7 +13,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.icu.text.SimpleDateFormat;
-import android.location.Address;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -20,15 +20,16 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,8 +62,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import es.dmoral.toasty.Toasty;
@@ -245,11 +244,24 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                         return;
                     }
                 }
+                // Tiến hành tách và xử lý thời gian bắt
+                String[] dates = CatchedDate.split("/");
+                String[] times = CatchedTimeX.split(":");
+
+                @SuppressLint("DefaultLocale") String catchedTime =
+                        String.format("%02d/%02d/%02d %02d:%02d:%02d",
+                                Integer.parseInt(dates[2]),
+                                Integer.parseInt(dates[1]),
+                                Integer.parseInt(dates[0]),
+                                Integer.parseInt(times[0]),
+                                Integer.parseInt(times[1]),
+                                0);
+                Log.e(TAG, "onClick: ABC BẮT" + catchedTime);
                 // Save iamge to app dir
                 if (ApplicationConfig.FOLDER.CheckAndCreate()) {
                     try {
                         new SaveFiles().execute(String.valueOf((int) (System.currentTimeMillis() / 1000)),
-                                Length, Weight);
+                                Length, Weight, catchedTime);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -285,13 +297,13 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                 if (TNLib.Using.SaveImage(LIST_CATCHED_IMAGES.get(k), FileName, ApplicationConfig.FOLDER.APP_DIR))
                     FileNames.add(FileName);
             }
+            Log.e(TAG, "doInBackground: ABCCCCCCC" + strings[3]);
             catched = new fsCatched(ID, fsElementPresenter.CURRENT_SELECTED_ELEMENT.getID(), TNLib.Using.GetNowTimeString(),
-                    strings[1], strings[2], TNLib.Using.MyCalendarToReverseString(calendar), mLastLocation.getLatitude() + "", mLastLocation.getLongitude() + "", TNLib.Using.StringListToSingalString(FileNames), fsHomePresenter.CURRENT_TRIP_ID, "");
+                    strings[1], strings[2], strings[3], mLastLocation.getLatitude() + "", mLastLocation.getLongitude() + "", TNLib.Using.StringListToSingalString(FileNames), fsHomePresenter.CURRENT_TRIP_ID, "");
             try {
                 handler.addEntry(catched);
                 return true;
-            } catch (Exception e) {
-                Log.e(TAG, "onClick: " + e.getMessage());
+            } catch (Exception ignore) {
             }
             return false;
         }
@@ -302,7 +314,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
             if (aBoolean) {
                 if (saving.isShowing())
                     saving.cancel();
-                Toasty.success(mContext, mContext.getResources().getString(R.string.save_success), Toast.LENGTH_SHORT, true);
+                Toasty.success(mContext, mContext.getResources().getString(R.string.save_success), Toast.LENGTH_SHORT, true).show();
                 mContext.startActivity(new Intent(mContext, fsSaveSuccessfulActivity.class));
                 mContext.finish();
             } else {
@@ -349,7 +361,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
         });
     }
 
-    String currentPhotoPath;
+    private String currentPhotoPath;
 
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -526,8 +538,7 @@ public class fsCatchedInputPresenter implements GoogleApiClient.ConnectionCallba
                 }
             }
         } else if (reqCode == ApplicationConfig.CODE.IMAGE_CAPTURE_REQUEST_CODE && resCode == Activity.RESULT_OK) {
-            if (currentPhotoPath != null && !currentPhotoPath.isEmpty())
-            {
+            if (currentPhotoPath != null && !currentPhotoPath.isEmpty()) {
                 Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
                 setImageToListAndShowIt(bitmap);
             }

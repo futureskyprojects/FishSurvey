@@ -1,17 +1,15 @@
 package com.blogspot.tndev1403.fishSurvey.View;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blogspot.tndev1403.fishSurvey.Presenter.fsSaveSuccessfulPresenter;
 import com.blogspot.tndev1403.fishSurvey.R;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderLayout;
-import com.smarteist.autoimageslider.SliderView;
 
 public class fsSaveSuccessfulActivity extends AppCompatActivity {
     /* Declare views */
@@ -46,7 +44,6 @@ public class fsSaveSuccessfulActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-//        ivPreview = (ImageView) findViewById(R.id.fss_image_view);
         sliderInits();
         tvName = (TextView) findViewById(R.id.fss_fish_name);
         tvLength = (TextView) findViewById(R.id.fss_length);
@@ -59,7 +56,6 @@ public class fsSaveSuccessfulActivity extends AppCompatActivity {
     private void sliderInits() {
         slSlideReview = (SliderLayout) findViewById(R.id.imageSlider);
         slSlideReview.setAutoScrolling(false);
-//        slSlideReview.setScrollTimeInSec(3); //set scroll delay in seconds :
         slSlideReview.setIndicatorAnimation(IndicatorAnimations.FILL);
     }
 }

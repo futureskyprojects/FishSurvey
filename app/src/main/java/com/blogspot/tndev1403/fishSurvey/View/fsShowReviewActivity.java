@@ -1,11 +1,10 @@
 package com.blogspot.tndev1403.fishSurvey.View;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blogspot.tndev1403.fishSurvey.Presenter.fsShowReviewPresenter;

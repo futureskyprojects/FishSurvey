@@ -322,7 +322,6 @@ public class fsHomePresenter {
                 mContext.categozies.get(i).setClipToOutline(true);
             }
             final int finalI = i;
-            final int finalI1 = i;
             mContext.categozies.get(i).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -1,6 +1,6 @@
 package com.blogspot.tndev1403.fishSurvey.View;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;

@@ -1,12 +1,9 @@
 package com.blogspot.tndev1403.fishSurvey.Presenter.fsAdapter;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.blogspot.tndev1403.fishSurvey.Model.Config.ApplicationConfig;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsCatched;
 import com.blogspot.tndev1403.fishSurvey.Model.Entity.fsElement;
 import com.blogspot.tndev1403.fishSurvey.Model.fsElementHandler;
-import com.blogspot.tndev1403.fishSurvey.Presenter.fsCatchedInputPresenter;
-import com.blogspot.tndev1403.fishSurvey.Presenter.fsShowReviewPresenter;
 import com.blogspot.tndev1403.fishSurvey.R;
 import com.blogspot.tndev1403.fishSurvey.TNLib;
 import com.blogspot.tndev1403.fishSurvey.View.fsSavedDataActivity;
@@ -29,8 +23,6 @@ import com.blogspot.tndev1403.fishSurvey.View.fsShowReviewActivity;
 
 import java.io.File;
 import java.util.ArrayList;
-
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class fsSavedDataAdapter extends RecyclerView.Adapter<fsSavedDataAdapter.fsRecycleViewHolder> {
     private ArrayList<fsCatched> catcheds;

@@ -95,7 +95,7 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
 
     public fsCatched getEntry(int ID) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_NAME, null, this.ID + " = ?", new String[]{String.valueOf(ID)}, null, null, null);
+        Cursor cursor = db.query(TABLE_NAME, null, fsCatchedHandler.ID + " = ?", new String[]{String.valueOf(ID)}, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
         else
@@ -139,8 +139,8 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
         else
             return cursor.getCount();
     }
+
     public ArrayList<fsCatched> getAllEntryDifferentWithCurrentTripID(String Trip_ID) {
-        Log.w(">>>>>>>>>>>>>>>> ", Trip_ID);
         ArrayList<fsCatched> catcheds = new ArrayList<>();
         String Query = "SELECT * FROM " + TABLE_NAME + " WHERE " + TRIP_ID + " !=?";
         SQLiteDatabase db = this.getReadableDatabase();
@@ -221,8 +221,10 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
         if (db == null || !db.isOpen())
             return -1;
         ContentValues c = new ContentValues();
-        c.put(FINISHED_TIME, TNLib.Using.GetReverseCurrentDateString());
-        int x = db.update(TABLE_NAME, c, this.TRIP_ID + " = ?", new String[]{trip_id});
+        String t = TNLib.Using.GetReverseCurrentDateString();
+        c.put(FINISHED_TIME, t);
+        int x = db.update(TABLE_NAME, c, TRIP_ID + " = ?", new String[]{trip_id});
+        Log.w(FINISHED_TIME, "UpdateAllFinishedTimeOfATrip: " + t + " //// " + x);
         db.close();
         return x;
     }
@@ -241,11 +243,11 @@ public class fsCatchedHandler extends SQLiteOpenHelper {
         c.put(IMAGE_PATH, catched.getImagePath());
         c.put(TRIP_ID, catched.getTrip_id());
         c.put(CATCHED_TIME, catched.getCatchedTime());
-        return db.update(TABLE_NAME, c, this.ID + " = ?", new String[]{String.valueOf(catched.getID())});
+        return db.update(TABLE_NAME, c, ID + " = ?", new String[]{String.valueOf(catched.getID())});
     }
 
     public long deleteEntry(int ID) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_NAME, this.ID + " = ?", new String[]{String.valueOf(ID)});
+        return db.delete(TABLE_NAME, fsCatchedHandler.ID + " = ?", new String[]{String.valueOf(ID)});
     }
 }

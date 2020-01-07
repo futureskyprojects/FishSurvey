@@ -9,11 +9,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.content.ContextCompat;
+
+import androidx.core.content.ContextCompat;
+
 import android.util.Log;
 import android.widget.Toast;
 
@@ -26,17 +27,12 @@ import com.blogspot.tndev1403.fishSurvey.R;
 import com.blogspot.tndev1403.fishSurvey.TNLib;
 import com.blogspot.tndev1403.fishSurvey.View.fsHome;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -108,6 +104,7 @@ public class SyncDataService extends Service {
     }
 
     void SyncRecord(final fsCatched catched) {
+        Log.w(TAG, "SyncRecord: Chuyến đi từ ngày " + catched.getCreatedDate() + " đến ngày " + catched.getFinished_time());
         final JSONObject JSONSend = new JSONObject();
         try {
             JSONSend.put(API.Record.CAPTAIN_ID, Integer.parseInt(user.getUserID()));
@@ -124,6 +121,7 @@ public class SyncDataService extends Service {
             JSONSend.put(API.Record.LAT, catched.getLatitude());
             JSONSend.put(API.Record.LNG, catched.getLongitude());
             JSONSend.put(API.Record.CATCHED_AT, catched.getCatchedTime());
+            Log.w(TAG, "Bat luc: " + catched.getCatchedTime());
             Log.w(TAG, "SyncRecord: " + JSONSend.toString());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -323,7 +321,6 @@ public class SyncDataService extends Service {
     }
 
 
-
     //region Notification
     void SyncNotificaion() {
         if (TYPE != 1)
@@ -339,6 +336,7 @@ public class SyncDataService extends Service {
         notificationManager.cancelAll();
         notificationManager.notify(ApplicationConfig.CODE.NOTIFICATION_REQUEST_CODE, notification);
     }
+
     void WaitInternetNotificaion() {
         if (TYPE != 3)
             TYPE = 3;
@@ -426,6 +424,7 @@ public class SyncDataService extends Service {
             SyncRecords();
         }
     }
+
     void Reset() {
         isSyncRecording = false;
         IS_FINISH_HOST = false;
