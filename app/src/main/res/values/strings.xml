@@ -4,7 +4,7 @@
     <string name="request_name">Full Name</string>
     <string name="finish">Finish</string>
     <string name="request_phone">Phone number</string>
-    <string name="request_boat_code">Vessel ID</string>
+    <string name="request_boat_code">Vessel id</string>
     <string name="otherCategorize">Other families</string>
     <string name="hint_length">Length (cm)</string>
     <string name="hint_weight">Weight (kg)</string>

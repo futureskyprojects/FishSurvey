@@ -34,24 +34,24 @@
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
         <service
-            android:name=".Model.Services.SyncDataService"
+            android:name=".services.SyncDataService"
             android:enabled="true"
             android:exported="true" />
 
         <activity
-            android:name=".View.fsHome"
+            android:name=".view.homescreen.HomeScreenActivity"
             android:label="@string/title_activity_fs_home"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".View.fsShowReviewActivity" />
-        <activity android:name=".View.fsSavedDataActivity" />
-        <activity android:name=".View.fsSaveSuccessfulActivity" />
-        <activity android:name=".View.fsCatchedInputActivity" />
-        <activity android:name=".View.fsElementActivity" />
+        <activity android:name=".view.reviewscreen.fsShowReviewActivity" />
+        <activity android:name=".view.storagesceen.fsSavedDataActivity" />
+        <activity android:name=".view.savesuccessscreen.fsSaveSuccessfulActivity" />
+        <activity android:name=".view.fishcatchinputscreen.FishCatchInputActivity" />
+        <activity android:name=".view.fishscreen.FishScreenActivity" />
         <activity
-            android:name=".View.fsNewUserActivity"
+            android:name=".view.newcaptainscreen.NewCaptainScreenActivity"
             android:theme="@style/TN_NoActionBar" />
         <activity
-            android:name=".MainActivity"
+            android:name=".view.splashscreen.SplashScreenActivity"
             android:theme="@style/TN_NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
