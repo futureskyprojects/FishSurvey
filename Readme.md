@@ -121,5 +121,5 @@
 ## Designer
 #### Name: [Nguyen Trong Nghia](https://www.facebook.com/tx.trongnghia98)
 #### Email: projects.futuresky@gmail.com
-#### Phone: +84 86 48 3147
+#### Phone: +84 886 48 3147
 #### Blogger: [TNdev1403](https://tndev1403.blogspot.com)
