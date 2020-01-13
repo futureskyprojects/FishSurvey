@@ -4,11 +4,10 @@ import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 
-import com.blogspot.tndev1403.fishSurvey.utils.ProcessingLibrary;
 import com.blogspot.tndev1403.fishSurvey.R;
+import com.blogspot.tndev1403.fishSurvey.utils.ProcessingLibrary;
 import com.blogspot.tndev1403.fishSurvey.view.fishcatchinputscreen.FishCatchInputPresenter;
 import com.blogspot.tndev1403.fishSurvey.view.fishscreen.FishScreenPresenter;
 import com.smarteist.autoimageslider.DefaultSliderView;
@@ -16,16 +15,17 @@ import com.smarteist.autoimageslider.SliderView;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class fsSaveSuccessfulPresenter {
-    fsSaveSuccessfulActivity mContext;
+class SaveSuccessScreenPresenter {
+    private SaveSuccessScreenActivity mContext;
 
-    public fsSaveSuccessfulPresenter(fsSaveSuccessfulActivity mContext) {
+    SaveSuccessScreenPresenter(SaveSuccessScreenActivity mContext) {
         this.mContext = mContext;
         initArguments();
         initEvents();
         initSlider();
     }
 
+    @SuppressLint("StaticFieldLeak")
     class LoadListCatchedImages extends AsyncTask<String, Void, Void> {
         SweetAlertDialog sweetAlertDialog;
         Handler viewHandler = new Handler();
@@ -46,31 +46,18 @@ public class fsSaveSuccessfulPresenter {
                 try {
                     if (bm == null)
                         return null;
-//                    if (sliderView.getView() instanceof ImageView) {
-//                        mContext.runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                ((ImageView) (sliderView.getView())).setImageBitmap(bm);
-//                            }
-//                        });
-//                    }
-//                    sliderView.setImageDrawable(new BitmapDrawable(mContext.getResources(), bm));
                     sliderView.setImageByte(ProcessingLibrary.Using.BitmapToBytes(
                             bm
                     ));
-//                    sliderView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
                     viewHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (sliderView != null) {
-                                mContext.slSlideReview.addSliderView(sliderView);
-                                if (sweetAlertDialog.isShowing())
-                                    sweetAlertDialog.cancel();
-                            }
+                            mContext.slSlideReview.addSliderView(sliderView);
+                            if (sweetAlertDialog.isShowing())
+                                sweetAlertDialog.cancel();
                         }
                     });
                 } catch (Exception e) {
-                    Log.e("ERROR", e.getMessage() + "");
                     return null;
                 }
             }
@@ -105,7 +92,6 @@ public class fsSaveSuccessfulPresenter {
 
     @SuppressLint("SetTextI18n")
     private void initArguments() {
-//        mContext.ivPreview.setImageBitmap((FishCatchInputPresenter.CURRENT_BITMAP==null?FishScreenPresenter.CURRENT_SELECTED_ELEMENT.getFeatureImage():FishCatchInputPresenter.CURRENT_BITMAP));
         mContext.tvName.setText(FishScreenPresenter.CURRENT_SELECTED_ELEMENT.getName());
         mContext.tvLength.setText(FishCatchInputPresenter.fishCatch.getLength() + " (cm)");
         mContext.tvWeight.setText(FishCatchInputPresenter.fishCatch.getWeight() + " (kg)");

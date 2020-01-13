@@ -24,7 +24,7 @@ import com.blogspot.tndev1403.fishSurvey.R;
 import com.blogspot.tndev1403.fishSurvey.view.fishcatchinputscreen.FishCatchInputActivity;
 import com.blogspot.tndev1403.fishSurvey.view.fishscreen.FishScreenActivity;
 import com.blogspot.tndev1403.fishSurvey.view.newcaptainscreen.NewCaptainScreenActivity;
-import com.blogspot.tndev1403.fishSurvey.view.storagesceen.fsSavedDataActivity;
+import com.blogspot.tndev1403.fishSurvey.view.storagesceen.StorageScreenActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -310,7 +310,7 @@ public class HomeScreenPresenter {
         mContext.lnReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mContext.startActivity(new Intent(mContext, fsSavedDataActivity.class));
+                mContext.startActivity(new Intent(mContext, StorageScreenActivity.class));
                 mContext.finish();
             }
         });

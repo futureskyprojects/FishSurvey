@@ -11,7 +11,7 @@ import com.blogspot.tndev1403.fishSurvey.view.homescreen.HomeScreenActivity;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderLayout;
 
-public class fsSaveSuccessfulActivity extends AppCompatActivity {
+public class SaveSuccessScreenActivity extends AppCompatActivity {
     /* Declare views */
 //    public ImageView ivPreview;
     public SliderLayout slSlideReview;
@@ -23,7 +23,7 @@ public class fsSaveSuccessfulActivity extends AppCompatActivity {
     public Button   btnNext;
 
     /* Declare presenter */
-    public fsSaveSuccessfulPresenter presenter;
+    public SaveSuccessScreenPresenter presenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +40,7 @@ public class fsSaveSuccessfulActivity extends AppCompatActivity {
     }
 
     private void initPresenter() {
-        presenter = new fsSaveSuccessfulPresenter(fsSaveSuccessfulActivity.this);
+        presenter = new SaveSuccessScreenPresenter(SaveSuccessScreenActivity.this);
     }
 
     private void initViews() {

@@ -42,9 +42,9 @@
             android:name=".view.homescreen.HomeScreenActivity"
             android:label="@string/title_activity_fs_home"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".view.reviewscreen.fsShowReviewActivity" />
-        <activity android:name=".view.storagesceen.fsSavedDataActivity" />
-        <activity android:name=".view.savesuccessscreen.fsSaveSuccessfulActivity" />
+        <activity android:name=".view.reviewscreen.ReviewScreenActivity" />
+        <activity android:name=".view.storagesceen.StorageScreenActivity" />
+        <activity android:name=".view.savesuccessscreen.SaveSuccessScreenActivity" />
         <activity android:name=".view.fishcatchinputscreen.FishCatchInputActivity" />
         <activity android:name=".view.fishscreen.FishScreenActivity" />
         <activity

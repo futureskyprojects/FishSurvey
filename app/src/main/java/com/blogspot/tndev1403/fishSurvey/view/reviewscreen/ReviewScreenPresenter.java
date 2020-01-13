@@ -1,6 +1,7 @@
 package com.blogspot.tndev1403.fishSurvey.view.reviewscreen;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -26,8 +27,7 @@ import com.blogspot.tndev1403.fishSurvey.data.config.Global;
 import com.blogspot.tndev1403.fishSurvey.data.db.FishCatchHandler;
 import com.blogspot.tndev1403.fishSurvey.utils.ProcessingLibrary;
 import com.blogspot.tndev1403.fishSurvey.R;
-import com.blogspot.tndev1403.fishSurvey.view.storagesceen.fsSavedDataActivity;
-import com.blogspot.tndev1403.fishSurvey.view.reviewscreen.fsShowReviewActivity;
+import com.blogspot.tndev1403.fishSurvey.view.storagesceen.StorageScreenActivity;
 import com.smarteist.autoimageslider.DefaultSliderView;
 import com.smarteist.autoimageslider.SliderView;
 
@@ -36,16 +36,17 @@ import java.util.Calendar;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class fsShowReviewPresenter {
-    fsShowReviewActivity mContext;
+class ReviewScreenPresenter {
+    private ReviewScreenActivity mContext;
 
-    public fsShowReviewPresenter(fsShowReviewActivity mContext) {
+    ReviewScreenPresenter(ReviewScreenActivity mContext) {
         this.mContext = mContext;
         initArguments();
         initEvents();
         initSlider();
     }
 
+    @SuppressLint("StaticFieldLeak")
     class LoadListCatchedImages extends AsyncTask<String, Void, Void> {
         SweetAlertDialog sweetAlertDialog;
         Handler viewHander = new Handler();
@@ -74,8 +75,7 @@ public class fsShowReviewPresenter {
                     viewHander.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (sliderView != null)
-                                mContext.slSlideReview.addSliderView(sliderView);
+                            mContext.slSlideReview.addSliderView(sliderView);
                         }
                     });
                 } catch (Exception e) {
@@ -94,7 +94,7 @@ public class fsShowReviewPresenter {
     }
 
     private void initSlider() {
-        new LoadListCatchedImages().execute(fsSavedDataActivity.REVIEW_CATCHED.getImagePath().split(" "));//ProcessingLibrary.Using.StringArrayListToStringArray(LIST_SAVED_FILES));
+        new LoadListCatchedImages().execute(StorageScreenActivity.REVIEW_CATCHED.getImagePath().split(" "));//ProcessingLibrary.Using.StringArrayListToStringArray(LIST_SAVED_FILES));
     }
 
     private void initEvents() {
@@ -105,22 +105,24 @@ public class fsShowReviewPresenter {
 
     private void initEditButton() {
         mContext.btnEdit.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View zv) {
                 final Calendar calendar = Calendar.getInstance();
                 /////////////Calendar.getInstance();
                 LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-                View v = layoutInflater.inflate(R.layout.edit_review, null);
-                final EditText etLength = (EditText) v.findViewById(R.id.fsct_lengthZ);
-                final EditText etWeight = (EditText) v.findViewById(R.id.fsct_weightZ);
-                final TextView tvClock = (TextView) v.findViewById(R.id.fsct_timeZ);
-                final TextView tvCalendar = (TextView) v.findViewById(R.id.fsct_dateZ);
-                final Button btnFinish = (Button) v.findViewById(R.id.fsct_finishZ);
+                @SuppressLint("InflateParams") View v = layoutInflater.inflate(R.layout.edit_review, null);
+                final EditText etLength = v.findViewById(R.id.fsct_lengthZ);
+                final EditText etWeight = v.findViewById(R.id.fsct_weightZ);
+                final TextView tvClock = v.findViewById(R.id.fsct_timeZ);
+                final TextView tvCalendar = v.findViewById(R.id.fsct_dateZ);
+                final Button btnFinish = v.findViewById(R.id.fsct_finishZ);
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setView(v);
                 builder.setCancelable(false);
                 final AlertDialog alertDialog = builder.create();
-                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                if (alertDialog.getWindow() != null)
+                    alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 ///////////////// INIT
                 v.findViewById(R.id.fsct_backZ).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -128,8 +130,8 @@ public class fsShowReviewPresenter {
                         alertDialog.cancel();
                     }
                 });
-                etLength.setText(fsSavedDataActivity.REVIEW_CATCHED.getLength());
-                etWeight.setText(fsSavedDataActivity.REVIEW_CATCHED.getWeight());
+                etLength.setText(StorageScreenActivity.REVIEW_CATCHED.getLength());
+                etWeight.setText(StorageScreenActivity.REVIEW_CATCHED.getWeight());
                 tvClock.setText(calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE));
                 tvCalendar.setText(
                         calendar.get(Calendar.DAY_OF_MONTH) + "/" +
@@ -208,14 +210,14 @@ public class fsShowReviewPresenter {
                             }
                         }
                         // Update
-                        fsSavedDataActivity.REVIEW_CATCHED.setWeight(etWeight.getText().toString());
-                        fsSavedDataActivity.REVIEW_CATCHED.setLength(etLength.getText().toString());
-                        fsSavedDataActivity.REVIEW_CATCHED.setCatchTime(ProcessingLibrary.Using.MyCalendarToReverseString(calendar));
-                        if (new FishCatchHandler(mContext).update(fsSavedDataActivity.REVIEW_CATCHED) > 0) {
+                        StorageScreenActivity.REVIEW_CATCHED.setWeight(etWeight.getText().toString());
+                        StorageScreenActivity.REVIEW_CATCHED.setLength(etLength.getText().toString());
+                        StorageScreenActivity.REVIEW_CATCHED.setCatchTime(ProcessingLibrary.Using.MyCalendarToReverseString(calendar));
+                        if (new FishCatchHandler(mContext).update(StorageScreenActivity.REVIEW_CATCHED) > 0) {
                             new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
                                     .setTitleText(mContext.getResources().getString(R.string.update_success))
                                     .show();
-                            mContext.startActivity(new Intent(mContext, fsShowReviewActivity.class));
+                            mContext.startActivity(new Intent(mContext, ReviewScreenActivity.class));
                             mContext.finish();
                         } else
                             new SweetAlertDialog(mContext, SweetAlertDialog.ERROR_TYPE)
@@ -240,7 +242,7 @@ public class fsShowReviewPresenter {
                             @Override
                             public void onClick(SweetAlertDialog sweetAlertDialog) {
                                 sweetAlertDialog.cancel();
-                                if (new FishCatchHandler(mContext).deleteEntry(fsSavedDataActivity.REVIEW_CATCHED.getId()) > 0) {
+                                if (new FishCatchHandler(mContext).deleteEntry(StorageScreenActivity.REVIEW_CATCHED.getId()) > 0) {
                                     new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
                                             .setTitleText(mContext.getResources().getString(R.string.deleted))
                                             .show();
@@ -266,16 +268,16 @@ public class fsShowReviewPresenter {
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void initArguments() {
-//        mContext.ivPreview.setImageBitmap(fsSavedDataActivity.CURRENT_BITMAP);
-        if (fsSavedDataActivity.REVIEW_ELEMENT == null)
+        if (StorageScreenActivity.REVIEW_ELEMENT == null)
             mContext.tvName.setText("Other families - Các loài khác");
         else
-            mContext.tvName.setText(fsSavedDataActivity.REVIEW_ELEMENT.getName());
-        mContext.tvLength.setText(fsSavedDataActivity.REVIEW_CATCHED.getLength() + " (cm)");
-        mContext.tvWeight.setText(fsSavedDataActivity.REVIEW_CATCHED.getWeight() + " (kg)");
-        mContext.tvPosition.setText(mContext.getResources().getString(R.string.longitude) + ": " + fsSavedDataActivity.REVIEW_CATCHED.getLatitude() +
-                "\n" + mContext.getResources().getString(R.string.latitude) + ": " + fsSavedDataActivity.REVIEW_CATCHED.getLongitude());
-        mContext.tvCatchedTime.setText(fsSavedDataActivity.REVIEW_CATCHED.getCatchTime());
+            mContext.tvName.setText(StorageScreenActivity.REVIEW_ELEMENT.getName());
+        mContext.tvLength.setText(StorageScreenActivity.REVIEW_CATCHED.getLength() + " (cm)");
+        mContext.tvWeight.setText(StorageScreenActivity.REVIEW_CATCHED.getWeight() + " (kg)");
+        mContext.tvPosition.setText(mContext.getResources().getString(R.string.longitude) + ": " + StorageScreenActivity.REVIEW_CATCHED.getLatitude() +
+                "\n" + mContext.getResources().getString(R.string.latitude) + ": " + StorageScreenActivity.REVIEW_CATCHED.getLongitude());
+        mContext.tvCatchedTime.setText(StorageScreenActivity.REVIEW_CATCHED.getCatchTime());
     }
 }

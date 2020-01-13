@@ -8,12 +8,8 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.location.Address;
-import android.location.Geocoder;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Base64;
-import android.util.Log;
 
 import androidx.core.graphics.BitmapCompat;
 
@@ -23,49 +19,24 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class ProcessingLibrary {
-    private final static String TAG = "ProcessingLibrary";
-
-    public static class Location {
-        public static Address getAddress(Context mContext, double lat, double lng) {
-            Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
-            try {
-                List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
-                Address obj = addresses.get(0);
-                return obj;
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.e(TAG, "getAddress: " + e.getMessage());
-            }
-            return null;
-        }
-    }
 
     public static class Using {
+        // Delete file by path method
         public static boolean DeleteFile(String Path) {
             File file = new File(Path);
             return file.delete();
         }
 
-        public static String[] StringArrayListToStringArray(ArrayList<String> arr) {
-            String[] strarr = new String[arr.size()];
-            for (int i = 0; i < arr.size(); i++)
-                strarr[i] = arr.get(i);
-            return strarr;
-        }
-
+        // Method change language
         public static void ChangeLanguage(Context mContext, String code) {
             Locale locale = new Locale(code);
             Resources resources = mContext.getResources();
@@ -77,22 +48,17 @@ public class ProcessingLibrary {
         }
 
         public static String DateTimeStringReverseFromTimeStamp(String timestamp) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            String dateString = formatter.format(new Date(Long.parseLong(timestamp) * 1000));
-            return dateString;
-        }
-
-        public static String DateTimeStringFromTimeStamp(String timestamp) {
-            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-            String dateString = formatter.format(new Date(Long.parseLong(timestamp) * 1000));
-            return dateString;
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            return formatter.format(new Date(Long.parseLong(timestamp) * 1000));
         }
 
         public static boolean IsMyServiceRunning(Context mContext, Class<?> serviceClass) {
             ActivityManager manager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
-            for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-                if (serviceClass.getName().equals(service.service.getClassName())) {
-                    return true;
+            if (manager != null) {
+                for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+                    if (serviceClass.getName().equals(service.service.getClassName())) {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -104,26 +70,20 @@ public class ProcessingLibrary {
                     calendarX.get(Calendar.YEAR),
                     calendarX.get(Calendar.MONTH) + 1,
                     calendarX.get(Calendar.DAY_OF_MONTH)
-//                    ,
-//                    calendarX.get(Calendar.HOUR_OF_DAY),
-//                    calendarX.get(Calendar.MINUTE),
-//                    calendarX.get(Calendar.SECOND)
             );
             return s;
         }
 
         public static String MyCalendarToReverseString(Calendar calendarX) {
-            String str = calendarX.get(Calendar.YEAR) + "-" + (calendarX.get(Calendar.MONTH) + 1) +
+            return calendarX.get(Calendar.YEAR) + "-" + (calendarX.get(Calendar.MONTH) + 1) +
                     "-" + calendarX.get(Calendar.DAY_OF_MONTH) + " " + calendarX.get(Calendar.HOUR_OF_DAY) + ":" +
                     calendarX.get(Calendar.MINUTE) + ":" + calendarX.get(Calendar.SECOND);
-            return str;
         }
 
-        public static String MyCalendarToString(Calendar calendarX) {
-            String String = calendarX.get(Calendar.HOUR_OF_DAY) + ":" +
+        static String MyCalendarToString(Calendar calendarX) {
+            return calendarX.get(Calendar.HOUR_OF_DAY) + ":" +
                     calendarX.get(Calendar.MINUTE) + " " + calendarX.get(Calendar.DAY_OF_MONTH) + "-" +
                     (calendarX.get(Calendar.MONTH) + 1) + "-" + calendarX.get(Calendar.YEAR);
-            return String;
         }
 
         public static String GetNowTimeString() {
@@ -132,18 +92,16 @@ public class ProcessingLibrary {
         }
 
         public static String GetCurrentTimeStamp() {
-            Long tsLong = System.currentTimeMillis() / 1000;
-            String ts = tsLong.toString();
-            return ts;
+            long tsLong = System.currentTimeMillis() / 1000;
+            return Long.toString(tsLong);
         }
 
         public static String StringListToSingalString(ArrayList<String> arr) {
-            String res = "";
+            StringBuilder res = new StringBuilder();
             for (int i = 0; i < arr.size(); i++) {
-                res += arr.get(i) + " ";
+                res.append(arr.get(i)).append(" ");
             }
-            Log.d(TAG, "StringListToSingalString: >" + res);
-            return res;
+            return res.toString();
         }
 
         public static String Base64FromImageFile(String _Path) {
@@ -155,21 +113,18 @@ public class ProcessingLibrary {
                 BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
                 buf.read(bytes, 0, bytes.length);
                 buf.close();
-                String encoded = Base64.encodeToString(bytes, Base64.DEFAULT);
-                return encoded;
+                return Base64.encodeToString(bytes, Base64.DEFAULT);
             } catch (Exception e) {
                 Bitmap bm = BitmapFromFilePath(_Path);
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 bm.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
                 byte[] byteArray = byteArrayOutputStream.toByteArray();
-                String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                return encoded;
+                return Base64.encodeToString(byteArray, Base64.DEFAULT);
             }
         }
 
         public static Bitmap BitmapFromFilePath(String _Path) {
-            Bitmap bitmap = BitmapFactory.decodeFile(_Path);
-            return bitmap;
+            return BitmapFactory.decodeFile(_Path);
         }
 
         public static boolean SaveImage(Bitmap bm, String fn, String destDir) {
@@ -189,17 +144,12 @@ public class ProcessingLibrary {
                 out.close();
                 return true;
             } catch (Exception e) {
-                Log.e(TAG, "SaveImage: " + e.getMessage());
                 return false;
             }
 
         }
 
-        public static Bitmap BytesToBitmap(byte[] bytes) {
-            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        }
-
-        public static Bitmap ResizeBitmap(Bitmap image, int maxSize) {
+        static Bitmap ResizeBitmap(Bitmap image, int maxSize) {
             int width = image.getWidth();
             int height = image.getHeight();
 
@@ -219,13 +169,11 @@ public class ProcessingLibrary {
         public static byte[] BitmapToBytes(Bitmap bm) {
             int quality = 100;
             int min = 20;
-            Log.d(TAG, "BitmapToBytes: Kích cỡ: " + bm.getWidth() + "x" + bm.getHeight());
             int maxSize = 2048;
             if (bm.getWidth() > maxSize || bm.getHeight() > maxSize) {
                 bm = ResizeBitmap(bm, maxSize);
             }
             int currentSize = BitmapCompat.getAllocationByteCount(bm);
-            Log.d(TAG, "BitmapToBytes: Size: " + currentSize);
             float requireSize = (float) (1024 * 1024);
             if (currentSize > requireSize) {
                 int ration = (int) (currentSize * 100 / requireSize);
@@ -235,110 +183,14 @@ public class ProcessingLibrary {
                     quality = min;
                 }
             }
-            Log.d(TAG, "BitmapToBytes: Chất lượng mới " + quality);
 
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bm.compress(Bitmap.CompressFormat.JPEG, quality, stream);
-            Log.d(TAG, "BitmapToBytes: new Size: " + stream.size());
             return stream.toByteArray();
-        }
-
-        public static String getContent(String _URL) {
-            String result = "";
-            try {
-                result = new getContentFromURL().execute(_URL).get();
-            } catch (Exception e) {
-                result = "Không thực hiện tải được " + e.getMessage();
-            }
-            Log.d(TAG, "getContent: " + result);
-            return result;
-        }
-
-        public static Bitmap getBitmap(String _URL) {
-            try {
-                return new getBitmapFromURL().execute(_URL).get();
-            } catch (Exception e) {
-                Log.e(TAG, "getBitmap: " + e.getMessage());
-                return null;
-            }
-        }
-
-        public static String DateToString(Date inp) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss'Z'dd/MM/yyyy'T'");
-            try {
-                String result = simpleDateFormat.format(inp);
-                return result;
-            } catch (Exception e) {
-                Log.e(TAG, "DateToString: " + e.getMessage());
-                return "";
-            }
-        }
-
-        public static Date StringToDateTime(String inp) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss'Z'dd/MM/yyyy'T'");
-            try {
-                Date myDate = simpleDateFormat.parse(inp);
-                return myDate;
-            } catch (Exception e) {
-                Log.e(TAG, "StringToDateTime: " + e.getMessage());
-                return null;
-            }
-        }
-
-        public static Date StringToDate(String inp) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            try {
-                Date myDate = simpleDateFormat.parse(inp);
-                return myDate;
-            } catch (Exception e) {
-                return null;
-            }
         }
 
         public static Bitmap DrawableToBitmap(Context mContext, int id) {
             return ((BitmapDrawable) mContext.getResources().getDrawable(id)).getBitmap();
-        }
-    }
-
-    public static class getContentFromURL extends AsyncTask<String, Integer, String> {
-
-        @Override
-        protected String doInBackground(String... urls) {
-            try {
-                URL url = new URL(urls[0]);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestProperty("User-Agent", "Mozilla/5.0");
-                return InputStreamToString(conn.getInputStream());
-            } catch (Exception e) {
-                Log.e(TAG, "<getContentFromURL> " + e.getMessage());
-            }
-            return "";
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-        }
-    }
-
-    public static class getBitmapFromURL extends AsyncTask<String, Integer, Bitmap> {
-        @Override
-        protected Bitmap doInBackground(String... imageUrl) {
-            try {
-                URL url = new URL(imageUrl[0].replace("https", "http"));
-                return BitmapFactory.decodeStream(url.openConnection().getInputStream());
-            } catch (Exception e) {
-                return null;
-            }
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            super.onPostExecute(bitmap);
         }
     }
 
@@ -347,13 +199,12 @@ public class ProcessingLibrary {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
 
-        String line = null;
+        String line;
         try {
             while ((line = reader.readLine()) != null) {
                 sb.append(line).append('\n');
             }
-        } catch (IOException e) {
-            Log.e(TAG, "> " + e.getMessage());
+        } catch (Exception ignore) {
         }
         return sb.toString();
     }

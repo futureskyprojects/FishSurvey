@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 import es.dmoral.toasty.Toasty;
 
-public class fsSavedDataActivity extends AppCompatActivity {
+public class StorageScreenActivity extends AppCompatActivity {
     public static Fish REVIEW_ELEMENT;
     public static FishCatch REVIEW_CATCHED;
     RecyclerView recyclerView;
@@ -41,7 +41,7 @@ public class fsSavedDataActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        fsSavedDataAdapter adapter = new fsSavedDataAdapter(catcheds, this);
+        StorageScreenAdapter adapter = new StorageScreenAdapter(catcheds, this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         initToolbar();

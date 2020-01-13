@@ -18,24 +18,24 @@ import com.blogspot.tndev1403.fishSurvey.model.Fish;
 import com.blogspot.tndev1403.fishSurvey.data.db.FishHandler;
 import com.blogspot.tndev1403.fishSurvey.utils.ProcessingLibrary;
 import com.blogspot.tndev1403.fishSurvey.R;
-import com.blogspot.tndev1403.fishSurvey.view.reviewscreen.fsShowReviewActivity;
+import com.blogspot.tndev1403.fishSurvey.view.reviewscreen.ReviewScreenActivity;
 
 import java.io.File;
 import java.util.ArrayList;
 
-public class fsSavedDataAdapter extends RecyclerView.Adapter<fsSavedDataAdapter.fsRecycleViewHolder> {
+public class StorageScreenAdapter extends RecyclerView.Adapter<StorageScreenAdapter.fsRecycleViewHolder> {
     private ArrayList<FishCatch> catcheds;
     FishHandler handler;
-    fsSavedDataActivity mContext;
+    StorageScreenActivity mContext;
 
-    public fsSavedDataAdapter(ArrayList<FishCatch> catcheds, fsSavedDataActivity mContext) {
+    public StorageScreenAdapter(ArrayList<FishCatch> catcheds, StorageScreenActivity mContext) {
         this.catcheds = catcheds;
         this.mContext = mContext;
     }
 
     @NonNull
     @Override
-    public fsSavedDataAdapter.fsRecycleViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public StorageScreenAdapter.fsRecycleViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
         View v = layoutInflater.inflate(R.layout.item_review, viewGroup, false);
         handler = new FishHandler(viewGroup.getContext());
@@ -43,7 +43,7 @@ public class fsSavedDataAdapter extends RecyclerView.Adapter<fsSavedDataAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final fsSavedDataAdapter.fsRecycleViewHolder fsRecycleViewHolder, final int i) {
+    public void onBindViewHolder(@NonNull final StorageScreenAdapter.fsRecycleViewHolder fsRecycleViewHolder, final int i) {
         final FishCatch catched = catcheds.get(i);
         String code = Global.CoppaLanguage.getLanguageCode(mContext);
         final Fish element = handler.get(catched.getElementId());
@@ -67,11 +67,11 @@ public class fsSavedDataAdapter extends RecyclerView.Adapter<fsSavedDataAdapter.
         fsRecycleViewHolder.rlItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fsSavedDataActivity.REVIEW_CATCHED = catched;
+                StorageScreenActivity.REVIEW_CATCHED = catched;
                 if (catched.getElementId() != -1)
-                    fsSavedDataActivity.REVIEW_ELEMENT = element;
+                    StorageScreenActivity.REVIEW_ELEMENT = element;
                 else
-                    fsSavedDataActivity.REVIEW_ELEMENT = null;
+                    StorageScreenActivity.REVIEW_ELEMENT = null;
                 PrepareBitmapForShowHere();
             }
         });
@@ -79,7 +79,7 @@ public class fsSavedDataAdapter extends RecyclerView.Adapter<fsSavedDataAdapter.
 
     private void PrepareBitmapForShowHere() {
         mContext.startActivity(
-                new Intent(mContext, fsShowReviewActivity.class)
+                new Intent(mContext, ReviewScreenActivity.class)
         );
         mContext.finish();
     }

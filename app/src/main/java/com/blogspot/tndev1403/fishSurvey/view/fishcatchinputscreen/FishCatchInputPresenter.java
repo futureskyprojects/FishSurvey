@@ -33,7 +33,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -45,7 +44,7 @@ import com.blogspot.tndev1403.fishSurvey.model.FishCatch;
 import com.blogspot.tndev1403.fishSurvey.data.db.FishCatchHandler;
 import com.blogspot.tndev1403.fishSurvey.R;
 import com.blogspot.tndev1403.fishSurvey.utils.ProcessingLibrary;
-import com.blogspot.tndev1403.fishSurvey.view.savesuccessscreen.fsSaveSuccessfulActivity;
+import com.blogspot.tndev1403.fishSurvey.view.savesuccessscreen.SaveSuccessScreenActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -300,7 +299,7 @@ public class FishCatchInputPresenter implements LocationListener {
                 if (saving.isShowing())
                     saving.cancel();
                 Toasty.success(mContext, mContext.getResources().getString(R.string.save_success), Toast.LENGTH_SHORT, true).show();
-                mContext.startActivity(new Intent(mContext, fsSaveSuccessfulActivity.class));
+                mContext.startActivity(new Intent(mContext, SaveSuccessScreenActivity.class));
                 mContext.finish();
             } else {
                 if (saving.isShowing())
