@@ -7,14 +7,6 @@
     android:background="@drawable/background_home"
     tools:context=".view.savesuccessscreen.SaveSuccessScreenActivity">
 
-    <!--<ImageView-->
-        <!--android:scaleType="centerCrop"-->
-        <!--android:id="@+id/fss_image_view"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_above="@id/fss_bottom_group"-->
-        <!--android:layout_marginBottom="@dimen/standard_margin"-->
-        <!--android:src="@drawable/ic_error_404" />-->
     <com.smarteist.autoimageslider.SliderLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -19,14 +19,17 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <LinearLayout
                 android:id="@+id/fs_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -42,8 +45,8 @@
                     android:layout_height="wrap_content"
                     android:background="#4834d4"
                     android:orientation="vertical"
-                    android:paddingTop="@dimen/activity_vertical_margin"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin"
                     android:paddingBottom="@dimen/activity_vertical_margin">
 
@@ -53,10 +56,10 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:layout_marginBottom="@dimen/activity_vertical_margin"
                             android:id="@+id/fsh_fisherman_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/activity_vertical_margin"
                             android:drawableStart="@drawable/ic_fisherman"
                             android:drawableLeft="@drawable/ic_fisherman"
                             android:drawablePadding="@dimen/activity_horizontal_margin"
@@ -70,11 +73,11 @@
                             tools:ignore="RtlHardcoded" />
 
                         <TextView
-                            android:layout_marginBottom="@dimen/activity_vertical_margin"
                             android:id="@+id/fsh_phone_number"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
+                            android:layout_marginBottom="@dimen/activity_vertical_margin"
                             android:drawableStart="@drawable/ic_phone"
                             android:drawableLeft="@drawable/ic_phone"
                             android:drawablePadding="@dimen/activity_horizontal_margin"
@@ -88,11 +91,11 @@
                             tools:ignore="RtlHardcoded" />
 
                         <TextView
-                            android:layout_marginBottom="@dimen/activity_vertical_margin"
                             android:id="@+id/fsh_boat_code"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
+                            android:layout_marginBottom="@dimen/activity_vertical_margin"
                             android:drawableStart="@drawable/ic_boat"
                             android:drawableLeft="@drawable/ic_boat"
                             android:drawablePadding="@dimen/activity_horizontal_margin"
@@ -116,9 +119,9 @@
 
             <LinearLayout
                 android:id="@+id/review"
-                android:layout_below="@id/fs_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/fs_header"
                 android:background="@drawable/background_default"
                 android:clickable="true"
                 android:focusable="true"
@@ -183,27 +186,27 @@
 
             <TextView
                 android:id="@+id/not_sync"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/end_trip"
+                android:layout_below="@id/review"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
                 android:padding="10dp"
-                android:textSize="@dimen/text_size"
-                android:textStyle="bold"
-                android:textColor="@color/success"
                 android:shadowColor="@color/colorPrimaryDark"
                 android:shadowDx="1"
                 android:shadowDy="1"
                 android:shadowRadius="1"
-                android:gravity="center"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@id/end_trip"
-                android:layout_below="@id/review"/>
+                android:textColor="@color/success"
+                android:textSize="@dimen/text_size"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/end_trip"
-                android:layout_above="@id/nation_flag"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
+                android:layout_above="@id/nation_flag"
                 android:background="@drawable/background_blue"
                 android:clickable="true"
                 android:focusable="true"
@@ -223,36 +226,40 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>
+
             <LinearLayout
-                android:layout_above="@id/coppy_right"
-                android:layout_margin="20dp"
                 android:id="@+id/nation_flag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="2"
-                android:orientation="horizontal">
+                android:layout_above="@id/coppy_right"
+                android:layout_margin="20dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
                 <ImageView
                     android:id="@+id/vn"
-                    android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_vietnam"/>
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_vietnam" />
+
                 <ImageView
                     android:id="@+id/en"
-                    android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_united_states_of_america"/>
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_united_states_of_america" />
             </LinearLayout>
+
             <TextView
-                android:layout_alignParentLeft="true"
                 android:id="@+id/coppy_right"
-                android:layout_alignParentBottom="true"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
+                android:text="@string/author_groups"
                 android:textColor="@android:color/darker_gray"
-                android:textStyle="italic"
-                android:text="@string/author_groups"/>
+                android:textStyle="italic" />
         </RelativeLayout>
     </com.google.android.material.navigation.NavigationView>
     <!--         app:headerLayout="@layout/nav_header_fs_home" -->
