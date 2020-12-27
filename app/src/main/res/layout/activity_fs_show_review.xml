@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_home"
-    tools:context=".View.fsSaveSuccessfulActivity">
+    tools:context="me.vistark.coppa_v2.View.fsSaveSuccessfulActivity">
     <com.smarteist.autoimageslider.SliderLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
