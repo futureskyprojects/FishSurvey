@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/background_home"
-    tools:context=".View.fsNewUserActivity">
+    tools:context="me.vistark.coppavietnam.View.fsNewUserActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -3,11 +3,11 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.blogspot.tndev1403.Coppa"
+        applicationId "me.vistark.coppavietnam"
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode 201901072
-        versionName "2019.01.07-002"
+        versionCode 20123001
+        versionName "20.12.30-01"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

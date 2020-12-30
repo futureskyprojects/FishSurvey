@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">COPPA</string>
+    <string name="app_name">COPPA Vietnam</string>
     <string name="lorem">Lorem Ipsum is simply a piece of false text, used for presentation and layout for printing. Lorem Ipsum has been used as a standard text for the printing industry since the 1500s, when an anonymous artist put together several texts to form a text template. This text has not only existed for five centuries, but when applied to office computing, its content has not been changed. It was popularized in the 1960s by selling Letraset sheets of Lorem Ipsum passages, and more recently, used in page layout applications, like Aldus PageMaker.</string>
     <string name="request_name">Full Name</string>
     <string name="finish">Finish</string>
